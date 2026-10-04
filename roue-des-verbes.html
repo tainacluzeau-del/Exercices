@@ -3,24 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>La roue des verbes — Exercice</title>
+<title>La roue des verbes</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A1%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
   :root {
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --success: #10b981;
-    --error: #ef4444;
     --bg: #f8fafc;
     --card: #ffffff;
     --ink: #0f172a;
     --ink-soft: #64748b;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --accent: #d9622b;
+    --accent-2: #4f46e5;
+    --good: #10b981;
+    --good-bg: rgba(16, 185, 129, 0.12);
+    --bad: #ef4444;
+    --bad-bg: rgba(239, 68, 68, 0.12);
     --ring: #e2e8f0;
     --tag-bg: #f1f5f9;
+    --pointer: #0f172a;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
     --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07);
   }
@@ -31,12 +35,22 @@
       --card: #1e293b;
       --ink: #f8fafc;
       --ink-soft: #94a3b8;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #f08a4b;
+      --accent-2: #6366f1;
+      --good: #34d399;
+      --good-bg: rgba(52, 211, 153, 0.15);
+      --bad: #f87171;
+      --bad-bg: rgba(248, 113, 113, 0.15);
       --ring: #334155;
       --tag-bg: #334155;
+      --pointer: #f8fafc;
     }
   }
 
   * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
 
   body {
     margin: 0;
@@ -46,10 +60,12 @@
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     padding: calc(24px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
     line-height: 1.5;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .wrap { max-width: 650px; margin: 0 auto; }
+  .wrap { max-width: 760px; margin: 0 auto; }
 
+  /* --- BARRE DE NAVIGATION ET HEADER EN ACCORD AVEC L'INDEX --- */
   .nav-bar {
     display: flex;
     justify-content: space-between;
@@ -89,291 +105,581 @@
     margin-bottom: 20px;
   }
 
-  h1 { font-size: 24px; margin: 0 0 6px; font-weight: 800; }
-  p { color: var(--ink-soft); margin: 0; font-size: 14px; }
+  h1 {
+    font-size: clamp(22px, 5vw, 28px);
+    font-weight: 800;
+    text-align: center;
+    margin: 0 0 6px;
+  }
 
-  .game-card {
+  .subtitle {
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin: 0 0 6px;
+  }
+
+  .scoreboard {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .pill {
+    background: var(--card);
+    border: 1px solid var(--ring);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+  }
+  .pill.score { color: var(--good); }
+
+  .banner {
+    background: var(--accent);
+    color: #fff;
+    text-align: center;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: none;
+    animation: pulse 1.4s ease-in-out 2;
+  }
+  .banner.show { display: block; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+
+  /* --- STRUCTURE DU JEU DANS UNE CARTE STYLE INDEX --- */
+  .game-container {
     background: var(--card);
     border: 1px solid var(--ring);
     border-radius: 20px;
-    padding: 24px;
+    padding: 24px 16px;
     box-shadow: var(--shadow-md);
   }
 
-  .score-board {
+  .wheels {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .wheel-block { text-align: center; width: 230px; }
+  .wheel-block h2 {
     font-size: 14px;
-    font-weight: 700;
-    color: var(--ink-soft);
-    margin-bottom: 20px;
-  }
-
-  /* --- STYLE DES ROUES ANIMEES --- */
-  .wheels-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .wheel-column {
-    background: var(--tag-bg);
-    border: 2px solid var(--ring);
-    border-radius: 16px;
-    padding: 12px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .wheel-label {
-    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     color: var(--ink-soft);
     font-weight: 800;
-    margin-bottom: 8px;
-    display: block;
+    margin: 0 0 10px;
   }
 
-  .wheel-window {
-    height: 70px;
-    overflow: hidden;
+  /* DESIGN DE LA ROUE (INTACT) */
+  .wheel-frame {
     position: relative;
-    background: var(--card);
-    border-radius: 12px;
-    border: 1px solid var(--ring);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    width: 210px;
+    height: 210px;
+    margin: 0 auto 10px;
   }
-
-  .wheel-strip {
+  .pointer {
     position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 0; height: 0;
+    transform: translateX(-50%);
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-top: 18px solid var(--pointer);
+    z-index: 3;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+  }
+  .wheel {
+    position: relative;
     width: 100%;
-    top: 0;
-    left: 0;
-    transition: transform 0.1s linear;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid var(--card);
+    box-shadow: 0 0 0 3px var(--ring), 0 6px 16px rgba(0,0,0,.18);
+    transition: transform 3.2s cubic-bezier(.12,.67,.1,1);
+  }
+  .wheel-label {
+    position: absolute;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,.45);
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+  .hub {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 22px; height: 22px;
+    background: var(--card);
+    border: 3px solid var(--ring);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
   }
 
-  .wheel-item {
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    transition: transform .12s ease, opacity .2s ease, background 0.2s ease;
+  }
+  button:active { transform: scale(0.96); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+
+  .spin-btn {
+    background: var(--primary);
+    color: #fff;
+    width: 100%;
+  }
+  .spin-btn:hover:not(:disabled) { background: var(--primary-hover); }
+
+  .result-tag {
+    display: inline-block;
+    margin-top: 8px;
+    min-height: 20px;
+    font-size: 15px;
     font-weight: 800;
     color: var(--primary);
   }
 
-  .btn {
-    width: 100%;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    padding: 14px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  .answer-card {
+    background: var(--tag-bg);
+    border: 1px solid var(--ring);
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    display: none;
+    margin-top: 10px;
+  }
+  .answer-card.show { display: block; animation: fadeUp .35s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .prompt-phrase {
+    font-size: 16px;
+    margin: 0 0 12px;
+  }
+  .prompt-phrase b { color: var(--primary); font-weight: 800; }
 
-  form {
-    margin-top: 20px;
+  .answer-row {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   input[type="text"] {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid var(--ring);
-    border-radius: 12px;
-    font-size: 16px;
     font-family: inherit;
-    background: var(--bg);
+    font-size: 16px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--ring);
+    background: var(--card);
     color: var(--ink);
+    width: 220px;
+    max-width: 70vw;
     outline: none;
   }
-
   input[type="text"]:focus {
     border-color: var(--primary);
   }
+  input[type="text"].shake {
+    animation: shake .4s;
+    border-color: var(--bad);
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .validate-btn { background: var(--primary); color: #fff; }
+  .validate-btn:hover:not(:disabled) { background: var(--primary-hover); }
 
   .feedback {
     margin-top: 14px;
-    padding: 12px;
-    border-radius: 10px;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .feedback.show { display: block; }
+  .feedback.good { background: var(--good-bg); color: var(--good); }
+  .feedback.bad { background: var(--bad-bg); color: var(--bad); }
+  .feedback .correct-answer {
+    display: block;
+    margin-top: 4px;
     font-weight: 600;
-    font-size: 14px;
-    text-align: center;
+    color: var(--ink);
+  }
+
+  .bravo-pop {
+    display: inline-block;
+    font-size: 18px;
+    animation: pop .55s cubic-bezier(.3,1.6,.5,1);
+  }
+  @keyframes pop {
+    0% { transform: scale(0.3) rotate(-8deg); opacity: 0; }
+    60% { transform: scale(1.18) rotate(3deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  .confetti {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    pointer-events: none;
+    animation: fly 0.9s ease-out forwards;
+  }
+  @keyframes fly {
+    to {
+      transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+      opacity: 0;
+    }
+  }
+
+  .next-btn {
+    margin-top: 14px;
+    background: var(--primary);
+    color: #fff;
     display: none;
   }
+  .next-btn.show { display: inline-block; }
 
-  .feedback.correct {
-    background: rgba(16, 185, 129, 0.15);
-    color: var(--success);
+  .footer-note {
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    margin-top: 20px;
   }
 
-  .feedback.wrong {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--error);
+  .reset-link {
+    background: none;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 4px 8px;
   }
+  .reset-link:hover { color: var(--primary); }
 </style>
 </head>
 <body>
 <div class="wrap">
+  <!-- NAV BAR D'ACCUEIL -->
   <div class="nav-bar">
     <a class="nav-btn" href="index.html">◂ Retour aux exercices</a>
     <a class="nav-btn" href="https://tainacluzeau-del.github.io/Vocabulaire/">📚 Vocabulaire ↗</a>
   </div>
 
   <header>
-    <h1>🎡 La roue des verbes (1er groupe)</h1>
-    <p>Tourne les roues, puis écris la phrase complète au présent !</p>
+    <h1>🎡 La roue des verbes</h1>
+    <p class="subtitle">Tourne les deux roues, puis écris la phrase correcte avant de valider.</p>
+    <p class="subtitle" style="font-size: 12px; margin-bottom:0;">🎲 Tirage équitable : chaque roue fait sortir tous ses éléments avant qu'une répétition soit possible.</p>
   </header>
 
-  <div class="game-card">
-    <div class="score-board">
-      <span>Score : <strong id="scoreVal">0</strong></span>
-      <span>Essai : <strong id="roundVal">0</strong></span>
-    </div>
-
-    <div class="wheels-wrapper">
-      <div class="wheel-column">
-        <span class="wheel-label">Sujet</span>
-        <div class="wheel-window">
-          <div class="wheel-strip" id="sujetStrip">
-            <div class="wheel-item">?</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="wheel-column">
-        <span class="wheel-label">Verbe (1er groupe)</span>
-        <div class="wheel-window">
-          <div class="wheel-strip" id="verbeStrip">
-            <div class="wheel-item">?</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn" id="spinBtn" onclick="spin()">Tourner les roues 🎲</button>
-
-    <form id="answerForm" onsubmit="checkAnswer(event)" style="display: none;">
-      <input type="text" id="userInput" placeholder="Écris la phrase complète (ex: Je parle)..." autocomplete="off" required>
-      <button class="btn" type="submit">Valider</button>
-    </form>
-
-    <div class="feedback" id="feedback"></div>
+  <div class="scoreboard">
+    <span class="pill score">⭐ Score : <span id="score">0</span></span>
+    <span class="pill">🔁 Manche : <span id="round">0</span></span>
   </div>
+
+  <div class="banner" id="switchBanner">🔄 10 manches faites — pensez à changer de rôle !</div>
+
+  <div class="game-container">
+    <div class="wheels">
+      <div class="wheel-block">
+        <h2>Sujets</h2>
+        <div class="wheel-frame">
+          <div class="pointer"></div>
+          <div class="wheel" id="wheelSubject"></div>
+          <div class="hub"></div>
+        </div>
+        <button class="spin-btn" id="spinSubject">Tourner 🎯</button>
+        <div class="result-tag" id="subjectResult">—</div>
+      </div>
+      <div class="wheel-block">
+        <h2>Verbes</h2>
+        <div class="wheel-frame">
+          <div class="pointer"></div>
+          <div class="wheel" id="wheelVerb"></div>
+          <div class="hub"></div>
+        </div>
+        <button class="spin-btn" id="spinVerb">Tourner 🎯</button>
+        <div class="result-tag" id="verbResult">—</div>
+      </div>
+    </div>
+
+    <div class="answer-card" id="answerCard">
+      <p class="prompt-phrase">Combinaison tirée : <b id="combo">…</b> — écris la phrase correcte :</p>
+      <div class="answer-row">
+        <input type="text" id="answerInput" placeholder="Ex. : Il voyage." autocomplete="off">
+        <button class="validate-btn" id="validateBtn">Valider ✔️</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn">Manche suivante 🔁</button>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    Jeu de la roue des verbes — présent des verbes en -er · 1 point par bonne réponse.
+    <br><button class="reset-link" id="resetBtn">Réinitialiser le score</button>
+  </p>
 </div>
 
 <script>
-  const SUJETS = ['Je', 'Tu', 'Il', 'Elle', 'Nous', 'Vous', 'Ils', 'Elles'];
+(function () {
+  const SUBJECTS = ['je', 'tu', 'il', 'nous', 'vous', 'ils'];
+  const VERBS = ['chanter', 'danser', 'nager', 'cuisiner', 'dessiner', 'voyager', 'marcher', 'étudier'];
+  const CONJ = {
+    chanter:  ['chante', 'chantes', 'chante', 'chantons', 'chantez', 'chantent'],
+    danser:   ['danse', 'danses', 'danse', 'dansons', 'dansez', 'dansent'],
+    nager:    ['nage', 'nages', 'nage', 'nageons', 'nagez', 'nagent'],
+    cuisiner: ['cuisine', 'cuisines', 'cuisine', 'cuisinons', 'cuisinez', 'cuisinent'],
+    dessiner: ['dessine', 'dessines', 'dessine', 'dessinons', 'dessinez', 'dessinent'],
+    voyager:  ['voyage', 'voyages', 'voyage', 'voyageons', 'voyagez', 'voyagent'],
+    marcher:  ['marche', 'marches', 'marche', 'marchons', 'marchez', 'marchent'],
+    étudier:  ['étudie', 'étudies', 'étudie', 'étudions', 'étudiez', 'étudient']
+  };
 
-  // LISTE DE VERBES DU 1ER GROUPE EN -ER
-  const VERBES = [
-    { nom: 'Parler', conj: { 'Je': 'Je parle', 'Tu': 'Tu parles', 'Il': 'Il parle', 'Elle': 'Elle parle', 'Nous': 'Nous parlons', 'Vous': 'Vous parlez', 'Ils': 'Ils parlent', 'Elles': 'Elles parlent' } },
-    { nom: 'Habiter', conj: { 'Je': "J'habite", 'Tu': 'Tu habites', 'Il': 'Il habite', 'Elle': 'Elle habite', 'Nous': 'Nous habitons', 'Vous': 'Vous habitez', 'Ils': 'Ils habitent', 'Elles': 'Elles habitent' } },
-    { nom: 'Aimer', conj: { 'Je': "J'aime", 'Tu': 'Tu aimes', 'Il': 'Il aime', 'Elle': 'Elle aime', 'Nous': 'Nous aimons', 'Vous': 'Vous aimez', 'Ils': 'Ils aiment', 'Elles': 'Elles aiment' } },
-    { nom: 'Regarder', conj: { 'Je': 'Je regarde', 'Tu': 'Tu regardes', 'Il': 'Il regarde', 'Elle': 'Elle regarde', 'Nous': 'Nous regardons', 'Vous': 'Vous regardez', 'Ils': 'Ils regardent', 'Elles': 'Elles regardent' } },
-    { nom: 'Écouter', conj: { 'Je': "J'écoute", 'Tu': 'Tu écoutes', 'Il': 'Il écoute', 'Elle': 'Elle écoute', 'Nous': 'Nous écoutons', 'Vous': 'Vous écoutez', 'Ils': 'Ils écoutent', 'Elles': 'Elles écoutent' } },
-    { nom: 'Travailler', conj: { 'Je': 'Je travaille', 'Tu': 'Tu travailles', 'Il': 'Il travaille', 'Elle': 'Elle travaille', 'Nous': 'Nous travaillons', 'Vous': 'Vous travaillez', 'Ils': 'Ils travaillent', 'Elles': 'Elles travaillent' } },
-    { nom: 'Manger', conj: { 'Je': 'Je mange', 'Tu': 'Tu manges', 'Il': 'Il mange', 'Elle': 'Elle mange', 'Nous': 'Nous mangeons', 'Vous': 'Vous mangez', 'Ils': 'Ils mangent', 'Elles': 'Elles mangent' } },
-    { nom: 'Jouer', conj: { 'Je': 'Je joue', 'Tu': 'Tu joues', 'Il': 'Il joue', 'Elle': 'Elle joue', 'Nous': 'Nous jouons', 'Vous': 'Vous jouez', 'Ils': 'Ils jouent', 'Elles': 'Elles jouent' } },
-    { nom: 'Chanter', conj: { 'Je': 'Je chante', 'Tu': 'Tu chantes', 'Il': 'Il chante', 'Elle': 'Elle chante', 'Nous': 'Nous chantons', 'Vous': 'Vous chantez', 'Ils': 'Ils chantent', 'Elles': 'Elles chantent' } },
-    { nom: 'Danser', conj: { 'Je': 'Je danse', 'Tu': 'Tu danses', 'Il': 'Il danse', 'Elle': 'Elle danse', 'Nous': 'Nous dansons', 'Vous': 'Vous dansez', 'Ils': 'Ils dansent', 'Elles': 'Elles dansent' } }
-  ];
+  const SUBJ_COLORS = ['#d9622b', '#2f6b5e', '#c0392b', '#4a7fb5', '#9b59b6', '#e0a526'];
+  const VERB_COLORS = ['#2f6b5e', '#d9622b', '#4a7fb5', '#c0392b', '#9b59b6', '#e0a526', '#3f9b7a', '#b5546a'];
 
-  let currentSujet = '';
-  let currentVerbeObj = null;
+  function makeBag(n) {
+    let queue = [];
+    let lastValue = null;
+    function reshuffle() {
+      queue = Array.from({ length: n }, (_, i) => i);
+      for (let i = queue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [queue[i], queue[j]] = [queue[j], queue[i]];
+      }
+      if (n > 1 && queue[0] === lastValue) {
+        const swapWith = 1 + Math.floor(Math.random() * (n - 1));
+        [queue[0], queue[swapWith]] = [queue[swapWith], queue[0]];
+      }
+    }
+    return function draw() {
+      if (queue.length === 0) reshuffle();
+      const value = queue.shift();
+      lastValue = value;
+      return value;
+    };
+  }
+  const drawSubject = makeBag(SUBJECTS.length);
+  const drawVerb = makeBag(VERBS.length);
+
   let score = 0;
   let round = 0;
+  let subjectDone = false, verbDone = false;
+  let currentSubjectIndex = null, currentVerbIndex = null;
+  let subjectRotation = 0, verbRotation = 0;
 
-  function spin() {
-    const spinBtn = document.getElementById('spinBtn');
-    const form = document.getElementById('answerForm');
-    const feedback = document.getElementById('feedback');
-    const sujetStrip = document.getElementById('sujetStrip');
-    const verbeStrip = document.getElementById('verbeStrip');
+  const el = id => document.getElementById(id);
 
-    spinBtn.disabled = true;
-    form.style.display = 'none';
-    feedback.style.display = 'none';
+  function buildWheel(container, labels, colors) {
+    const seg = 360 / labels.length;
+    const stops = labels.map((_, i) => {
+      const c = colors[i % colors.length];
+      return `${c} ${i * seg}deg ${(i + 1) * seg}deg`;
+    }).join(', ');
+    container.style.background = `conic-gradient(${stops})`;
+    container.innerHTML = '';
+    const R = container.clientWidth || 210;
+    const labelR = R * 0.33;
+    labels.forEach((text, i) => {
+      const center = i * seg + seg / 2;
+      const rad = (center - 90) * Math.PI / 180;
+      const x = R / 2 + labelR * Math.cos(rad);
+      const y = R / 2 + labelR * Math.sin(rad);
+      const span = document.createElement('div');
+      span.className = 'wheel-label';
+      span.textContent = text;
+      span.style.left = x + 'px';
+      span.style.top = y + 'px';
+      container.appendChild(span);
+    });
+  }
 
-    // Sélection aléatoire
-    currentSujet = SUJETS[Math.floor(Math.random() * SUJETS.length)];
-    currentVerbeObj = VERBES[Math.floor(Math.random() * VERBES.length)];
+  function layoutAll() {
+    buildWheel(el('wheelSubject'), SUBJECTS, SUBJ_COLORS);
+    buildWheel(el('wheelVerb'), VERBS, VERB_COLORS);
+  }
 
-    // Génération du rouleau visuel
-    let sujetList = [];
-    let verbeList = [];
-    for (let i = 0; i < 12; i++) {
-      sujetList.push(SUJETS[Math.floor(Math.random() * SUJETS.length)]);
-      verbeList.push(VERBES[Math.floor(Math.random() * VERBES.length)].nom);
+  function spin(wheelEl, segCount, rotationState, targetIndex, onDone) {
+    const seg = 360 / segCount;
+    const centerAngle = targetIndex * seg + seg / 2;
+    const current = rotationState.value % 360;
+    let delta = (360 - centerAngle - current) % 360;
+    if (delta < 0) delta += 360;
+    const spins = 4;
+    rotationState.value += spins * 360 + delta;
+    wheelEl.style.transform = `rotate(${rotationState.value}deg)`;
+    const handler = () => {
+      wheelEl.removeEventListener('transitionend', handler);
+      onDone(targetIndex);
+    };
+    wheelEl.addEventListener('transitionend', handler);
+  }
+
+  function capitalize(w) { return w.charAt(0).toUpperCase() + w.slice(1); }
+
+  function expectedSentence(subjIdx, verbIdx) {
+    const verb = VERBS[verbIdx];
+    const form = CONJ[verb][subjIdx];
+    return `${capitalize(SUBJECTS[subjIdx])} ${form}.`;
+  }
+
+  function normalize(str) {
+    return str
+      .trim()
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, ' ')
+      .replace(/[.!?]+$/g, '');
+  }
+
+  function checkReady() {
+    if (subjectDone && verbDone) {
+      el('answerCard').classList.add('show');
+      el('combo').textContent = `${SUBJECTS[currentSubjectIndex]} + ${VERBS[currentVerbIndex]}`;
+      el('answerInput').value = '';
+      el('answerInput').focus();
     }
-    sujetList.push(currentSujet);
-    verbeList.push(currentVerbeObj.nom);
-
-    sujetStrip.innerHTML = sujetList.map(s => `<div class="wheel-item">${s}</div>`).join('');
-    verbeStrip.innerHTML = verbeList.map(v => `<div class="wheel-item">${v}</div>`).join('');
-
-    sujetStrip.style.transition = 'none';
-    verbeStrip.style.transition = 'none';
-    sujetStrip.style.transform = 'translateY(0px)';
-    verbeStrip.style.transform = 'translateY(0px)';
-
-    setTimeout(() => {
-      const targetY = -(sujetList.length - 1) * 70;
-      sujetStrip.style.transition = 'transform 1.8s cubic-bezier(0.15, 0.85, 0.35, 1.2)';
-      verbeStrip.style.transition = 'transform 2.2s cubic-bezier(0.15, 0.85, 0.35, 1.2)';
-      
-      sujetStrip.style.transform = `translateY(${targetY}px)`;
-      verbeStrip.style.transform = `translateY(${targetY}px)`;
-    }, 50);
-
-    setTimeout(() => {
-      spinBtn.disabled = false;
-      form.style.display = 'flex';
-      document.getElementById('userInput').value = '';
-      document.getElementById('userInput').focus();
-
-      round++;
-      document.getElementById('roundVal').textContent = round;
-    }, 2300);
   }
 
-  function cleanString(str) {
-    return str.toLowerCase().trim().replace(/\s+/g, ' ').replace(/’/g, "'");
+  el('spinSubject').addEventListener('click', () => {
+    el('spinSubject').disabled = true;
+    el('feedback').className = 'feedback';
+    const targetIdx = drawSubject();
+    spin(el('wheelSubject'), SUBJECTS.length, { get value() { return subjectRotation; }, set value(v) { subjectRotation = v; } }, targetIdx, (idx) => {
+      currentSubjectIndex = idx;
+      subjectDone = true;
+      el('subjectResult').textContent = SUBJECTS[idx];
+      el('spinSubject').disabled = false;
+      checkReady();
+    });
+  });
+
+  el('spinVerb').addEventListener('click', () => {
+    el('spinVerb').disabled = true;
+    el('feedback').className = 'feedback';
+    const targetIdx = drawVerb();
+    spin(el('wheelVerb'), VERBS.length, { get value() { return verbRotation; }, set value(v) { verbRotation = v; } }, targetIdx, (idx) => {
+      currentVerbIndex = idx;
+      verbDone = true;
+      el('verbResult').textContent = VERBS[idx];
+      el('spinVerb').disabled = false;
+      checkReady();
+    });
+  });
+
+  function burstConfetti(originEl) {
+    const rect = originEl.getBoundingClientRect();
+    const colors = ['#d9622b', '#2f6b5e', '#e0a526', '#4a7fb5', '#9b59b6'];
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 60 + Math.random() * 70;
+      p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      p.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+      p.style.background = colors[i % colors.length];
+      p.style.left = '50%';
+      p.style.top = '18px';
+      originEl.appendChild(p);
+      setTimeout(() => p.remove(), 950);
+    }
   }
 
-  function checkAnswer(e) {
-    e.preventDefault();
-    const userVal = cleanString(document.getElementById('userInput').value);
-    const expected = currentVerbeObj.conj[currentSujet];
-    const expectedClean = cleanString(expected);
+  function validate() {
+    if (!subjectDone || !verbDone) return;
+    const expected = expectedSentence(currentSubjectIndex, currentVerbIndex);
+    const given = el('answerInput').value;
+    const ok = normalize(given) === normalize(expected);
+    const fb = el('feedback');
+    round += 1;
+    el('round').textContent = round;
 
-    const feedback = document.getElementById('feedback');
-    feedback.style.display = 'block';
-
-    if (userVal === expectedClean) {
-      score++;
-      document.getElementById('scoreVal').textContent = score;
-      feedback.className = 'feedback correct';
-      feedback.textContent = '🎉 Bravo ! C\'est la bonne réponse.';
-      if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    if (ok) {
+      score += 1;
+      el('score').textContent = score;
+      fb.className = 'feedback show good';
+      fb.innerHTML = `<span class="bravo-pop">🎉 Bravo !</span><span class="correct-answer">${expected}</span>`;
+      burstConfetti(fb);
     } else {
-      feedback.className = 'feedback wrong';
-      feedback.textContent = `❌ Dommage ! La réponse attendue était : "${expected}"`;
+      fb.className = 'feedback show bad';
+      fb.innerHTML = `❌ Pas tout à fait…<span class="correct-answer">La bonne réponse était : <b>${expected}</b></span>`;
+      el('answerInput').classList.add('shake');
+      setTimeout(() => el('answerInput').classList.remove('shake'), 400);
+    }
+
+    el('validateBtn').disabled = true;
+    el('answerInput').disabled = true;
+    el('nextBtn').classList.add('show');
+
+    if (round > 0 && round % 10 === 0) {
+      const b = el('switchBanner');
+      b.classList.remove('show');
+      void b.offsetWidth;
+      b.classList.add('show');
     }
   }
+
+  el('validateBtn').addEventListener('click', validate);
+  el('answerInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !el('validateBtn').disabled) validate();
+  });
+
+  el('nextBtn').addEventListener('click', () => {
+    subjectDone = false; verbDone = false;
+    currentSubjectIndex = null; currentVerbIndex = null;
+    el('subjectResult').textContent = '—';
+    el('verbResult').textContent = '—';
+    el('answerCard').classList.remove('show');
+    el('feedback').className = 'feedback';
+    el('validateBtn').disabled = false;
+    el('answerInput').disabled = false;
+    el('nextBtn').classList.remove('show');
+  });
+
+  el('resetBtn').addEventListener('click', () => {
+    score = 0; round = 0;
+    el('score').textContent = '0';
+    el('round').textContent = '0';
+    el('switchBanner').classList.remove('show');
+  });
+
+  layoutAll();
+  window.addEventListener('resize', () => {
+    clearTimeout(window.__rt);
+    window.__rt = setTimeout(layoutAll, 150);
+  });
+})();
 </script>
 </body>
 </html>
