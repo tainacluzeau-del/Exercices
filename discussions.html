@@ -54,6 +54,17 @@
         <!-- PANNEAU DROIT : Fenêtre de discussion WhatsApp -->
         <section class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50">
             
+            <!-- Barre supérieure avec bouton Retour -->
+            <div class="p-3 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+                <button onclick="resetExercise()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition border border-indigo-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 016 6v3" />
+                    </svg>
+                    <span>Retour / Recommencer</span>
+                </button>
+                <span class="text-xs font-medium text-slate-500" id="step-indicator">Étape 1</span>
+            </div>
+
             <!-- Zone des messages du chat -->
             <div id="chat-window" class="flex-1 p-4 overflow-y-auto space-y-3">
                 <!-- Les messages du dialogue s'affichent ici -->
@@ -155,8 +166,8 @@
                         interlocutor: "Ah un chien ! Comment il s'appelle ? Il a quel âge ?",
                         options: [
                             { text: "Il s'appelle Toby et il a 4 ans.", correct: true, feedback: "🥇 Excellent ! Bonne conjugaison du verbe avoir à la 3ᵉ personne (il a)." },
-                            { text: "Il s'appelle Toby et il est 4 ans.", correct: false, feedback: "⚠️️ En français, on utilise le verbe avoir pour donner l'âge (il a 4 ans)." },
-                            { text: "Il s'appelle Toby et il ont 4 ans.", correct: false, feedback: "⚠️️ Ont est réservé au pluriel (ils ont). Pour un seul chien, on utilise a (il a)." }
+                            { text: "Il s'appelle Toby et il est 4 ans.", correct: false, feedback: "⚠ En français, on utilise le verbe avoir pour donner l'âge (il a 4 ans)." },
+                            { text: "Il s'appelle Toby et il ont 4 ans.", correct: false, feedback: "⚠ Ont est réservé au pluriel (ils ont). Pour un seul chien, on utilise a (il a)." }
                         ]
                     },
                     {
@@ -179,7 +190,7 @@
                         interlocutor: "C'est une très jolie famille ! Et vos parents, ils habitent à Bruxelles aussi ?",
                         options: [
                             { text: "Non, ils habitent à Liège. Et vous, vous avez des frères et sœurs ?", correct: true, feedback: "🥇 Bravo ! Relance parfaite et polie avec le vouvoiement (vous avez)." },
-                            { text: "Non, ils habitent à Liège. Et toi, tu as des frères et sœurs ?", correct: false, feedback: "⚠️️ L'interlocuteur vous vouvoie, il faut continuer à utiliser \"vous\"." },
+                            { text: "Non, ils habitent à Liège. Et toi, tu as des frères et sœurs ?", correct: false, feedback: "⚠ L'interlocuteur vous vouvoie, il faut continuer à utiliser \"vous\"." },
                             { text: "Non, il habite à Liège. Et vous, vous avez des frères et sœurs ?", correct: false, feedback: "⚠️ Attention : \"les parents\" est un nom au pluriel, il faut utiliser ils (ils habitent), pas il." }
                         ]
                     }
@@ -198,7 +209,7 @@
                 `,
                 steps: [
                     {
-                        interlocutor: "Salut Thomas ! Qu'est-ce que tu fais pour le week-end ?",
+                        interlocutor: "Salut Thomas ! Qu'est-ce que tu fais aujourd'hui pour le week-end ?",
                         options: [
                             { text: "Je fais du sport le matin, et l'après-midi je ne travaille pas.", correct: true, feedback: "🥇 Parfait ! Utilisation exacte du verbe faire et de la négation ne... pas." },
                             { text: "Je fais du sport le matin, et l'après-midi je ne travaille.", correct: false, feedback: "⚠️ Attention : la négation se compose de deux mots (ne... pas)." },
@@ -247,6 +258,10 @@
 
         function changeDialogue(key) {
             currentDialogueKey = key;
+            resetExercise();
+        }
+
+        function resetExercise() {
             currentStepIndex = 0;
             initDialogue();
         }
@@ -268,10 +283,18 @@
         function renderStep() {
             const data = dialogues[currentDialogueKey];
             
+            // Mise à jour de l'indicateur d'étape
+            const indicator = document.getElementById('step-indicator');
+            if (currentStepIndex < data.steps.length) {
+                indicator.innerText = `Étape ${currentStepIndex + 1} / ${data.steps.length}`;
+            } else {
+                indicator.innerText = "Terminé";
+            }
+
             if (currentStepIndex >= data.steps.length) {
                 appendInterlocutorMessage("Bravo ! Vous avez terminé ce dialogue avec succès 🎉");
                 document.getElementById('options-container').innerHTML = `
-                    <button onclick="initDialogue()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md">
+                    <button onclick="resetExercise()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md">
                         Recommencer ce dialogue
                     </button>
                 `;
