@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jeu de Rôle FLE — Dialogues Interactifs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel-bg: #1e293b;
+    --card: #ffffff;
+    --ink: #0f172a;
+    --ink-soft: #64748b;
+    --primary: #4f46e5;
+    --primary-light: #eef2ff;
+    --accent: #d9622b;
+    --good: #10b981;
+    --good-bg: #d1fae5;
+    --bad: #ef4444;
+    --bad-bg: #fee2e2;
+    --ring: #e2e8f0;
+    --chat-bg: #f8fafc;
+    --bubble-in: #ffffff;
+    --bubble-out: #4f46e5;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #090d16;
+      --panel-bg: #111827;
+      --card: #1e293b;
+      --ink: #f8fafc;
+      --ink-soft: #94a3b8;
+      --primary: #6366f1;
+      --primary-light: #1e1b4b;
+      --ring: #334155;
+      --chat-bg: #0f172a;
+      --bubble-in: #1e293b;
+      --bubble-out: #6366f1;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav-bar {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card);
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--ring);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .lesson-select {
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--ring);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    height: 82vh;
+    max-height: 800px;
+  }
+
+  @media (max-width: 820px) {
+    .wrap {
+      grid-template-columns: 1fr;
+      height: auto;
+      max-height: none;
+    }
+  }
+
+  /* FICHE D'IDENTITÉ */
+  .id-card {
+    background: var(--card);
+    border: 1px solid var(--ring);
+    border-radius: 24px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    overflow-y: auto;
+  }
+
+  .id-header {
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 2px dashed var(--ring);
+    margin-bottom: 16px;
+  }
+
+  .avatar-box {
+    width: 70px;
+    height: 70px;
+    background: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 8px;
+    border: 3px solid var(--primary);
+  }
+
+  .id-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+
+  .id-name {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .id-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .id-field {
+    background: var(--chat-bg);
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--ring);
+  }
+
+  .id-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+
+  .id-val {
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  /* SMARTPHONE CHAT */
+  .chat-phone {
+    background: var(--card);
+    border: 1px solid var(--ring);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+  }
+
+  .chat-header {
+    background: var(--panel-bg);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--ring);
+  }
+
+  .chat-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .online-badge {
+    width: 9px;
+    height: 9px;
+    background: var(--good);
+    border-radius: 50%;
+  }
+
+  .progress-pill {
+    background: rgba(255,255,255,0.15);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .chat-body {
+    flex: 1;
+    background: var(--chat-bg);
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .msg-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    max-width: 85%;
+  }
+
+  .msg-row.in { align-self: flex-start; }
+  .msg-row.out { align-self: flex-end; flex-direction: row-reverse; }
+
+  .msg-bubble {
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14.5px;
+    line-height: 1.4;
+    position: relative;
+  }
+
+  .msg-row.in .msg-bubble {
+    background: var(--bubble-in);
+    color: var(--ink);
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--ring);
+  }
+
+  .msg-row.out .msg-bubble {
+    background: var(--bubble-out);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .audio-btn {
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 2px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .audio-btn:hover { opacity: 1; }
+
+  /* Typing dots */
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 10px 14px;
+    background: var(--bubble-in);
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--ring);
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--ink-soft);
+    border-radius: 50%;
+    animation: bounce 1.3s infinite ease-in-out;
+  }
+  .dot:nth-child(2) { animation-delay: 0.15s; }
+  .dot:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+  }
+
+  /* FOOTER & OPTIONS */
+  .chat-footer {
+    padding: 14px;
+    background: var(--card);
+    border-top: 1px solid var(--ring);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .options-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  .opt-btn {
+    background: var(--chat-bg);
+    border: 1px solid var(--ring);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .opt-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .feedback-banner {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    display: none;
+  }
+  .feedback-banner.show { display: block; }
+  .feedback-banner.good { background: var(--good-bg); color: #065f46; }
+  .feedback-banner.bad { background: var(--bad-bg); color: #991b1b; }
+
+  .next-btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    text-align: center;
+  }
+  .next-btn.show { display: block; }
+
+  .completion-card {
+    text-align: center;
+    padding: 30px 16px;
+    margin: auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a class="nav-btn" href="index.html">◂ Retour aux exercices</a>
+  <select class="lesson-select" id="lessonSelect" onchange="switchLesson(this.value)">
+    <!-- Généré dynamiquement -->
+  </select>
+</div>
+
+<div class="wrap">
+  <!-- PANNEAU PASSEPORT -->
+  <div class="id-card">
+    <div class="id-header">
+      <div class="avatar-box" id="avatarBox">👨‍💼</div>
+      <div class="id-title">Personnage à incarner</div>
+      <h2 class="id-name" id="charName">...</h2>
+    </div>
+    <div class="id-grid" id="idGrid"></div>
+  </div>
+
+  <!-- CHAT INTERACTIF -->
+  <div class="chat-phone">
+    <div class="chat-header">
+      <div class="chat-user">
+        <span class="online-badge"></span>
+        <div>
+          <strong style="display:block; font-size:13.5px;" id="scenarioTitle">Entretien</strong>
+          <small style="opacity: 0.8; font-size:11px;">En ligne</small>
+        </div>
+      </div>
+      <div class="progress-pill" id="progressPill">Étape 1/5</div>
+    </div>
+
+    <div class="chat-body" id="chatBody"></div>
+
+    <div class="chat-footer">
+      <div class="feedback-banner" id="feedbackBanner"></div>
+      <div class="options-title" id="optionsTitle">Choisissez votre réponse :</div>
+      <div id="optionsGroup" style="display:flex; flex-direction:column; gap:6px;"></div>
+      <button class="next-btn" id="nextBtn">Étape suivante ➔</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// BANQUE DE DONNÉES : SÉLECTION PAR UNITÉ / NIVEAU
+// ==========================================
+const LESSONS = {
+  "a1_u1_lucas": {
+    title: "A1 · Unité 1 — Lucas (Se présenter)",
+    character: {
+      avatar: "👨‍💼",
+      nom: "MOREAU",
+      prenom: "Lucas",
+      age: "28 ans",
+      nationalite: "Canadien",
+      ville: "Lyon (France)",
+      profession: "Architecte",
+      loisirs: "Photographie, natation"
+    },
+    dialogue: [
+      {
+        interlocuteur: "Bonjour ! Comment vous vous appelez ?",
+        options: [
+          { text: "Bonjour, je m'appelle Lucas Moreau.", correct: true, feedback: "🥇 Excellent ! Réponse exacte et complète." },
+          { text: "Bonjour, je m'appelle Moreau.", correct: false, feedback: "💡 Attention : Moreau est son nom de famille, pas son prénom !" },
+          { text: "Bonjour, je m'appelle de Lucas.", correct: false, feedback: "⚠️ Erreur de structure : on ne met pas 'de' après 'je m'appelle'." }
+        ]
+      },
+      {
+        interlocuteur: "Enchanté Lucas. Quel âge avez-vous ?",
+        options: [
+          { text: "J'ai 28 ans.", correct: true, feedback: "🥇 Parfait ! La structure 'J'ai + âge + ans' est correcte." },
+          { text: "J'ai 25 ans.", correct: false, feedback: "💡 Vérifiez la fiche ! Lucas a 28 ans, pas 25 ans." },
+          { text: "Je suis né en 1998.", correct: false, feedback: "⚠️ La question porte sur l'âge actuel, pas l'année de naissance." }
+        ]
+      },
+      {
+        interlocuteur: "D'accord. Et quelle est votre nationalité ?",
+        options: [
+          { text: "Je suis canadien.", correct: true, feedback: "🥇 Très bien ! Nationalité accordée au masculin." },
+          { text: "Je suis canadienne.", correct: false, feedback: "⚠️ Accord incorrect : Lucas est un homme (masculin -> canadien)." },
+          { text: "J'habite à Lyon.", correct: false, feedback: "💡 Hors sujet : Lyon est sa ville, pas sa nationalité !" }
+        ]
+      },
+      {
+        interlocuteur: "Qu'est-ce que vous faites dans la vie ?",
+        options: [
+          { text: "Je suis architecte.", correct: true, feedback: "🥇 Exactement ! Pas d'article devant la profession." },
+          { text: "Je suis un architecte.", correct: false, feedback: "⚠️ En français, pas d'article indéfini (un/une) devant la profession." },
+          { text: "Je suis étudiant.", correct: false, feedback: "💡 Regardez la fiche : sa profession est architecte !" }
+        ]
+      },
+      {
+        interlocuteur: "Très bien. Et où est-ce que vous habitez ?",
+        options: [
+          { text: "J'habite à Lyon.", correct: true, feedback: "🥇 Bravo ! Utilisation correcte de 'à' devant une ville." },
+          { text: "J'habite en Lyon.", correct: false, feedback: "⚠️ Erreur de préposition : on dit 'à Lyon' (pas 'en')." },
+          { text: "J'habite en France.", correct: false, feedback: "💡 La question demande précisément la ville de résidence." }
+        ]
+      }
+    ]
+  },
+  "a1_u1_sarah": {
+    title: "A1 · Unité 1 — Sarah (Se présenter)",
+    character: {
+      avatar: "👩‍🔬",
+      nom: "BENALI",
+      prenom: "Sarah",
+      age: "34 ans",
+      nationalite: "Marocaine",
+      ville: "Paris (France)",
+      profession: "Journaliste",
+      loisirs: "Lecture, cinéma"
+    },
+    dialogue: [
+      {
+        interlocuteur: "Bonjour ! Comment vous vous appelez ?",
+        options: [
+          { text: "Bonjour, je m'appelle Sarah.", correct: true, feedback: "🥇 Parfait !" },
+          { text: "Bonjour, je suis Benali.", correct: false, feedback: "💡 Benali est son nom de famille !" },
+          { text: "Bonjour, mon prénom c'est Benali.", correct: false, feedback: "⚠️️ Confusion entre prénom (Sarah) et nom (Benali)." }
+        ]
+      },
+      {
+        interlocuteur: "Quelle est votre profession ?",
+        options: [
+          { text: "Je suis journaliste.", correct: true, feedback: "🥇 Exact !" },
+          { text: "Je suis une journaliste.", correct: false, feedback: "⚠️ Pas d'article devant la profession en français !" },
+          { text: "J'aime la lecture.", correct: false, feedback: "💡 C'est son loisir, pas sa profession !" }
+        ]
+      },
+      {
+        interlocuteur: "Quelle est votre nationalité ?",
+        options: [
+          { text: "Je suis marocaine.", correct: true, feedback: "🥇 Bravo ! Forme féminine correcte." },
+          { text: "Je suis marocain.", correct: false, feedback: "⚠️ Sarah est une femme (féminin -> marocaine)." },
+          { text: "Je suis du Maroc.", correct: false, feedback: "💡 On utilise l'adjectif de nationalité : 'Je suis marocaine'." }
+        ]
+      }
+    ]
+  }
+};
+
+let currentLessonKey = "a1_u1_lucas";
+let currentStep = 0;
+let score = 0;
+
+const el = id => document.getElementById(id);
+
+// Générer le menu déroulant
+function buildLessonSelect() {
+  const sel = el('lessonSelect');
+  sel.innerHTML = Object.keys(LESSONS).map(k => `
+    <option value="${k}">${LESSONS[k].title}</option>
+  `).join('');
+}
+
+function switchLesson(key) {
+  currentLessonKey = key;
+  currentStep = 0;
+  score = 0;
+  initCard();
+  el('chatBody').innerHTML = '';
+  loadStep();
+}
+
+// Synthèse vocale
+function speakText(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+function initCard() {
+  const c = LESSONS[currentLessonKey].character;
+  el('avatarBox').textContent = c.avatar;
+  el('charName').textContent = `${c.prenom} ${c.nom}`;
+  el('scenarioTitle').textContent = LESSONS[currentLessonKey].title.split('—')[1] || 'Entretien';
+
+  const fields = [
+    { l: "Prénom", v: c.prenom },
+    { l: "Nom", v: c.nom },
+    { l: "Âge", v: c.age },
+    { l: "Nationalité", v: c.nationalite },
+    { l: "Ville", v: c.ville },
+    { l: "Profession", v: c.profession },
+    { l: "Loisirs", v: c.loisirs }
+  ];
+
+  el('idGrid').innerHTML = fields.map(f => `
+    <div class="id-field">
+      <div class="id-label">${f.l}</div>
+      <div class="id-val">${f.v}</div>
+    </div>
+  `).join('');
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function showTyping(callback) {
+  const body = el('chatBody');
+  const typing = document.createElement('div');
+  typing.className = 'msg-row in';
+  typing.id = 'typingRow';
+  typing.innerHTML = `
+    <div class="typing-indicator">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+  `;
+  body.appendChild(typing);
+  body.scrollTop = body.scrollHeight;
+
+  setTimeout(() => {
+    typing.remove();
+    callback();
+  }, 900);
+}
+
+function loadStep() {
+  const dialogue = LESSONS[currentLessonKey].dialogue;
+  const step = dialogue[currentStep];
+
+  el('progressPill').textContent = `Étape ${currentStep + 1}/${dialogue.length}`;
+  el('feedbackBanner').className = 'feedback-banner';
+  el('nextBtn').classList.remove('show');
+  el('optionsTitle').style.display = 'block';
+
+  showTyping(() => {
+    const body = el('chatBody');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'msg-row in';
+    msgDiv.innerHTML = `
+      <div class="msg-bubble">
+        ${step.interlocuteur}
+        <button class="audio-btn" onclick="speakText('${step.interlocuteur.replace(/'/g, "\\'")}')" title="Écouter">🔊</button>
+      </div>
+    `;
+    body.appendChild(msgDiv);
+    body.scrollTop = body.scrollHeight;
+
+    // Lecture vocale automatique
+    speakText(step.interlocuteur);
+
+    // Options
+    const shuffledOpts = shuffle([...step.options]);
+    const optContainer = el('optionsGroup');
+    optContainer.innerHTML = '';
+
+    shuffledOpts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.textContent = opt.text;
+      btn.onclick = () => selectOption(opt);
+      optContainer.appendChild(btn);
+    });
+  });
+}
+
+function selectOption(opt) {
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+
+  const body = el('chatBody');
+  body.innerHTML += `
+    <div class="msg-row out">
+      <div class="msg-bubble">${opt.text}</div>
+    </div>
+  `;
+  body.scrollTop = body.scrollHeight;
+
+  const fb = el('feedbackBanner');
+  fb.textContent = opt.feedback;
+  fb.className = `feedback-banner show ${opt.correct ? 'good' : 'bad'}`;
+
+  if (opt.correct) score++;
+
+  el('optionsTitle').style.display = 'none';
+  el('nextBtn').classList.add('show');
+}
+
+el('nextBtn').onclick = () => {
+  const dialogue = LESSONS[currentLessonKey].dialogue;
+  currentStep++;
+  if (currentStep < dialogue.length) {
+    loadStep();
+  } else {
+    showEndScreen();
+  }
+};
+
+function showEndScreen() {
+  const dialogue = LESSONS[currentLessonKey].dialogue;
+  el('chatBody').innerHTML = `
+    <div class="completion-card">
+      <div style="font-size:46px;">🎉</div>
+      <h2 style="margin: 10px 0 6px;">Exercice terminé !</h2>
+      <p>Votre score : <strong>${score} / ${dialogue.length}</strong></p>
+      <button class="next-btn show" style="margin: 16px auto 0;" onclick="switchLesson(currentLessonKey)">Recommencer 🔁</button>
+    </div>
+  `;
+  el('optionsGroup').innerHTML = '';
+  el('feedbackBanner').style.display = 'none';
+  el('nextBtn').style.display = 'none';
+}
+
+buildLessonSelect();
+initCard();
+loadStep();
+</script>
+</body>
+</html>
