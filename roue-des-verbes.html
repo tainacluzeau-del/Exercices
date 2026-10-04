@@ -8,10 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
   :root {
     --primary: #4f46e5;
     --primary-hover: #4338ca;
+    --success: #10b981;
+    --error: #ef4444;
     --bg: #f8fafc;
     --card: #ffffff;
     --ink: #0f172a;
@@ -45,13 +48,13 @@
     line-height: 1.5;
   }
 
-  .wrap { max-width: 700px; margin: 0 auto; }
+  .wrap { max-width: 650px; margin: 0 auto; }
 
   .nav-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .nav-btn {
@@ -79,67 +82,130 @@
   header {
     text-align: center;
     background: var(--card);
-    padding: 28px 20px;
+    padding: 24px 20px;
     border-radius: 20px;
     border: 1px solid var(--ring);
     box-shadow: var(--shadow-sm);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
-  h1 { font-size: 26px; margin: 0 0 8px; font-weight: 800; }
-  p { color: var(--ink-soft); margin: 0; font-size: 15px; }
+  h1 { font-size: 24px; margin: 0 0 6px; font-weight: 800; }
+  p { color: var(--ink-soft); margin: 0; font-size: 14px; }
 
-  .game-box {
+  .game-card {
     background: var(--card);
     border: 1px solid var(--ring);
     border-radius: 20px;
-    padding: 28px 20px;
-    text-align: center;
+    padding: 24px;
     box-shadow: var(--shadow-md);
   }
 
-  .wheels-container {
+  .score-board {
     display: flex;
-    gap: 16px;
-    justify-content: center;
-    margin: 20px 0;
-    flex-wrap: wrap;
-  }
-
-  .wheel-card {
-    flex: 1;
-    min-width: 140px;
-    background: var(--tag-bg);
-    border: 1px solid var(--ring);
-    border-radius: 14px;
-    padding: 20px 12px;
-    font-size: 20px;
+    justify-content: space-between;
+    font-size: 14px;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--ink-soft);
+    margin-bottom: 20px;
   }
 
-  .wheel-label {
-    font-size: 12px;
-    color: var(--ink-soft);
+  .wheels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .wheel-box {
+    background: var(--tag-bg);
+    border: 2px solid var(--ring);
+    border-radius: 16px;
+    padding: 20px 10px;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .wheel-box.spinning {
+    border-color: var(--primary);
+    transform: scale(0.98);
+  }
+
+  .label {
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 8px;
+    color: var(--ink-soft);
+    font-weight: 700;
+    margin-bottom: 6px;
     display: block;
   }
 
-  .action-btn {
+  .val {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary);
+    min-height: 30px;
+  }
+
+  .btn {
+    width: 100%;
     background: var(--primary);
     color: #fff;
     border: none;
     border-radius: 12px;
-    padding: 12px 24px;
+    padding: 12px;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     transition: background 0.2s ease;
   }
 
-  .action-btn:hover { background: var(--primary-hover); }
+  .btn:hover { background: var(--primary-hover); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--ring);
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--ink);
+    outline: none;
+    transition: border 0.2s ease;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--primary);
+  }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+
+  .feedback.correct {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+  }
+
+  .feedback.wrong {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--error);
+  }
 </style>
 </head>
 <body>
@@ -151,34 +217,120 @@
 
   <header>
     <h1>🎡 La roue des verbes</h1>
-    <p>Tire un sujet et un verbe, puis forme la phrase au présent.</p>
+    <p>Tire un sujet et un verbe, puis écris la phrase conjuguée au présent.</p>
   </header>
 
-  <div class="game-box">
-    <div class="wheels-container">
-      <div class="wheel-card">
-        <span class="wheel-label">Sujet</span>
-        <div id="subjectSlot">?</div>
+  <div class="game-card">
+    <div class="score-board">
+      <span>Score : <strong id="scoreVal">0</strong></span>
+      <span>Essai : <strong id="roundVal">0</strong></span>
+    </div>
+
+    <div class="wheels">
+      <div class="wheel-box" id="boxSujet">
+        <span class="label">Sujet</span>
+        <div class="val" id="sujetSlot">?</div>
       </div>
-      <div class="wheel-card">
-        <span class="wheel-label">Verbe</span>
-        <div id="verbSlot">?</div>
+      <div class="wheel-box" id="boxVerbe">
+        <span class="label">Verbe</span>
+        <div class="val" id="verbeSlot">?</div>
       </div>
     </div>
-    <button class="action-btn" onclick="spin()">Tourner les roues 🎲</button>
+
+    <button class="btn" id="spinBtn" onclick="spin()">Tourner les roues 🎲</button>
+
+    <form id="answerForm" onsubmit="checkAnswer(event)" style="display: none;">
+      <input type="text" id="userInput" placeholder="Écris la réponse ici..." autocomplete="off" required>
+      <button class="btn" type="submit">Valider la réponse</button>
+    </form>
+
+    <div class="feedback" id="feedback"></div>
   </div>
 </div>
 
 <script>
-  const SUJETS = ['Je', 'Tu', 'Il / Elle', 'Nous', 'Vous', 'Ils / Elles'];
-  const VERBES = ['Parler', 'Finir', 'Avoir', 'Être', 'Faire', 'Aller', 'Prendre', 'Vouloir'];
+  // BANQUE DE DONNÉES & CONJUGAISON (Au présent)
+  const SUJETS = ['Je', 'Tu', 'Il', 'Elle', 'Nous', 'Vous', 'Ils', 'Elles'];
+  const VERBES = [
+    { nom: 'Parler', conjugaisons: { 'Je': "J'aimerais parler", 'Je': 'Je parle', 'Tu': 'Tu parles', 'Il': 'Il parle', 'Elle': 'Elle parle', 'Nous': 'Nous parlons', 'Vous': 'Vous parlez', 'Ils': 'Ils parlent', 'Elles': 'Elles parlent' } },
+    { nom: 'Avoir', conjugaisons: { 'Je': "J'ai", 'Tu': 'Tu as', 'Il': 'Il a', 'Elle': 'Elle a', 'Nous': 'Nous avons', 'Vous': 'Vous avez', 'Ils': 'Ils ont', 'Elles': 'Elles ont' } },
+    { nom: 'Être', conjugaisons: { 'Je': 'Je suis', 'Tu': 'Tu es', 'Il': 'Il est', 'Elle': 'Elle est', 'Nous': 'Nous sommes', 'Vous': 'Vous êtes', 'Ils': 'Ils sont', 'Elles': 'Elles sont' } },
+    { nom: 'Faire', conjugaisons: { 'Je': 'Je fais', 'Tu': 'Tu fais', 'Il': 'Il fait', 'Elle': 'Elle fait', 'Nous': 'Nous faisons', 'Vous': 'Vous faites', 'Ils': 'Ils font', 'Elles': 'Ils font' } },
+    { nom: 'Aller', conjugaisons: { 'Je': 'Je vais', 'Tu': 'Tu vas', 'Il': 'Il va', 'Elle': 'Elle va', 'Nous': 'Nous allons', 'Vous': 'Vous allez', 'Ils': 'Ils vont', 'Elles': 'Elles vont' } },
+    { nom: 'Finir', conjugaisons: { 'Je': 'Je finis', 'Tu': 'Tu finis', 'Il': 'Il finit', 'Elle': 'Elle finit', 'Nous': 'Nous finissons', 'Vous': 'Vous finissez', 'Ils': 'Ils finissent', 'Elles': 'Elles finissent' } }
+  ];
+
+  let currentSujet = '';
+  let currentVerbeObj = null;
+  let score = 0;
+  let round = 0;
 
   function spin() {
-    const randomSubject = SUJETS[Math.floor(Math.random() * SUJETS.length)];
-    const randomVerb = VERBES[Math.floor(Math.random() * VERBES.length)];
+    const spinBtn = document.getElementById('spinBtn');
+    const form = document.getElementById('answerForm');
+    const feedback = document.getElementById('feedback');
+    const boxSujet = document.getElementById('boxSujet');
+    const boxVerbe = document.getElementById('boxVerbe');
     
-    document.getElementById('subjectSlot').textContent = randomSubject;
-    document.getElementById('verbSlot').textContent = randomVerb;
+    spinBtn.disabled = true;
+    form.style.display = 'none';
+    feedback.style.display = 'none';
+    boxSujet.classList.add('spinning');
+    boxVerbe.classList.add('spinning');
+
+    let counter = 0;
+    const interval = setInterval(() => {
+      document.getElementById('sujetSlot').textContent = SUJETS[Math.floor(Math.random() * SUJETS.length)];
+      document.getElementById('verbeSlot').textContent = VERBES[Math.floor(Math.random() * VERBES.length)].nom;
+      counter++;
+      
+      if (counter > 15) {
+        clearInterval(interval);
+        
+        // Sélection finale
+        currentSujet = SUJETS[Math.floor(Math.random() * SUJETS.length)];
+        currentVerbeObj = VERBES[Math.floor(Math.random() * VERBES.length)];
+
+        document.getElementById('sujetSlot').textContent = currentSujet;
+        document.getElementById('verbeSlot').textContent = currentVerbeObj.nom;
+
+        boxSujet.classList.remove('spinning');
+        boxVerbe.classList.remove('spinning');
+        
+        spinBtn.disabled = false;
+        form.style.display = 'flex';
+        document.getElementById('userInput').value = '';
+        document.getElementById('userInput').focus();
+
+        round++;
+        document.getElementById('roundVal').textContent = round;
+      }
+    }, 80);
+  }
+
+  function cleanString(str) {
+    return str.toLowerCase().trim().replace(/\s+/g, ' ').replace(/’/g, "'");
+  }
+
+  function checkAnswer(e) {
+    e.preventDefault();
+    const userVal = cleanString(document.getElementById('userInput').value);
+    const expected = currentVerbeObj.conjugaisons[currentSujet];
+    const expectedClean = cleanString(expected);
+
+    const feedback = document.getElementById('feedback');
+    feedback.style.display = 'block';
+
+    if (userVal === expectedClean) {
+      score++;
+      document.getElementById('scoreVal').textContent = score;
+      feedback.className = 'feedback correct';
+      feedback.textContent = ' Bravo ! C\'est la bonne réponse.';
+      if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    } else {
+      feedback.className = 'feedback wrong';
+      feedback.textContent = `❌ Dommage ! La réponse attendue était : "${expected}"`;
+    }
   }
 </script>
 </body>
