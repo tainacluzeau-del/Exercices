@@ -278,7 +278,6 @@
   }
   .audio-btn:hover { opacity: 1; }
 
-  /* Typing dots */
   .typing-indicator {
     display: flex;
     gap: 4px;
@@ -304,7 +303,6 @@
     40% { transform: translateY(-5px); }
   }
 
-  /* FOOTER & OPTIONS */
   .chat-footer {
     padding: 14px;
     background: var(--card);
@@ -382,12 +380,10 @@
 <div class="nav-bar">
   <a class="nav-btn" href="index.html">◂ Retour aux exercices</a>
   <select class="lesson-select" id="lessonSelect" onchange="switchLesson(this.value)">
-    <!-- Généré dynamiquement -->
   </select>
 </div>
 
 <div class="wrap">
-  <!-- PANNEAU PASSEPORT -->
   <div class="id-card">
     <div class="id-header">
       <div class="avatar-box" id="avatarBox">👨‍💼</div>
@@ -397,7 +393,6 @@
     <div class="id-grid" id="idGrid"></div>
   </div>
 
-  <!-- CHAT INTERACTIF -->
   <div class="chat-phone">
     <div class="chat-header">
       <div class="chat-user">
@@ -422,9 +417,6 @@
 </div>
 
 <script>
-// ==========================================
-// BANQUE DE DONNÉES : SÉLECTION PAR UNITÉ / NIVEAU
-// ==========================================
 const LESSONS = {
   "a1_u1_lucas": {
     title: "A1 · Unité 1 — Lucas (Se présenter)",
@@ -452,7 +444,7 @@ const LESSONS = {
         options: [
           { text: "J'ai 28 ans.", correct: true, feedback: "🥇 Parfait ! La structure 'J'ai + âge + ans' est correcte." },
           { text: "J'ai 25 ans.", correct: false, feedback: "💡 Vérifiez la fiche ! Lucas a 28 ans, pas 25 ans." },
-          { text: "Je suis né en 1998.", correct: false, feedback: "⚠️ La question porte sur l'âge actuel, pas l'année de naissance." }
+          { text: "Je suis né en 1998.", correct: false, feedback: "⚠️️ La question porte sur l'âge actuel, pas l'année de naissance." }
         ]
       },
       {
@@ -499,7 +491,7 @@ const LESSONS = {
         options: [
           { text: "Bonjour, je m'appelle Sarah.", correct: true, feedback: "🥇 Parfait !" },
           { text: "Bonjour, je suis Benali.", correct: false, feedback: "💡 Benali est son nom de famille !" },
-          { text: "Bonjour, mon prénom c'est Benali.", correct: false, feedback: "⚠️️ Confusion entre prénom (Sarah) et nom (Benali)." }
+          { text: "Bonjour, mon prénom c'est Benali.", correct: false, feedback: "⚠️ Confusion entre prénom (Sarah) et nom (Benali)." }
         ]
       },
       {
@@ -528,7 +520,6 @@ let score = 0;
 
 const el = id => document.getElementById(id);
 
-// Générer le menu déroulant
 function buildLessonSelect() {
   const sel = el('lessonSelect');
   sel.innerHTML = Object.keys(LESSONS).map(k => `
@@ -536,16 +527,31 @@ function buildLessonSelect() {
   `).join('');
 }
 
+function resetFooterState() {
+  const fb = el('feedbackBanner');
+  fb.className = 'feedback-banner';
+  fb.style.display = 'none';
+  fb.textContent = '';
+  
+  const nextBtn = el('nextBtn');
+  nextBtn.classList.remove('show');
+  nextBtn.style.display = '';
+  
+  el('optionsTitle').style.display = 'block';
+  el('optionsGroup').innerHTML = '';
+}
+
 function switchLesson(key) {
   currentLessonKey = key;
   currentStep = 0;
   score = 0;
+  
   initCard();
   el('chatBody').innerHTML = '';
+  resetFooterState();
   loadStep();
 }
 
-// Synthèse vocale
 function speakText(text) {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
@@ -608,9 +614,7 @@ function loadStep() {
   const step = dialogue[currentStep];
 
   el('progressPill').textContent = `Étape ${currentStep + 1}/${dialogue.length}`;
-  el('feedbackBanner').className = 'feedback-banner';
-  el('nextBtn').classList.remove('show');
-  el('optionsTitle').style.display = 'block';
+  resetFooterState();
 
   showTyping(() => {
     const body = el('chatBody');
@@ -625,10 +629,8 @@ function loadStep() {
     body.appendChild(msgDiv);
     body.scrollTop = body.scrollHeight;
 
-    // Lecture vocale automatique
     speakText(step.interlocuteur);
 
-    // Options
     const shuffledOpts = shuffle([...step.options]);
     const optContainer = el('optionsGroup');
     optContainer.innerHTML = '';
@@ -656,6 +658,7 @@ function selectOption(opt) {
 
   const fb = el('feedbackBanner');
   fb.textContent = opt.feedback;
+  fb.style.display = 'block';
   fb.className = `feedback-banner show ${opt.correct ? 'good' : 'bad'}`;
 
   if (opt.correct) score++;
@@ -687,6 +690,7 @@ function showEndScreen() {
   el('optionsGroup').innerHTML = '';
   el('feedbackBanner').style.display = 'none';
   el('nextBtn').style.display = 'none';
+  el('optionsTitle').style.display = 'none';
 }
 
 buildLessonSelect();
