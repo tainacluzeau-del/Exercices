@@ -1,596 +1,185 @@
-La roue des verbes.html
-100 %
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>La roue des verbes</title>
+<title>La roue des verbes — Exercice</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A1%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #fbf7ef;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --bg: #f8fafc;
     --card: #ffffff;
-    --ink: #2b2420;
-    --ink-soft: #6b6058;
-    --accent: #d9622b;
-    --accent-2: #2f6b5e;
-    --good: #2f8f52;
-    --good-bg: #e6f6ea;
-    --bad: #c0392b;
-    --bad-bg: #fdecea;
-    --ring: #e4dccb;
-    --pointer: #2b2420;
+    --ink: #0f172a;
+    --ink-soft: #64748b;
+    --ring: #e2e8f0;
+    --tag-bg: #f1f5f9;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07);
   }
+
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #1c1a17;
-      --card: #272420;
-      --ink: #f3ede3;
-      --ink-soft: #b9afa2;
-      --accent: #f08a4b;
-      --accent-2: #5ecbb0;
-      --good: #67d98a;
-      --good-bg: #16331f;
-      --bad: #ff8a7a;
-      --bad-bg: #3a1a16;
-      --ring: #3a352e;
-      --pointer: #f3ede3;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --ink: #f8fafc;
+      --ink-soft: #94a3b8;
+      --ring: #334155;
+      --tag-bg: #334155;
     }
   }
-  :root[data-theme="dark"] {
-    --bg: #1c1a17;
-    --card: #272420;
-    --ink: #f3ede3;
-    --ink-soft: #b9afa2;
-    --accent: #f08a4b;
-    --accent-2: #5ecbb0;
-    --good: #67d98a;
-    --good-bg: #16331f;
-    --bad: #ff8a7a;
-    --bad-bg: #3a1a16;
-    --ring: #3a352e;
-    --pointer: #f3ede3;
-  }
+
   * { box-sizing: border-box; }
-  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+
   body {
     margin: 0;
-    min-height: 100%;
+    min-height: 100vh;
     background: var(--bg);
     color: var(--ink);
-    font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
-    padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
-    -webkit-tap-highlight-color: transparent;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    padding: calc(24px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+    line-height: 1.5;
   }
-  .wrap { max-width: 760px; margin: 0 auto; }
-  h1 {
-    font-size: clamp(22px, 5vw, 30px);
-    text-align: center;
-    margin: 4px 0 2px;
-  }
-  .subtitle {
-    text-align: center;
-    color: var(--ink-soft);
-    font-size: 14px;
-    margin: 0 0 16px;
-  }
-  .scoreboard {
+
+  .wrap { max-width: 700px; margin: 0 auto; }
+
+  .nav-bar {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
   }
-  .pill {
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     background: var(--card);
-    border: 1px solid var(--ring);
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .pill.score { color: var(--good); }
-  .banner {
-    background: var(--accent);
-    color: #fff;
-    text-align: center;
-    padding: 10px 14px;
-    border-radius: 12px;
-    font-weight: 700;
-    margin-bottom: 14px;
-    display: none;
-    animation: pulse 1.4s ease-in-out 2;
-  }
-  .banner.show { display: block; }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-  }
-  .wheels {
-    display: flex;
-    justify-content: center;
-    gap: 28px;
-    flex-wrap: wrap;
-    margin-bottom: 18px;
-  }
-  .wheel-block { text-align: center; width: 230px; }
-  .wheel-block h2 {
-    font-size: 15px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--ink-soft);
-    margin: 0 0 8px;
-  }
-  .wheel-frame {
-    position: relative;
-    width: 210px;
-    height: 210px;
-    margin: 0 auto 10px;
-  }
-  .pointer {
-    position: absolute;
-    top: -6px;
-    left: 50%;
-    width: 0; height: 0;
-    transform: translateX(-50%);
-    border-left: 11px solid transparent;
-    border-right: 11px solid transparent;
-    border-top: 18px solid var(--pointer);
-    z-index: 3;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-  }
-  .wheel {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 5px solid var(--card);
-    box-shadow: 0 0 0 3px var(--ring), 0 6px 16px rgba(0,0,0,.18);
-    transition: transform 3.2s cubic-bezier(.12,.67,.1,1);
-  }
-  .wheel-label {
-    position: absolute;
-    font-size: 12.5px;
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,.45);
-    white-space: nowrap;
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-  }
-  .hub {
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 22px; height: 22px;
-    background: var(--card);
-    border: 3px solid var(--ring);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-  }
-  button {
-    font-family: inherit;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-size: 15px;
-    font-weight: 700;
-    transition: transform .12s ease, opacity .2s ease;
-  }
-  button:active { transform: scale(0.96); }
-  button:disabled { opacity: .45; cursor: not-allowed; }
-  .spin-btn {
-    background: var(--accent-2);
-    color: #fff;
-    width: 100%;
-  }
-  .result-tag {
-    display: inline-block;
-    margin-top: 8px;
-    min-height: 20px;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--accent);
-  }
-  .answer-card {
-    background: var(--card);
-    border: 1px solid var(--ring);
-    border-radius: 16px;
-    padding: 18px;
-    text-align: center;
-    display: none;
-  }
-  .answer-card.show { display: block; animation: fadeUp .35s ease; }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .prompt-phrase {
-    font-size: 17px;
-    margin-bottom: 12px;
-  }
-  .prompt-phrase b { color: var(--accent); }
-  .answer-row {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  input[type="text"] {
-    font-family: inherit;
-    font-size: 16px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 2px solid var(--ring);
-    background: var(--bg);
     color: var(--ink);
-    width: 220px;
-    max-width: 70vw;
-  }
-  input[type="text"].shake {
-    animation: shake .4s;
-    border-color: var(--bad);
-  }
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
-  }
-  .validate-btn { background: var(--accent); color: #fff; }
-  .feedback {
-    margin-top: 14px;
-    border-radius: 12px;
-    padding: 14px;
-    font-size: 16px;
-    font-weight: 700;
-    display: none;
-    position: relative;
-    overflow: hidden;
-  }
-  .feedback.show { display: block; }
-  .feedback.good { background: var(--good-bg); color: var(--good); }
-  .feedback.bad { background: var(--bad-bg); color: var(--bad); }
-  .feedback .correct-answer {
-    display: block;
-    margin-top: 4px;
-    font-weight: 500;
-    color: var(--ink);
-  }
-  .bravo-pop {
-    display: inline-block;
-    font-size: 20px;
-    animation: pop .55s cubic-bezier(.3,1.6,.5,1);
-  }
-  @keyframes pop {
-    0% { transform: scale(0.3) rotate(-8deg); opacity: 0; }
-    60% { transform: scale(1.18) rotate(3deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0); }
-  }
-  .confetti {
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 8px; height: 8px;
-    border-radius: 2px;
-    pointer-events: none;
-    animation: fly 0.9s ease-out forwards;
-  }
-  @keyframes fly {
-    to {
-      transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
-      opacity: 0;
-    }
-  }
-  .next-btn {
-    margin-top: 14px;
-    background: var(--accent-2);
-    color: #fff;
-    display: none;
-  }
-  .next-btn.show { display: inline-block; }
-  .footer-note {
-    text-align: center;
-    color: var(--ink-soft);
-    font-size: 12.5px;
-    margin-top: 18px;
-  }
-  .reset-link {
-    background: none;
-    color: var(--ink-soft);
-    text-decoration: underline;
-    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--ring);
+    border-radius: 10px;
+    padding: 8px 14px;
     font-size: 13px;
-    padding: 4px 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
   }
+
+  .nav-btn:hover {
+    background: var(--tag-bg);
+    color: var(--primary);
+  }
+
+  header {
+    text-align: center;
+    background: var(--card);
+    padding: 28px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--ring);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+  }
+
+  h1 { font-size: 26px; margin: 0 0 8px; font-weight: 800; }
+  p { color: var(--ink-soft); margin: 0; font-size: 15px; }
+
+  .game-box {
+    background: var(--card);
+    border: 1px solid var(--ring);
+    border-radius: 20px;
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+  }
+
+  .wheels-container {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+
+  .wheel-card {
+    flex: 1;
+    min-width: 140px;
+    background: var(--tag-bg);
+    border: 1px solid var(--ring);
+    border-radius: 14px;
+    padding: 20px 12px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .wheel-label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .action-btn {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .action-btn:hover { background: var(--primary-hover); }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>🎡 La roue des verbes</h1>
-  <p class="subtitle">Tourne les deux roues, puis écris la phrase correcte avant de valider.</p>
-  <p class="subtitle" style="margin-top:-10px;">🎲 Tirage équitable : chaque roue fait sortir tous ses éléments avant qu'une répétition soit possible.</p>
-
-  <div class="scoreboard">
-    <span class="pill score">⭐ Score : <span id="score">0</span></span>
-    <span class="pill">🔁 Manche : <span id="round">0</span></span>
+  <div class="nav-bar">
+    <a class="nav-btn" href="index.html">◂ Retour aux exercices</a>
+    <a class="nav-btn" href="https://tainacluzeau-del.github.io/Vocabulaire/">📚 Vocabulaire ↗</a>
   </div>
 
-  <div class="banner" id="switchBanner">🔄 10 manches faites — pensez à changer de rôle !</div>
+  <header>
+    <h1>🎡 La roue des verbes</h1>
+    <p>Tire un sujet et un verbe, puis forme la phrase au présent.</p>
+  </header>
 
-  <div class="wheels">
-    <div class="wheel-block">
-      <h2>Sujets</h2>
-      <div class="wheel-frame">
-        <div class="pointer"></div>
-        <div class="wheel" id="wheelSubject"></div>
-        <div class="hub"></div>
+  <div class="game-box">
+    <div class="wheels-container">
+      <div class="wheel-card">
+        <span class="wheel-label">Sujet</span>
+        <div id="subjectSlot">?</div>
       </div>
-      <button class="spin-btn" id="spinSubject">Tourner 🎯</button>
-      <div class="result-tag" id="subjectResult">—</div>
-    </div>
-    <div class="wheel-block">
-      <h2>Verbes</h2>
-      <div class="wheel-frame">
-        <div class="pointer"></div>
-        <div class="wheel" id="wheelVerb"></div>
-        <div class="hub"></div>
+      <div class="wheel-card">
+        <span class="wheel-label">Verbe</span>
+        <div id="verbSlot">?</div>
       </div>
-      <button class="spin-btn" id="spinVerb">Tourner 🎯</button>
-      <div class="result-tag" id="verbResult">—</div>
     </div>
+    <button class="action-btn" onclick="spin()">Tourner les roues 🎲</button>
   </div>
-
-  <div class="answer-card" id="answerCard">
-    <p class="prompt-phrase">Combinaison tirée : <b id="combo">…</b> — écris la phrase correcte :</p>
-    <div class="answer-row">
-      <input type="text" id="answerInput" placeholder="Ex. : Il voyage." autocomplete="off">
-      <button class="validate-btn" id="validateBtn">Valider ✔️</button>
-    </div>
-    <div class="feedback" id="feedback"></div>
-    <button class="next-btn" id="nextBtn">Manche suivante 🔁</button>
-  </div>
-
-  <p class="footer-note">
-    Jeu de la roue des verbes — présent des verbes en -er · 1 point par bonne réponse.
-    <br><button class="reset-link" id="resetBtn">Réinitialiser le score</button>
-  </p>
 </div>
 
 <script>
-(function () {
-  const SUBJECTS = ['je', 'tu', 'il', 'nous', 'vous', 'ils'];
-  const VERBS = ['chanter', 'danser', 'nager', 'cuisiner', 'dessiner', 'voyager', 'marcher', 'étudier'];
-  const CONJ = {
-    chanter:  ['chante', 'chantes', 'chante', 'chantons', 'chantez', 'chantent'],
-    danser:   ['danse', 'danses', 'danse', 'dansons', 'dansez', 'dansent'],
-    nager:    ['nage', 'nages', 'nage', 'nageons', 'nagez', 'nagent'],
-    cuisiner: ['cuisine', 'cuisines', 'cuisine', 'cuisinons', 'cuisinez', 'cuisinent'],
-    dessiner: ['dessine', 'dessines', 'dessine', 'dessinons', 'dessinez', 'dessinent'],
-    voyager:  ['voyage', 'voyages', 'voyage', 'voyageons', 'voyagez', 'voyagent'],
-    marcher:  ['marche', 'marches', 'marche', 'marchons', 'marchez', 'marchent'],
-    étudier:  ['étudie', 'étudies', 'étudie', 'étudions', 'étudiez', 'étudient']
-  };
+  const SUJETS = ['Je', 'Tu', 'Il / Elle', 'Nous', 'Vous', 'Ils / Elles'];
+  const VERBES = ['Parler', 'Finir', 'Avoir', 'Être', 'Faire', 'Aller', 'Prendre', 'Vouloir'];
 
-  const SUBJ_COLORS = ['#d9622b', '#2f6b5e', '#c0392b', '#4a7fb5', '#9b59b6', '#e0a526'];
-  const VERB_COLORS = ['#2f6b5e', '#d9622b', '#4a7fb5', '#c0392b', '#9b59b6', '#e0a526', '#3f9b7a', '#b5546a'];
-
-  // "Sac" sans répétition : chaque roue tire une permutation complète de ses éléments
-  // avant d'en recommencer une nouvelle — garantit que tout sort au moins une fois
-  // sur un cycle (6 tirages pour les sujets, 8 pour les verbes, donc toujours < 10),
-  // tout en gardant un ordre aléatoire à chaque cycle.
-  function makeBag(n) {
-    let queue = [];
-    let lastValue = null;
-    function reshuffle() {
-      queue = Array.from({ length: n }, (_, i) => i);
-      for (let i = queue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]];
-      }
-      // évite qu'un même élément sorte deux fois de suite à la jonction de deux sacs
-      if (n > 1 && queue[0] === lastValue) {
-        const swapWith = 1 + Math.floor(Math.random() * (n - 1));
-        [queue[0], queue[swapWith]] = [queue[swapWith], queue[0]];
-      }
-    }
-    return function draw() {
-      if (queue.length === 0) reshuffle();
-      const value = queue.shift();
-      lastValue = value;
-      return value;
-    };
+  function spin() {
+    const randomSubject = SUJETS[Math.floor(Math.random() * SUJETS.length)];
+    const randomVerb = VERBES[Math.floor(Math.random() * VERBES.length)];
+    
+    document.getElementById('subjectSlot').textContent = randomSubject;
+    document.getElementById('verbSlot').textContent = randomVerb;
   }
-  const drawSubject = makeBag(SUBJECTS.length);
-  const drawVerb = makeBag(VERBS.length);
-
-  let score = 0;
-  let round = 0;
-  let subjectDone = false, verbDone = false;
-  let currentSubjectIndex = null, currentVerbIndex = null;
-  let subjectRotation = 0, verbRotation = 0;
-
-  const el = id => document.getElementById(id);
-
-  function buildWheel(container, labels, colors) {
-    const seg = 360 / labels.length;
-    const stops = labels.map((_, i) => {
-      const c = colors[i % colors.length];
-      return `${c} ${i * seg}deg ${(i + 1) * seg}deg`;
-    }).join(', ');
-    container.style.background = `conic-gradient(${stops})`;
-    container.innerHTML = '';
-    const R = container.clientWidth || 210;
-    const labelR = R * 0.33;
-    labels.forEach((text, i) => {
-      const center = i * seg + seg / 2;
-      const rad = (center - 90) * Math.PI / 180; // -90 so 0deg = top (CSS conic starts at top)
-      const x = R / 2 + labelR * Math.cos(rad);
-      const y = R / 2 + labelR * Math.sin(rad);
-      const span = document.createElement('div');
-      span.className = 'wheel-label';
-      span.textContent = text;
-      span.style.left = x + 'px';
-      span.style.top = y + 'px';
-      container.appendChild(span);
-    });
-  }
-
-  function layoutAll() {
-    buildWheel(el('wheelSubject'), SUBJECTS, SUBJ_COLORS);
-    buildWheel(el('wheelVerb'), VERBS, VERB_COLORS);
-  }
-
-  function spin(wheelEl, segCount, rotationState, targetIndex, onDone) {
-    const seg = 360 / segCount;
-    const centerAngle = targetIndex * seg + seg / 2;
-    const current = rotationState.value % 360;
-    let delta = (360 - centerAngle - current) % 360;
-    if (delta < 0) delta += 360;
-    const spins = 4;
-    rotationState.value += spins * 360 + delta;
-    wheelEl.style.transform = `rotate(${rotationState.value}deg)`;
-    const handler = () => {
-      wheelEl.removeEventListener('transitionend', handler);
-      onDone(targetIndex);
-    };
-    wheelEl.addEventListener('transitionend', handler);
-  }
-
-  function capitalize(w) { return w.charAt(0).toUpperCase() + w.slice(1); }
-
-  function expectedSentence(subjIdx, verbIdx) {
-    const verb = VERBS[verbIdx];
-    const form = CONJ[verb][subjIdx];
-    return `${capitalize(SUBJECTS[subjIdx])} ${form}.`;
-  }
-
-  function normalize(str) {
-    return str
-      .trim()
-      .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/\s+/g, ' ')
-      .replace(/[.!?]+$/g, '');
-  }
-
-  function checkReady() {
-    if (subjectDone && verbDone) {
-      el('answerCard').classList.add('show');
-      el('combo').textContent = `${SUBJECTS[currentSubjectIndex]} + ${VERBS[currentVerbIndex]}`;
-      el('answerInput').value = '';
-      el('answerInput').focus();
-    }
-  }
-
-  el('spinSubject').addEventListener('click', () => {
-    el('spinSubject').disabled = true;
-    el('feedback').className = 'feedback';
-    const targetIdx = drawSubject();
-    spin(el('wheelSubject'), SUBJECTS.length, { get value() { return subjectRotation; }, set value(v) { subjectRotation = v; } }, targetIdx, (idx) => {
-      currentSubjectIndex = idx;
-      subjectDone = true;
-      el('subjectResult').textContent = SUBJECTS[idx];
-      el('spinSubject').disabled = false;
-      checkReady();
-    });
-  });
-
-  el('spinVerb').addEventListener('click', () => {
-    el('spinVerb').disabled = true;
-    el('feedback').className = 'feedback';
-    const targetIdx = drawVerb();
-    spin(el('wheelVerb'), VERBS.length, { get value() { return verbRotation; }, set value(v) { verbRotation = v; } }, targetIdx, (idx) => {
-      currentVerbIndex = idx;
-      verbDone = true;
-      el('verbResult').textContent = VERBS[idx];
-      el('spinVerb').disabled = false;
-      checkReady();
-    });
-  });
-
-  function burstConfetti(originEl) {
-    const rect = originEl.getBoundingClientRect();
-    const colors = ['#d9622b', '#2f6b5e', '#e0a526', '#4a7fb5', '#9b59b6'];
-    for (let i = 0; i < 18; i++) {
-      const p = document.createElement('div');
-      p.className = 'confetti';
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 60 + Math.random() * 70;
-      p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
-      p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
-      p.style.setProperty('--rot', (Math.random() * 360) + 'deg');
-      p.style.background = colors[i % colors.length];
-      p.style.left = '50%';
-      p.style.top = '18px';
-      originEl.appendChild(p);
-      setTimeout(() => p.remove(), 950);
-    }
-  }
-
-  function validate() {
-    if (!subjectDone || !verbDone) return;
-    const expected = expectedSentence(currentSubjectIndex, currentVerbIndex);
-    const given = el('answerInput').value;
-    const ok = normalize(given) === normalize(expected);
-    const fb = el('feedback');
-    round += 1;
-    el('round').textContent = round;
-
-    if (ok) {
-      score += 1;
-      el('score').textContent = score;
-      fb.className = 'feedback show good';
-      fb.innerHTML = `<span class="bravo-pop">🎉 Bravo !</span><span class="correct-answer">${expected}</span>`;
-      burstConfetti(fb);
-    } else {
-      fb.className = 'feedback show bad';
-      fb.innerHTML = `❌ Pas tout à fait…<span class="correct-answer">La bonne réponse était : <b>${expected}</b></span>`;
-      el('answerInput').classList.add('shake');
-      setTimeout(() => el('answerInput').classList.remove('shake'), 400);
-    }
-
-    el('validateBtn').disabled = true;
-    el('answerInput').disabled = true;
-    el('nextBtn').classList.add('show');
-
-    if (round > 0 && round % 10 === 0) {
-      const b = el('switchBanner');
-      b.classList.remove('show');
-      void b.offsetWidth;
-      b.classList.add('show');
-    }
-  }
-
-  el('validateBtn').addEventListener('click', validate);
-  el('answerInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !el('validateBtn').disabled) validate();
-  });
-
-  el('nextBtn').addEventListener('click', () => {
-    subjectDone = false; verbDone = false;
-    currentSubjectIndex = null; currentVerbIndex = null;
-    el('subjectResult').textContent = '—';
-    el('verbResult').textContent = '—';
-    el('answerCard').classList.remove('show');
-    el('feedback').className = 'feedback';
-    el('validateBtn').disabled = false;
-    el('answerInput').disabled = false;
-    el('nextBtn').classList.remove('show');
-  });
-
-  el('resetBtn').addEventListener('click', () => {
-    score = 0; round = 0;
-    el('score').textContent = '0';
-    el('round').textContent = '0';
-    el('switchBanner').classList.remove('show');
-  });
-
-  layoutAll();
-  window.addEventListener('resize', () => {
-    clearTimeout(window.__rt);
-    window.__rt = setTimeout(layoutAll, 150);
-  });
-})();
 </script>
 </body>
 </html>
