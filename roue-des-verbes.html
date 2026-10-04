@@ -109,42 +109,60 @@
     margin-bottom: 20px;
   }
 
-  .wheels {
+  /* --- STYLE DES ROUES ANIMEES --- */
+  .wheels-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
-  .wheel-box {
+  .wheel-column {
     background: var(--tag-bg);
     border: 2px solid var(--ring);
     border-radius: 16px;
-    padding: 20px 10px;
+    padding: 12px;
     text-align: center;
-    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
   }
 
-  .wheel-box.spinning {
-    border-color: var(--primary);
-    transform: scale(0.98);
-  }
-
-  .label {
+  .wheel-label {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--ink-soft);
-    font-weight: 700;
-    margin-bottom: 6px;
+    font-weight: 800;
+    margin-bottom: 8px;
     display: block;
   }
 
-  .val {
+  .wheel-window {
+    height: 70px;
+    overflow: hidden;
+    position: relative;
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--ring);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+  }
+
+  .wheel-strip {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    transition: transform 0.1s linear;
+  }
+
+  .wheel-item {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 20px;
     font-weight: 800;
     color: var(--primary);
-    min-height: 30px;
   }
 
   .btn {
@@ -153,15 +171,16 @@
     color: #fff;
     border: none;
     border-radius: 12px;
-    padding: 12px;
-    font-size: 15px;
+    padding: 14px;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
   }
 
-  .btn:hover { background: var(--primary-hover); }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
   form {
     margin-top: 20px;
@@ -180,7 +199,6 @@
     background: var(--bg);
     color: var(--ink);
     outline: none;
-    transition: border 0.2s ease;
   }
 
   input[type="text"]:focus {
@@ -216,8 +234,8 @@
   </div>
 
   <header>
-    <h1>🎡 La roue des verbes</h1>
-    <p>Tire un sujet et un verbe, puis écris la phrase conjuguée au présent.</p>
+    <h1>🎡 La roue des verbes (1er groupe)</h1>
+    <p>Tourne les roues, puis écris la phrase complète au présent !</p>
   </header>
 
   <div class="game-card">
@@ -226,22 +244,31 @@
       <span>Essai : <strong id="roundVal">0</strong></span>
     </div>
 
-    <div class="wheels">
-      <div class="wheel-box" id="boxSujet">
-        <span class="label">Sujet</span>
-        <div class="val" id="sujetSlot">?</div>
+    <div class="wheels-wrapper">
+      <div class="wheel-column">
+        <span class="wheel-label">Sujet</span>
+        <div class="wheel-window">
+          <div class="wheel-strip" id="sujetStrip">
+            <div class="wheel-item">?</div>
+          </div>
+        </div>
       </div>
-      <div class="wheel-box" id="boxVerbe">
-        <span class="label">Verbe</span>
-        <div class="val" id="verbeSlot">?</div>
+
+      <div class="wheel-column">
+        <span class="wheel-label">Verbe (1er groupe)</span>
+        <div class="wheel-window">
+          <div class="wheel-strip" id="verbeStrip">
+            <div class="wheel-item">?</div>
+          </div>
+        </div>
       </div>
     </div>
 
     <button class="btn" id="spinBtn" onclick="spin()">Tourner les roues 🎲</button>
 
     <form id="answerForm" onsubmit="checkAnswer(event)" style="display: none;">
-      <input type="text" id="userInput" placeholder="Écris la réponse ici..." autocomplete="off" required>
-      <button class="btn" type="submit">Valider la réponse</button>
+      <input type="text" id="userInput" placeholder="Écris la phrase complète (ex: Je parle)..." autocomplete="off" required>
+      <button class="btn" type="submit">Valider</button>
     </form>
 
     <div class="feedback" id="feedback"></div>
@@ -249,15 +276,20 @@
 </div>
 
 <script>
-  // BANQUE DE DONNÉES & CONJUGAISON (Au présent)
   const SUJETS = ['Je', 'Tu', 'Il', 'Elle', 'Nous', 'Vous', 'Ils', 'Elles'];
+
+  // LISTE DE VERBES DU 1ER GROUPE EN -ER
   const VERBES = [
-    { nom: 'Parler', conjugaisons: { 'Je': "J'aimerais parler", 'Je': 'Je parle', 'Tu': 'Tu parles', 'Il': 'Il parle', 'Elle': 'Elle parle', 'Nous': 'Nous parlons', 'Vous': 'Vous parlez', 'Ils': 'Ils parlent', 'Elles': 'Elles parlent' } },
-    { nom: 'Avoir', conjugaisons: { 'Je': "J'ai", 'Tu': 'Tu as', 'Il': 'Il a', 'Elle': 'Elle a', 'Nous': 'Nous avons', 'Vous': 'Vous avez', 'Ils': 'Ils ont', 'Elles': 'Elles ont' } },
-    { nom: 'Être', conjugaisons: { 'Je': 'Je suis', 'Tu': 'Tu es', 'Il': 'Il est', 'Elle': 'Elle est', 'Nous': 'Nous sommes', 'Vous': 'Vous êtes', 'Ils': 'Ils sont', 'Elles': 'Elles sont' } },
-    { nom: 'Faire', conjugaisons: { 'Je': 'Je fais', 'Tu': 'Tu fais', 'Il': 'Il fait', 'Elle': 'Elle fait', 'Nous': 'Nous faisons', 'Vous': 'Vous faites', 'Ils': 'Ils font', 'Elles': 'Ils font' } },
-    { nom: 'Aller', conjugaisons: { 'Je': 'Je vais', 'Tu': 'Tu vas', 'Il': 'Il va', 'Elle': 'Elle va', 'Nous': 'Nous allons', 'Vous': 'Vous allez', 'Ils': 'Ils vont', 'Elles': 'Elles vont' } },
-    { nom: 'Finir', conjugaisons: { 'Je': 'Je finis', 'Tu': 'Tu finis', 'Il': 'Il finit', 'Elle': 'Elle finit', 'Nous': 'Nous finissons', 'Vous': 'Vous finissez', 'Ils': 'Ils finissent', 'Elles': 'Elles finissent' } }
+    { nom: 'Parler', conj: { 'Je': 'Je parle', 'Tu': 'Tu parles', 'Il': 'Il parle', 'Elle': 'Elle parle', 'Nous': 'Nous parlons', 'Vous': 'Vous parlez', 'Ils': 'Ils parlent', 'Elles': 'Elles parlent' } },
+    { nom: 'Habiter', conj: { 'Je': "J'habite", 'Tu': 'Tu habites', 'Il': 'Il habite', 'Elle': 'Elle habite', 'Nous': 'Nous habitons', 'Vous': 'Vous habitez', 'Ils': 'Ils habitent', 'Elles': 'Elles habitent' } },
+    { nom: 'Aimer', conj: { 'Je': "J'aime", 'Tu': 'Tu aimes', 'Il': 'Il aime', 'Elle': 'Elle aime', 'Nous': 'Nous aimons', 'Vous': 'Vous aimez', 'Ils': 'Ils aiment', 'Elles': 'Elles aiment' } },
+    { nom: 'Regarder', conj: { 'Je': 'Je regarde', 'Tu': 'Tu regardes', 'Il': 'Il regarde', 'Elle': 'Elle regarde', 'Nous': 'Nous regardons', 'Vous': 'Vous regardez', 'Ils': 'Ils regardent', 'Elles': 'Elles regardent' } },
+    { nom: 'Écouter', conj: { 'Je': "J'écoute", 'Tu': 'Tu écoutes', 'Il': 'Il écoute', 'Elle': 'Elle écoute', 'Nous': 'Nous écoutons', 'Vous': 'Vous écoutez', 'Ils': 'Ils écoutent', 'Elles': 'Elles écoutent' } },
+    { nom: 'Travailler', conj: { 'Je': 'Je travaille', 'Tu': 'Tu travailles', 'Il': 'Il travaille', 'Elle': 'Elle travaille', 'Nous': 'Nous travaillons', 'Vous': 'Vous travaillez', 'Ils': 'Ils travaillent', 'Elles': 'Elles travaillent' } },
+    { nom: 'Manger', conj: { 'Je': 'Je mange', 'Tu': 'Tu manges', 'Il': 'Il mange', 'Elle': 'Elle mange', 'Nous': 'Nous mangeons', 'Vous': 'Vous mangez', 'Ils': 'Ils mangent', 'Elles': 'Elles mangent' } },
+    { nom: 'Jouer', conj: { 'Je': 'Je joue', 'Tu': 'Tu joues', 'Il': 'Il joue', 'Elle': 'Elle joue', 'Nous': 'Nous jouons', 'Vous': 'Vous jouez', 'Ils': 'Ils jouent', 'Elles': 'Elles jouent' } },
+    { nom: 'Chanter', conj: { 'Je': 'Je chante', 'Tu': 'Tu chantes', 'Il': 'Il chante', 'Elle': 'Elle chante', 'Nous': 'Nous chantons', 'Vous': 'Vous chantez', 'Ils': 'Ils chantent', 'Elles': 'Elles chantent' } },
+    { nom: 'Danser', conj: { 'Je': 'Je danse', 'Tu': 'Tu danses', 'Il': 'Il danse', 'Elle': 'Elle danse', 'Nous': 'Nous dansons', 'Vous': 'Vous dansez', 'Ils': 'Ils dansent', 'Elles': 'Elles dansent' } }
   ];
 
   let currentSujet = '';
@@ -269,43 +301,53 @@
     const spinBtn = document.getElementById('spinBtn');
     const form = document.getElementById('answerForm');
     const feedback = document.getElementById('feedback');
-    const boxSujet = document.getElementById('boxSujet');
-    const boxVerbe = document.getElementById('boxVerbe');
-    
+    const sujetStrip = document.getElementById('sujetStrip');
+    const verbeStrip = document.getElementById('verbeStrip');
+
     spinBtn.disabled = true;
     form.style.display = 'none';
     feedback.style.display = 'none';
-    boxSujet.classList.add('spinning');
-    boxVerbe.classList.add('spinning');
 
-    let counter = 0;
-    const interval = setInterval(() => {
-      document.getElementById('sujetSlot').textContent = SUJETS[Math.floor(Math.random() * SUJETS.length)];
-      document.getElementById('verbeSlot').textContent = VERBES[Math.floor(Math.random() * VERBES.length)].nom;
-      counter++;
+    // Sélection aléatoire
+    currentSujet = SUJETS[Math.floor(Math.random() * SUJETS.length)];
+    currentVerbeObj = VERBES[Math.floor(Math.random() * VERBES.length)];
+
+    // Génération du rouleau visuel
+    let sujetList = [];
+    let verbeList = [];
+    for (let i = 0; i < 12; i++) {
+      sujetList.push(SUJETS[Math.floor(Math.random() * SUJETS.length)]);
+      verbeList.push(VERBES[Math.floor(Math.random() * VERBES.length)].nom);
+    }
+    sujetList.push(currentSujet);
+    verbeList.push(currentVerbeObj.nom);
+
+    sujetStrip.innerHTML = sujetList.map(s => `<div class="wheel-item">${s}</div>`).join('');
+    verbeStrip.innerHTML = verbeList.map(v => `<div class="wheel-item">${v}</div>`).join('');
+
+    sujetStrip.style.transition = 'none';
+    verbeStrip.style.transition = 'none';
+    sujetStrip.style.transform = 'translateY(0px)';
+    verbeStrip.style.transform = 'translateY(0px)';
+
+    setTimeout(() => {
+      const targetY = -(sujetList.length - 1) * 70;
+      sujetStrip.style.transition = 'transform 1.8s cubic-bezier(0.15, 0.85, 0.35, 1.2)';
+      verbeStrip.style.transition = 'transform 2.2s cubic-bezier(0.15, 0.85, 0.35, 1.2)';
       
-      if (counter > 15) {
-        clearInterval(interval);
-        
-        // Sélection finale
-        currentSujet = SUJETS[Math.floor(Math.random() * SUJETS.length)];
-        currentVerbeObj = VERBES[Math.floor(Math.random() * VERBES.length)];
+      sujetStrip.style.transform = `translateY(${targetY}px)`;
+      verbeStrip.style.transform = `translateY(${targetY}px)`;
+    }, 50);
 
-        document.getElementById('sujetSlot').textContent = currentSujet;
-        document.getElementById('verbeSlot').textContent = currentVerbeObj.nom;
+    setTimeout(() => {
+      spinBtn.disabled = false;
+      form.style.display = 'flex';
+      document.getElementById('userInput').value = '';
+      document.getElementById('userInput').focus();
 
-        boxSujet.classList.remove('spinning');
-        boxVerbe.classList.remove('spinning');
-        
-        spinBtn.disabled = false;
-        form.style.display = 'flex';
-        document.getElementById('userInput').value = '';
-        document.getElementById('userInput').focus();
-
-        round++;
-        document.getElementById('roundVal').textContent = round;
-      }
-    }, 80);
+      round++;
+      document.getElementById('roundVal').textContent = round;
+    }, 2300);
   }
 
   function cleanString(str) {
@@ -315,7 +357,7 @@
   function checkAnswer(e) {
     e.preventDefault();
     const userVal = cleanString(document.getElementById('userInput').value);
-    const expected = currentVerbeObj.conjugaisons[currentSujet];
+    const expected = currentVerbeObj.conj[currentSujet];
     const expectedClean = cleanString(expected);
 
     const feedback = document.getElementById('feedback');
@@ -325,7 +367,7 @@
       score++;
       document.getElementById('scoreVal').textContent = score;
       feedback.className = 'feedback correct';
-      feedback.textContent = ' Bravo ! C\'est la bonne réponse.';
+      feedback.textContent = '🎉 Bravo ! C\'est la bonne réponse.';
       if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
     } else {
       feedback.className = 'feedback wrong';
