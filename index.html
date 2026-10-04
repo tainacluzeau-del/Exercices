@@ -5,186 +5,287 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Exercices de français — Accueil</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A1%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #fbf7ef;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --bg: #f8fafc;
     --card: #ffffff;
-    --ink: #2b2420;
-    --ink-soft: #6b6058;
-    --accent: #d9622b;
-    --accent-2: #2f6b5e;
-    --ring: #e4dccb;
-    --tag-bg: #f2ead9;
+    --ink: #0f172a;
+    --ink-soft: #64748b;
+    --ring: #e2e8f0;
+    --tag-bg: #f1f5f9;
+    --tag-color: #475569;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
   }
+
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #1c1a17;
-      --card: #272420;
-      --ink: #f3ede3;
-      --ink-soft: #b9afa2;
-      --accent: #f08a4b;
-      --accent-2: #5ecbb0;
-      --ring: #3a352e;
-      --tag-bg: #332c22;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --ink: #f8fafc;
+      --ink-soft: #94a3b8;
+      --ring: #334155;
+      --tag-bg: #334155;
+      --tag-color: #cbd5e1;
     }
   }
-  :root[data-theme="dark"] {
-    --bg: #1c1a17; --card: #272420; --ink: #f3ede3; --ink-soft: #b9afa2;
-    --accent: #f08a4b; --accent-2: #5ecbb0; --ring: #3a352e; --tag-bg: #332c22;
-  }
+
   * { box-sizing: border-box; }
-  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  
   body {
     margin: 0;
-    min-height: 100%;
+    min-height: 100vh;
     background: var(--bg);
     color: var(--ink);
-    font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
-    padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(28px + env(safe-area-inset-bottom, 0px));
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    padding: calc(32px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+    line-height: 1.5;
   }
-  .wrap { max-width: 880px; margin: 0 auto; }
-  header { text-align: center; margin-bottom: 26px; }
-  h1 { font-size: clamp(24px, 5vw, 32px); margin: 0 0 6px; }
-  header p { color: var(--ink-soft); margin: 0; font-size: 15px; }
+
+  .wrap { max-width: 900px; margin: 0 auto; }
+
+  header { 
+    position: relative;
+    text-align: center; 
+    margin-bottom: 32px; 
+    background: var(--card);
+    padding: 32px 24px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--ring);
+  }
+
+  .nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--tag-bg);
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--ring);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .nav-btn:hover {
+    background: var(--ring);
+    color: var(--primary);
+  }
+
+  h1 { 
+    font-size: clamp(24px, 5vw, 32px); 
+    margin: 0 0 8px; 
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  header p { 
+    color: var(--ink-soft); 
+    margin: 0; 
+    font-size: 16px; 
+    font-weight: 500;
+  }
+
   .filters {
-    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-    margin-bottom: 22px;
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 28px;
   }
+
   .filter-btn {
     font-family: inherit; cursor: pointer; border: 1px solid var(--ring);
-    background: var(--card); color: var(--ink); border-radius: 999px;
-    padding: 6px 14px; font-size: 13px; font-weight: 600;
+    background: var(--card); color: var(--ink-soft); border-radius: 999px;
+    padding: 8px 18px; font-size: 14px; font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
   }
-  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .filter-btn:hover {
+    color: var(--ink);
+    border-color: #cbd5e1;
+  }
+
+  .filter-btn.active { 
+    background: var(--primary); 
+    color: #fff; 
+    border-color: var(--primary); 
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  }
+
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
   }
+
   .card {
     background: var(--card);
     border: 1px solid var(--ring);
-    border-radius: 16px;
-    padding: 18px;
+    border-radius: 18px;
+    padding: 22px;
     display: flex;
     flex-direction: column;
     text-decoration: none;
     color: var(--ink);
-    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .card:hover, .card:focus-visible { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,.12); }
-  .card .emoji { font-size: 34px; margin-bottom: 8px; }
-  .card h2 { font-size: 18px; margin: 0 0 6px; }
-  .card .desc { color: var(--ink-soft); font-size: 14px; margin: 0 0 12px; flex-grow: 1; }
-  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+
+  .card:hover, .card:focus-visible { 
+    transform: translateY(-4px); 
+    box-shadow: var(--shadow-lg);
+    border-color: #cbd5e1;
+  }
+
+  .card .emoji { 
+    font-size: 38px; 
+    margin-bottom: 12px; 
+    background: var(--tag-bg);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+  }
+
+  .card h2 { 
+    font-size: 19px; 
+    margin: 0 0 8px; 
+    font-weight: 700;
+  }
+
+  .card .desc { 
+    color: var(--ink-soft); 
+    font-size: 14px; 
+    margin: 0 0 16px; 
+    flex-grow: 1; 
+    line-height: 1.5;
+  }
+
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+
   .tag {
-    background: var(--tag-bg); color: var(--ink-soft);
-    font-size: 11.5px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .03em; padding: 3px 9px; border-radius: 999px;
+    background: var(--tag-bg); 
+    color: var(--tag-color);
+    font-size: 12px; 
+    font-weight: 600; 
+    padding: 4px 10px; 
+    border-radius: 8px;
   }
+
   .open-btn {
     align-self: flex-start;
-    background: var(--accent-2); color: #fff;
-    border-radius: 10px; padding: 8px 16px;
-    font-size: 14px; font-weight: 700;
+    background: var(--primary); 
+    color: #fff;
+    border-radius: 10px; 
+    padding: 8px 16px;
+    font-size: 14px; 
+    font-weight: 600;
+    transition: background 0.2s ease;
   }
+
+  .card:hover .open-btn {
+    background: var(--primary-hover);
+  }
+
   .empty-note {
     text-align: center; color: var(--ink-soft);
-    padding: 30px 10px; display: none;
+    padding: 40px 10px; display: none;
+    font-weight: 500;
   }
-  details {
-    margin-top: 34px;
-    background: var(--card);
-    border: 1px solid var(--ring);
-    border-radius: 14px;
-    padding: 14px 18px;
-  }
-  summary {
-    cursor: pointer; font-weight: 700; font-size: 14.5px;
-    color: var(--accent);
-  }
-  details pre {
-    background: var(--bg);
-    border: 1px solid var(--ring);
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 12.5px;
-    overflow-x: auto;
-    margin-top: 10px;
-  }
-  details p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
-  footer { text-align: center; color: var(--ink-soft); font-size: 12.5px; margin-top: 24px; }
+
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; margin-top: 32px; font-weight: 500; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
+    <div class="nav-bar">
+      <button class="nav-btn" onclick="history.back()">◂ Retour</button>
+      <a class="nav-btn" href="https://tainacluzeau-del.github.io/Vocabulaire/">📚 Vocabulaire ↗</a>
+    </div>
     <h1>🇫🇷 Exercices de français interactifs</h1>
     <p>Clique sur un exercice pour l'ouvrir.</p>
   </header>
 
   <div class="filters" id="filters"></div>
   <div class="grid" id="grid"></div>
-  <p class="empty-note" id="emptyNote">Aucun exercice pour cette unité pour le moment.</p>
+  <p class="empty-note" id="emptyNote">Aucun exercice pour ce niveau pour le moment.</p>
 
+  <!--
   <details>
     <summary>➕ Comment ajouter un nouvel exercice (pour toi)</summary>
     <p>
       1. Dépose le nouveau fichier HTML de l'exercice dans le même dossier GitHub que cette page (ex. <code>roue-des-verbes.html</code>).<br>
       2. Ouvre ce fichier <code>index.html</code>, repère le tableau <code>EXERCICES</code> en bas du code source, et ajoute un nouvel objet sur le modèle ci-dessous (copie-colle, puis modifie les valeurs).<br>
-      3. Enregistre et republie (commit + push) — la carte apparaît automatiquement, avec son filtre d'unité.
+      3. Enregistre et republie (commit + push) — la carte apparaît automatiquement, avec son filtre de niveau.
     </p>
     <pre>{
   titre: "Nom de l'exercice",
   emoji: "🎲",
   description: "Une phrase courte qui explique l'exercice.",
   fichier: "nom-du-fichier.html",
-  unite: "Unité 2",
+  niveau: "A1",               // "A1", "A2", "A3" ou "A4"
   type: "Jeu de grammaire"   // ou "CO", "CE", "PO", "PE"...
 }</pre>
   </details>
+  -->
 
   <footer>D'autres exercices seront ajoutés au fur et à mesure.</footer>
 </div>
 
 <script>
-  // ==========================================================
-  // LISTE DES EXERCICES — ajoute un objet ici pour chaque nouvelle page
-  // ==========================================================
+  // LISTE DES EXERCICES
   const EXERCICES = [
     {
       titre: "La roue des verbes",
       emoji: "🎡",
       description: "Tire un sujet et un verbe, puis écris la phrase correcte au présent.",
       fichier: "roue-des-verbes.html",
-      unite: "Unité 2",
+      niveau: "A1",
       type: "Production orale"
     }
-    // Ajoute les prochains exercices ici, séparés par une virgule :
-    // { titre: "...", emoji: "...", description: "...", fichier: "...", unite: "...", type: "..." }
   ];
-  // ==========================================================
 
   const grid = document.getElementById('grid');
   const filtersEl = document.getElementById('filters');
   const emptyNote = document.getElementById('emptyNote');
   let activeFilter = 'Toutes';
 
+  const NIVEAUX = ['Toutes', 'A1', 'A2', 'A3', 'A4'];
+
   function renderFilters() {
-    const unites = ['Toutes', ...new Set(EXERCICES.map(e => e.unite))];
     filtersEl.innerHTML = '';
-    unites.forEach(u => {
+    NIVEAUX.forEach(n => {
       const b = document.createElement('button');
-      b.className = 'filter-btn' + (u === activeFilter ? ' active' : '');
-      b.textContent = u;
-      b.addEventListener('click', () => { activeFilter = u; render(); });
+      b.className = 'filter-btn' + (n === activeFilter ? ' active' : '');
+      b.textContent = n === 'Toutes' ? 'Tous les niveaux' : `Niveau ${n}`;
+      b.addEventListener('click', () => { activeFilter = n; render(); });
       filtersEl.appendChild(b);
     });
   }
 
   function render() {
     renderFilters();
-    const list = activeFilter === 'Toutes' ? EXERCICES : EXERCICES.filter(e => e.unite === activeFilter);
+    const list = activeFilter === 'Toutes' ? EXERCICES : EXERCICES.filter(e => e.niveau === activeFilter);
     grid.innerHTML = '';
     emptyNote.style.display = list.length ? 'none' : 'block';
     list.forEach(ex => {
@@ -195,7 +296,7 @@
         <div class="emoji">${ex.emoji}</div>
         <h2>${ex.titre}</h2>
         <p class="desc">${ex.description}</p>
-        <div class="tags"><span class="tag">${ex.unite}</span><span class="tag">${ex.type}</span></div>
+        <div class="tags"><span class="tag">Niveau ${ex.niveau}</span><span class="tag">${ex.type}</span></div>
         <span class="open-btn">Ouvrir ▸</span>
       `;
       grid.appendChild(a);
