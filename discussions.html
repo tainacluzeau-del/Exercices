@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L'Atelier du Français — FLE A1</title>
-    <!-- Tailwind CSS pour un design moderne et adaptatif -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Animation fluide de l'apparition des bulles de chat */
         .chat-bubble {
             animation: fadeIn 0.3s ease-out forwards;
         }
@@ -20,95 +19,111 @@
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col items-center p-3 sm:p-6">
 
     <!-- En-tête principal -->
-    <header class="w-full max-w-xl mb-4 text-center">
+    <header class="w-full max-w-4xl mb-4 text-center">
         <h1 class="text-2xl sm:text-3xl font-bold text-indigo-700">L'Atelier du Français — A1</h1>
         <p class="text-slate-600 text-xs sm:text-sm mt-1">Application interactive de dialogues guidés</p>
     </header>
 
-    <!-- Conteneur style Application de Messagerie (WhatsApp) -->
-    <main class="w-full max-w-xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col h-[85vh] max-h-[750px] border border-slate-200">
+    <!-- Conteneur principal séparé en 2 colonnes sur écran large -->
+    <main class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row h-[85vh] max-h-[750px] border border-slate-200">
         
-        <!-- En-tête de la messagerie -->
-        <div class="bg-indigo-600 text-white p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-indigo-700">
-            <div>
-                <span id="unit-tag" class="text-[10px] uppercase tracking-wider bg-indigo-800 px-2 py-0.5 rounded-full font-semibold">Unité 1</span>
-                <h2 id="character-name" class="text-lg font-bold mt-0.5">...</h2>
-            </div>
-            
-            <select id="dialogue-selector" onchange="changeDialogue(this.value)" class="bg-indigo-700 text-white text-xs sm:text-sm font-medium rounded-lg px-2.5 py-1.5 outline-none border border-indigo-500 cursor-pointer w-full sm:w-auto">
-                <option value="lucas" selected>Unité 1 : Lucas (La famille)</option>
+        <!-- PANNEAU GAUCHE : Fiche profil & sélection du personnage -->
+        <aside class="w-full md:w-72 bg-indigo-50 border-b md:border-b-0 md:border-r border-indigo-100 p-4 flex flex-col shrink-0">
+            <!-- Choix du dialogue -->
+            <label for="dialogue-selector" class="text-xs font-semibold text-indigo-900 uppercase tracking-wider mb-2 block">
+                Sélectionner un profil
+            </label>
+            <select id="dialogue-selector" onchange="changeDialogue(this.value)" class="bg-white text-indigo-950 text-xs sm:text-sm font-medium rounded-lg p-2 outline-none border border-indigo-200 cursor-pointer w-full mb-4 shadow-sm">
+                <option value="lucas" selected>Unité 1 : Lucas (Se présenter)</option>
                 <option value="elodie">Unité 1 : Élodie (La famille)</option>
                 <option value="thomas">Unité 2 : Thomas (Le week-end)</option>
             </select>
-        </div>
 
-        <!-- Fiche profil du personnage -->
-        <div id="profile-card" class="bg-indigo-50 border-b border-indigo-100 p-3 text-xs sm:text-sm text-indigo-950">
-            <!-- Rempli dynamiquement en JS -->
-        </div>
+            <!-- Fiche profil détaillée -->
+            <div class="bg-white rounded-xl p-3.5 border border-indigo-100 shadow-sm flex-1 overflow-y-auto">
+                <div class="flex items-center gap-2 mb-2 pb-2 border-b border-slate-100">
+                    <span id="unit-tag" class="text-[10px] uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-bold">Unité 1</span>
+                </div>
+                <h2 id="character-name" class="text-base font-bold text-indigo-950 mb-2">...</h2>
+                <div id="profile-card" class="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-1">
+                    <!-- Contenu du profil injecté en JS -->
+                </div>
+            </div>
+        </aside>
 
-        <!-- Fenêtre de Chat / Discussion -->
-        <div id="chat-window" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50">
-            <!-- Les messages s'affichent ici -->
-        </div>
+        <!-- PANNEAU DROIT : Fenêtre de discussion WhatsApp -->
+        <section class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50">
+            
+            <!-- Zone des messages du chat -->
+            <div id="chat-window" class="flex-1 p-4 overflow-y-auto space-y-3">
+                <!-- Les messages du dialogue s'affichent ici -->
+            </div>
 
-        <!-- Boîte de Feedback pédagogique -->
-        <div id="feedback-box" class="hidden p-3 mx-4 my-2 rounded-xl border text-xs sm:text-sm transition-all duration-300">
-            <!-- Message de correction -->
-        </div>
+            <!-- Boîte de Feedback pédagogique -->
+            <div id="feedback-box" class="hidden p-3 mx-4 my-2 rounded-xl border text-xs sm:text-sm transition-all duration-300">
+                <!-- Correction explicative -->
+            </div>
 
-        <!-- Zone des options de réponses -->
-        <div id="options-container" class="p-3 sm:p-4 border-t border-slate-200 bg-white flex flex-col gap-2 shrink-0">
-            <!-- Boutons choisis par l'apprenant -->
-        </div>
+            <!-- Zone des propositions de réponses -->
+            <div id="options-container" class="p-3 sm:p-4 border-t border-slate-200 bg-white flex flex-col gap-2 shrink-0">
+                <!-- Boutons générés dynamiquement -->
+            </div>
+        </section>
+
     </main>
 
     <script>
         // --- DONNÉES DES DIALOGUES COMPLETES ---
         const dialogues = {
             lucas: {
-                unit: "Unité 1 — Intro & Famille",
+                unit: "Unité 1 — Se présenter",
                 title: "Lucas Moreau",
-                profile: "<b>Âge :</b> 28 ans | <b>Ville :</b> Paris | <b>Profession :</b> Architecte<br><b>Famille :</b> Marié, 2 enfants (fils 6 ans, fille 3 ans), 1 sœur. Parents à Montréal.",
+                profile: `
+                    <p><b>Âge :</b> 28 ans</p>
+                    <p><b>Nationalité :</b> Canadien</p>
+                    <p><b>Profession :</b> Architecte</p>
+                    <p><b>Ville :</b> Lyon</p>
+                    <p><b>Passe-temps :</b> Photographie</p>
+                `,
                 steps: [
                     {
                         interlocutor: "Bonjour ! Comment vous vous appelez ?",
                         options: [
-                            { text: "Je m'appelle Lucas Moreau.", correct: true, feedback: "🥇 Parfait ! Présentation simple et exacte avec le verbe pronominal 's'appeler'." },
-                            { text: "Je suis Lucas Moreau.", correct: false, feedback: "⚠️ En français, on utilise habituellement le verbe 's'appeler' pour donner son prénom et son nom." },
-                            { text: "Mon nom est Lucas Moreau.", correct: false, feedback: "💡 C'est compréhensible, mais 'Je m'appelle' est la formule la plus naturelle et courante au niveau A1." }
+                            { text: "Bonjour, je m'appelle Lucas Moreau et vous ?", correct: true, feedback: "🥇 Excellent ! Réponse exacte et complète." },
+                            { text: "Bonjour, ça va bien et vous ?", correct: false, feedback: "⚠️ On demande le prénom." },
+                            { text: "Bonjour, moi c'est Lucas et toi ?", correct: false, feedback: "⚠️ L'interlocuteur a utilisé \"Vous\", marqueur de politesse." }
                         ]
                     },
                     {
-                        interlocutor: "Enchanté Lucas ! Vous êtes marié ?",
+                        interlocutor: "Moi c'est Julien, enchanté Lucas ! Et quel âge avez-vous ?",
                         options: [
-                            { text: "Oui, je suis marié et j'ai deux enfants.", correct: true, feedback: "🥇 Excellent ! Distinction parfaite entre l'état civil (être marié) et la possession (avoir des enfants)." },
-                            { text: "Oui, j'ai marié et je suis deux enfants.", correct: false, feedback: "⚠️ Attention à ne pas confondre les auxiliaires : 'je suis marié' (état) et 'j'ai deux enfants' (possession)." },
-                            { text: "Oui, je suis célibataire.", correct: false, feedback: "💡 Regardez bien la fiche profil de Lucas : il est marié !" }
+                            { text: "J'ai 28 ans.", correct: true, feedback: "🥇 Parfait ! Structure exacte." },
+                            { text: "Je suis 28 ans.", correct: false, feedback: "⚠️ En français, on utilise le verbe avoir pour donner son âge (ex: J'ai 28 ans)." },
+                            { text: "Je suis né en 1998.", correct: false, feedback: "⚠️ Attention, on demande l'âge, pas la date de naissance." }
                         ]
                     },
                     {
-                        interlocutor: "Quels âges ont vos enfants ?",
+                        interlocutor: "D'accord. Et quelle est votre nationalité ?",
                         options: [
-                            { text: "Mon fils a 6 ans et ma fille a 3 ans.", correct: true, feedback: "🥇 Bravo ! Les adjectifs possessifs (mon/ma) et le verbe avoir sont parfaitement maîtrisés." },
-                            { text: "Mon fils est 6 ans et ma fille est 3 ans.", correct: false, feedback: "⚠️ En français, on utilise toujours le verbe 'avoir' pour indiquer l'âge (il a 6 ans)." },
-                            { text: "Ma fils a 6 ans et mon fille a 3 ans.", correct: false, feedback: "⚠️ Attention au genre des noms : 'fils' est masculin (mon fils) et 'fille' est féminin (ma fille)." }
+                            { text: "Je suis canadien.", correct: true, feedback: "🥇 Très bien ! Accord masculin correct." },
+                            { text: "Je suis canadienne.", correct: false, feedback: "⚠️ Attention à l'accord : Lucas est un homme, donc on utilise la forme masculine (canadien)." },
+                            { text: "J'habite au Canada.", correct: false, feedback: "💡 La question porte sur la nationalité, pas sur le pays de résidence." }
                         ]
                     },
                     {
-                        interlocutor: "Et vous avez des frères et sœurs ?",
+                        interlocutor: "Et qu'est-ce que vous faites dans la vie ?",
                         options: [
-                            { text: "Oui, j'ai une sœur.", correct: true, feedback: "🥇 Très bien ! Utilisation exacte de l'article indéfini féminin 'une'." },
-                            { text: "Oui, j'ai un sœur.", correct: false, feedback: "⚠️ Attention au genre : 'sœur' est un nom féminin (une sœur)." },
-                            { text: "Oui, je suis une sœur.", correct: false, feedback: "⚠️ Mauvais verbe ! On dit 'j'ai une sœur' (verbe avoir) et non 'je suis'." }
+                            { text: "Je suis architecte.", correct: true, feedback: "🥇 Exactement ! Pas d'article devant la profession." },
+                            { text: "Je suis un architecte.", correct: false, feedback: "⚠️ En français, on ne met pas d'article (un/une) devant la profession après le verbe être." },
+                            { text: "Je suis un photographe.", correct: false, feedback: "⚠️ En français, on ne met pas d'article (un/une) devant la profession après le verbe être. La photographie est son passe-temps, pas sa profession principale !" }
                         ]
                     },
                     {
-                        interlocutor: "Où habitent vos parents ?",
+                        interlocutor: "Où est-ce que vous habitez actuellement ?",
                         options: [
-                            { text: "Mes parents habitent à Montréal.", correct: true, feedback: "🥇 Parfait ! Accord du possessif au pluriel (mes) et conjugaison exacte du verbe habiter (ils habitent)." },
-                            { text: "Mon parents habite à Montréal.", correct: false, feedback: "⚠️ 'Parents' est au pluriel : il faut utiliser le possessif 'mes' et accorder le verbe (habitent)." },
-                            { text: "Mes parents habitent en Montréal.", correct: false, feedback: "⚠️ Devant une ville, on utilise la préposition 'à' (à Montréal), pas 'en'." }
+                            { text: "J'habite à Lyon.", correct: true, feedback: "🥇 Bravo ! Bonne préposition devant une ville (à)." },
+                            { text: "J'habite en Lyon.", correct: false, feedback: "⚠️ On utilise à devant les villes (à Lyon, à Paris)." },
+                            { text: "J'habite au Canada.", correct: false, feedback: "💡 Sa ville actuelle est Lyon (le Canada est son pays d'origine)." }
                         ]
                     }
                 ]
@@ -116,46 +131,56 @@
             elodie: {
                 unit: "Unité 1 — Extension Famille",
                 title: "Élodie Bertrand",
-                profile: "<b>Âge :</b> 34 ans | <b>Ville :</b> Bruxelles | <b>Profession :</b> Graphiste<br><b>Famille :</b> Célibataire, 0 enfant, 1 chien (Toby), 2 frères (Julien et Thomas). Parents à Liège.",
+                profile: `
+                    <p><b>Âge :</b> 34 ans</p>
+                    <p><b>Nationalité :</b> Belge</p>
+                    <p><b>Profession :</b> Graphiste</p>
+                    <p><b>Ville :</b> Bruxelles</p>
+                    <hr class="my-1 border-indigo-100">
+                    <p><b>Situation :</b> Célibataire</p>
+                    <p><b>Enfants :</b> 0 enfant (1 chien : Toby)</p>
+                    <p><b>Fratrie :</b> 2 frères (Julien et Thomas)</p>
+                    <p><b>Parents :</b> Liège</p>
+                `,
                 steps: [
                     {
                         interlocutor: "Bonjour Élodie ! Dites-moi, vous êtes mariée ? Vous avez des enfants ?",
                         options: [
-                            { text: "Non, je suis célibataire. Je n'ai pas d'enfant, mais j'ai un chien !", correct: true, feedback: "🥇 Parfait ! Utilisation exacte du statut, de la négation 'ne... pas de' et du verbe avoir." },
-                            { text: "Non, je suis célibataire. Je suis un chien.", correct: false, feedback: "⚠️ Attention au verbe ! On utilise avoir (j'ai un chien), pas le verbe être." },
-                            { text: "Oui, je suis mariée et j'ai deux enfants.", correct: false, feedback: "💡 Regardez la fiche d'Élodie : elle est célibataire et n'a pas d'enfant !" }
+                            { text: "Non, je suis célibataire. J'ai 0 enfant, mais j'ai un chien !", correct: true, feedback: "🥇 Parfait ! Utilisation exacte du statut et présence du verbe avoir (j'ai un chien)." },
+                            { text: "Non, je suis célibataire. Je suis un chien.", correct: false, feedback: "⚠️ Attention au verbe : on utilise avoir (j'ai un chien), pas le verbe être." },
+                            { text: "Oui, je suis mariée et j'ai deux enfants.", correct: false, feedback: "💡 Regarde la fiche d'Élodie : elle est célibataire et elle a 0 enfant !" }
                         ]
                     },
                     {
                         interlocutor: "Ah un chien ! Comment il s'appelle ? Il a quel âge ?",
                         options: [
                             { text: "Il s'appelle Toby et il a 4 ans.", correct: true, feedback: "🥇 Excellent ! Bonne conjugaison du verbe avoir à la 3ᵉ personne (il a)." },
-                            { text: "Il s'appelle Toby et il est 4 ans.", correct: false, feedback: "⚠️ En français, on utilise le verbe avoir pour donner l'âge (il a 4 ans)." },
-                            { text: "Il s'appelle Toby et il ont 4 ans.", correct: false, feedback: "⚠️ 'Ont' est réservé au pluriel (ils ont). Pour un seul chien, on utilise 'a' (il a)." }
+                            { text: "Il s'appelle Toby et il est 4 ans.", correct: false, feedback: "⚠️️ En français, on utilise le verbe avoir pour donner l'âge (il a 4 ans)." },
+                            { text: "Il s'appelle Toby et il ont 4 ans.", correct: false, feedback: "⚠️️ Ont est réservé au pluriel (ils ont). Pour un seul chien, on utilise a (il a)." }
                         ]
                     },
                     {
                         interlocutor: "D'accord ! Et vous avez des frères et sœurs ?",
                         options: [
-                            { text: "Oui, j'ai deux frères : Julien et Thomas.", correct: true, feedback: "🥇 Bravo ! Vocabulaire de la famille et verbe avoir (j'ai) parfaitement employés." },
+                            { text: "Oui, j'ai deux frères : Julien et Thomas.", correct: true, feedback: "🥇 Bravo ! Utilisation exacte du vocabulaire de la famille (mes frères) et du verbe avoir (j'ai)." },
                             { text: "Oui, j'ai deux sœurs : Julien et Thomas.", correct: false, feedback: "💡 Julien et Thomas sont des prénoms masculins : ce sont ses frères !" },
-                            { text: "Oui, j'est deux frères : Julien et Thomas.", correct: false, feedback: "⚠️ Attention à l'orthographe : avec 'je', le verbe avoir s'écrit 'j'ai'." }
+                            { text: "Oui, j'est deux frères : Julien et Thomas.", correct: false, feedback: "⚠️ Attention à la conjugaison : avec je, le verbe avoir s'écrit j'ai (et pas j'est)." }
                         ]
                     },
                     {
                         interlocutor: "Qu'est-ce qu'ils font dans la vie ? Ils ont quel âge ?",
                         options: [
-                            { text: "Ils ont 30 ans et 26 ans. Ils sont étudiants.", correct: true, feedback: "🥇 Parfait ! Distinction exacte entre le verbe avoir au pluriel (ils ont) et le verbe être (ils sont)." },
-                            { text: "Ils a 30 ans et 26 ans.", correct: false, feedback: "⚠️ Avec le sujet 'ils' (pluriel), le verbe avoir devient 'ont' (ils ont)." },
-                            { text: "Ils sont 30 ans et 26 ans.", correct: false, feedback: "⚠️ Ne confondez pas être (ils sont) et avoir (ils ont pour l'âge)." }
+                            { text: "Ils ont 30 ans et 26 ans. Ils sont étudiants.", correct: true, feedback: "🥇 Parfait ! Bonne forme du verbe avoir au pluriel (ils ont)." },
+                            { text: "Ils a 30 ans et 26 ans.", correct: false, feedback: "⚠️ Avec ils (au pluriel), le verbe avoir devient ont (ils ont)." },
+                            { text: "Ils sont 30 ans et 26 ans.", correct: false, feedback: "⚠️ Attention à ne pas confondre être (ils sont) et avoir (ils ont)." }
                         ]
                     },
                     {
                         interlocutor: "C'est une très jolie famille ! Et vos parents, ils habitent à Bruxelles aussi ?",
                         options: [
-                            { text: "Non, ils habitent à Liège. Et vous, vous avez des frères et sœurs ?", correct: true, feedback: "🥇 Bravo ! Relance parfaite et respect des règles de politesse (vouvoiement)." },
-                            { text: "Non, ils habitent à Liège. Et toi, tu as des frères et sœurs ?", correct: false, feedback: "⚠️ L'interlocuteur vous vouvoie ('vos parents'), il faut maintenir le vouvoiement ('vous')." },
-                            { text: "Non, il habite à Liège. Et vous, vous avez des frères et sœurs ?", correct: false, feedback: "⚠️ 'Les parents' est un nom au pluriel, il faut utiliser le pronom 'ils' (ils habitent)." }
+                            { text: "Non, ils habitent à Liège. Et vous, vous avez des frères et sœurs ?", correct: true, feedback: "🥇 Bravo ! Relance parfaite et polie avec le vouvoiement (vous avez)." },
+                            { text: "Non, ils habitent à Liège. Et toi, tu as des frères et sœurs ?", correct: false, feedback: "⚠️️ L'interlocuteur vous vouvoie, il faut continuer à utiliser \"vous\"." },
+                            { text: "Non, il habite à Liège. Et vous, vous avez des frères et sœurs ?", correct: false, feedback: "⚠️ Attention : \"les parents\" est un nom au pluriel, il faut utiliser ils (ils habitent), pas il." }
                         ]
                     }
                 ]
@@ -163,46 +188,53 @@
             thomas: {
                 unit: "Unité 2 — On fait quoi ce week-end ?",
                 title: "Thomas Blanc",
-                profile: "<b>Ville :</b> Lyon | <b>Aime :</b> Le sport, le cinéma, la musique | <b>N'aime pas :</b> Le théâtre<br><b>Programme :</b> Aujourd'hui : sport le matin, ne travaille pas l'après-midi. Demain : film ou musique.",
+                profile: `
+                    <p><b>Ville :</b> Lyon</p>
+                    <p><b>Aime :</b> Sport, cinéma, musique</p>
+                    <p><b>N'aime pas :</b> Le théâtre</p>
+                    <hr class="my-1 border-indigo-100">
+                    <p><b>Aujourd'hui :</b> Sport le matin, libre l'après-midi</p>
+                    <p><b>Demain :</b> Film ou musique</p>
+                `,
                 steps: [
                     {
                         interlocutor: "Salut Thomas ! Qu'est-ce que tu fais aujourd'hui pour le week-end ?",
                         options: [
-                            { text: "Je fais du sport le matin, et l'après-midi je ne travaille pas.", correct: true, feedback: "🥇 Parfait ! Utilisation exacte du verbe faire et de la structure négative complete (ne... pas)." },
-                            { text: "Je fais du sport le matin, et l'après-midi je ne travaille.", correct: false, feedback: "⚠️️ La négation est incomplète : il manque le deuxième élément 'pas' (je ne travaille pas)." },
-                            { text: "Je fais le sport et je travaille pas.", correct: false, feedback: "⚠️ On utilise l'article partitif/contracté avec le verbe faire : 'faire du sport'." }
+                            { text: "Je fais du sport le matin, et l'après-midi je ne travaille pas.", correct: true, feedback: "🥇 Parfait ! Utilisation exacte du verbe faire et de la négation ne... pas." },
+                            { text: "Je fais du sport le matin, et l'après-midi je ne travaille.", correct: false, feedback: "⚠️ Attention : la négation se compose de deux mots (ne... pas)." },
+                            { text: "Je fais le sport et je travaille pas.", correct: false, feedback: "⚠️ On dit faire du sport (article partitif/contracté)." }
                         ]
                     },
                     {
                         interlocutor: "Super ! Est-ce que tu aimes le cinéma ou le théâtre ?",
                         options: [
-                            { text: "J'aime le cinéma, mais je n'aime pas le théâtre.", correct: true, feedback: "🥇 Excellent ! On utilise l'article défini (le) avec les verbes d'appréciation comme 'aimer'." },
-                            { text: "J'aime un cinéma, mais je n'aime pas le théâtre.", correct: false, feedback: "⚠️ Pour exprimer un goût général, on utilise l'article défini 'le' et non l'article indéfini 'un'." },
-                            { text: "J'aime le cinéma, mais je ne aime pas le théâtre.", correct: false, feedback: "⚠️ Attention à l'élision : devant la voyelle 'a', 'ne' devient 'n'' (je n'aime pas)." }
+                            { text: "J'aime le cinéma, mais je n'aime pas le théâtre.", correct: true, feedback: "🥇 Excellent ! On utilise l'article défini (le) avec les verbes de goût (aimer)." },
+                            { text: "J'aime un cinéma, mais je n'aime pas le théâtre.", correct: false, feedback: "⚠️ Attention : pour parler d'une catégorie générale avec le verbe aimer, on utilise l'article défini le (j'aime le cinéma), pas l'article indéfini un." },
+                            { text: "J'aime le cinéma, mais je ne aime pas le théâtre.", correct: false, feedback: "⚠️ Devant une voyelle, ne devient n' (je n'aime pas)." }
                         ]
                     },
                     {
                         interlocutor: "Ah moi aussi j'adore le cinéma ! Alors, est-ce que tu regardes un film ce week-end ?",
                         options: [
-                            { text: "Oui, je regarde un film samedi ou dimanche.", correct: true, feedback: "🥇 Parfait ! Bonne terminaison du verbe en -er au présent (je regarde) et emploi du choix 'ou'." },
-                            { text: "Oui, je regardes un film samedi ou dimanche.", correct: false, feedback: "⚠️ Attention à la terminaison : avec le pronom 'je', les verbes en -er prennent un '-e'." },
-                            { text: "Oui, je regarde un film, alors je n'aime pas le cinéma.", correct: false, feedback: "💡 Incohérence logique : 'alors' introduit une conséquence en contradiction avec la suite !" }
+                            { text: "Oui, je regarde un film samedi ou dimanche.", correct: true, feedback: "🥇 Parfait ! Conjugaison exacte du verbe en -er (je regarde) et utilisation de la conjonction de choix ou." },
+                            { text: "Oui, je regardes un film samedi ou dimanche.", correct: false, feedback: "⚠️ Attention à la terminaison : avec je, le verbe prend un -e (je regarde), pas -es." },
+                            { text: "Oui, je regarde un film, alors je n'aime pas le cinéma.", correct: false, feedback: "💡 Incohérence : alors indique une conséquence, et tu as dit précédemment que tu aimais le cinéma !" }
                         ]
                     },
                     {
                         interlocutor: "Demain après-midi, c'est parfait ! Tu es libre ?",
                         options: [
-                            { text: "Oui ! Demain je ne travaille pas, mais maintenant je travaille.", correct: true, feedback: "🥇 Excellent ! Distinction temporelle nette entre 'demain' et 'maintenant'." },
-                            { text: "Oui ! Aujourd'hui je ne travaille pas demain.", correct: false, feedback: "⚠️ Attention : vous ne pouvez pas associer 'aujourd'hui' et 'demain' dans la même proposition." },
-                            { text: "Oui ! Aujourd'hui je ne travaille pas.", correct: false, feedback: "⚠️ L'interlocuteur demande votre disponibilité pour 'demain', pas pour aujourd'hui." }
+                            { text: "Oui ! Demain je ne travaille pas, mais maintenant je travaille.", correct: true, feedback: "🥇 Excellent ! Utilisation exacte des adverbes demain et maintenant avec la bonne structure de négation (ne... pas)." },
+                            { text: "Oui ! Aujourd'hui je ne travaille pas demain.", correct: false, feedback: "⚠️ Attention à la logique temporelle : on ne peut pas combiner aujourd'hui et demain dans la même phrase." },
+                            { text: "Oui ! Aujourd'hui je ne travaille pas.", correct: false, feedback: "⚠️ Attention au moment ! L'interlocuteur demande si vous êtes libre demain. Répondre avec aujourd'hui ne confirme pas votre disponibilité pour le lendemain." }
                         ]
                     },
                     {
                         interlocutor: "D'accord ! Et maintenant, qu'est-ce que tu fais ?",
                         options: [
-                            { text: "Maintenant, j'écoute de la musique. Est-ce que tu écoutes de la musique aussi ?", correct: true, feedback: "🥇 Bravo ! Présent de l'indicatif avec 'maintenant' et interrogation correcte avec 'Est-ce que'." },
-                            { text: "Maintenant, je écoute de la musique. Est-ce que tu écoutes de la musique aussi ?", correct: false, feedback: "⚠️ Élision obligatoire : 'je' devant une voyelle se transforme en 'j'' (j'écoute)." },
-                            { text: "Maintenant, j'écoutais de la musique. Écoutes-tu de la musique aussi ?", correct: false, feedback: "⚠️ L'adverbe 'maintenant' exige le présent (j'écoute) et non l'imparfait (j'écoutais)." }
+                            { text: "Maintenant, j'écoute de la musique. Est-ce que tu écoutes de la musique aussi ?", correct: true, feedback: "🥇 Bravo ! Utilisation exacte du présent de l'indicatif avec l'adverbe maintenant, et bonne structure interrogative avec Est-ce que." },
+                            { text: "Maintenant, je écoute de la musique. Est-ce que tu écoutes de la musique aussi ?", correct: false, feedback: "⚠️ Attention à l'élision : devant une voyelle (é), je devient j' (j'écoute)." },
+                            { text: "Maintenant, j'écoutais de la musique. Écoutes-tu de la musique aussi ?", correct: false, feedback: "⚠️ Attention au temps du verbe ! L'adverbe maintenant indique une action présente. Il faut utiliser le présent (j'écoute) et non l'imparfait (j'écoutais)." }
                         ]
                     }
                 ]
@@ -329,7 +361,7 @@
             box.classList.add('hidden');
         }
 
-        // --- INITIALISATION AU CHARGEMENT ---
+        // --- INITIALISATION ---
         window.onload = () => {
             initDialogue();
         };
