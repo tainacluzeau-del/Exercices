@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exercices de français — Accueil</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A1%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #fbf7ef;
+    --card: #ffffff;
+    --ink: #2b2420;
+    --ink-soft: #6b6058;
+    --accent: #d9622b;
+    --accent-2: #2f6b5e;
+    --ring: #e4dccb;
+    --tag-bg: #f2ead9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c1a17;
+      --card: #272420;
+      --ink: #f3ede3;
+      --ink-soft: #b9afa2;
+      --accent: #f08a4b;
+      --accent-2: #5ecbb0;
+      --ring: #3a352e;
+      --tag-bg: #332c22;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c1a17; --card: #272420; --ink: #f3ede3; --ink-soft: #b9afa2;
+    --accent: #f08a4b; --accent-2: #5ecbb0; --ring: #3a352e; --tag-bg: #332c22;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 26px; }
+  h1 { font-size: clamp(24px, 5vw, 32px); margin: 0 0 6px; }
+  header p { color: var(--ink-soft); margin: 0; font-size: 15px; }
+  .filters {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 22px;
+  }
+  .filter-btn {
+    font-family: inherit; cursor: pointer; border: 1px solid var(--ring);
+    background: var(--card); color: var(--ink); border-radius: 999px;
+    padding: 6px 14px; font-size: 13px; font-weight: 600;
+  }
+  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--ring);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--ink);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover, .card:focus-visible { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,.12); }
+  .card .emoji { font-size: 34px; margin-bottom: 8px; }
+  .card h2 { font-size: 18px; margin: 0 0 6px; }
+  .card .desc { color: var(--ink-soft); font-size: 14px; margin: 0 0 12px; flex-grow: 1; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tag {
+    background: var(--tag-bg); color: var(--ink-soft);
+    font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .03em; padding: 3px 9px; border-radius: 999px;
+  }
+  .open-btn {
+    align-self: flex-start;
+    background: var(--accent-2); color: #fff;
+    border-radius: 10px; padding: 8px 16px;
+    font-size: 14px; font-weight: 700;
+  }
+  .empty-note {
+    text-align: center; color: var(--ink-soft);
+    padding: 30px 10px; display: none;
+  }
+  details {
+    margin-top: 34px;
+    background: var(--card);
+    border: 1px solid var(--ring);
+    border-radius: 14px;
+    padding: 14px 18px;
+  }
+  summary {
+    cursor: pointer; font-weight: 700; font-size: 14.5px;
+    color: var(--accent);
+  }
+  details pre {
+    background: var(--bg);
+    border: 1px solid var(--ring);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 12.5px;
+    overflow-x: auto;
+    margin-top: 10px;
+  }
+  details p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 12.5px; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🇫🇷 Exercices de français interactifs</h1>
+    <p>Clique sur un exercice pour l'ouvrir.</p>
+  </header>
+
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+  <p class="empty-note" id="emptyNote">Aucun exercice pour cette unité pour le moment.</p>
+
+  <details>
+    <summary>➕ Comment ajouter un nouvel exercice (pour toi)</summary>
+    <p>
+      1. Dépose le nouveau fichier HTML de l'exercice dans le même dossier GitHub que cette page (ex. <code>roue-des-verbes.html</code>).<br>
+      2. Ouvre ce fichier <code>index.html</code>, repère le tableau <code>EXERCICES</code> en bas du code source, et ajoute un nouvel objet sur le modèle ci-dessous (copie-colle, puis modifie les valeurs).<br>
+      3. Enregistre et republie (commit + push) — la carte apparaît automatiquement, avec son filtre d'unité.
+    </p>
+    <pre>{
+  titre: "Nom de l'exercice",
+  emoji: "🎲",
+  description: "Une phrase courte qui explique l'exercice.",
+  fichier: "nom-du-fichier.html",
+  unite: "Unité 2",
+  type: "Jeu de grammaire"   // ou "CO", "CE", "PO", "PE"...
+}</pre>
+  </details>
+
+  <footer>D'autres exercices seront ajoutés au fur et à mesure.</footer>
+</div>
+
+<script>
+  // ==========================================================
+  // LISTE DES EXERCICES — ajoute un objet ici pour chaque nouvelle page
+  // ==========================================================
+  const EXERCICES = [
+    {
+      titre: "La roue des verbes",
+      emoji: "🎡",
+      description: "Tire un sujet et un verbe, puis écris la phrase correcte au présent.",
+      fichier: "roue-des-verbes.html",
+      unite: "Unité 2",
+      type: "Production orale"
+    }
+    // Ajoute les prochains exercices ici, séparés par une virgule :
+    // { titre: "...", emoji: "...", description: "...", fichier: "...", unite: "...", type: "..." }
+  ];
+  // ==========================================================
+
+  const grid = document.getElementById('grid');
+  const filtersEl = document.getElementById('filters');
+  const emptyNote = document.getElementById('emptyNote');
+  let activeFilter = 'Toutes';
+
+  function renderFilters() {
+    const unites = ['Toutes', ...new Set(EXERCICES.map(e => e.unite))];
+    filtersEl.innerHTML = '';
+    unites.forEach(u => {
+      const b = document.createElement('button');
+      b.className = 'filter-btn' + (u === activeFilter ? ' active' : '');
+      b.textContent = u;
+      b.addEventListener('click', () => { activeFilter = u; render(); });
+      filtersEl.appendChild(b);
+    });
+  }
+
+  function render() {
+    renderFilters();
+    const list = activeFilter === 'Toutes' ? EXERCICES : EXERCICES.filter(e => e.unite === activeFilter);
+    grid.innerHTML = '';
+    emptyNote.style.display = list.length ? 'none' : 'block';
+    list.forEach(ex => {
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = ex.fichier;
+      a.innerHTML = `
+        <div class="emoji">${ex.emoji}</div>
+        <h2>${ex.titre}</h2>
+        <p class="desc">${ex.description}</p>
+        <div class="tags"><span class="tag">${ex.unite}</span><span class="tag">${ex.type}</span></div>
+        <span class="open-btn">Ouvrir ▸</span>
+      `;
+      grid.appendChild(a);
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
