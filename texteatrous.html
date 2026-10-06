@@ -41,7 +41,6 @@
             <div class="w-full sm:w-auto flex items-center gap-2">
                 <label for="text-selector" class="text-xs font-semibold text-indigo-900 uppercase tracking-wider shrink-0">Texte :</label>
                 <select id="text-selector" onchange="changeText(this.value)" class="bg-white text-indigo-950 text-xs sm:text-sm font-medium rounded-lg p-1.5 outline-none border border-indigo-200 cursor-pointer w-full sm:w-auto shadow-xs">
-                    <!-- Tu pourras facilement ajouter de nouveaux <option> ici dans le futur -->
                     <option value="camille" selected>A1 - Unité 2 : "j'aime" (Camille Moreau)</option>
                 </select>
             </div>
@@ -87,50 +86,112 @@
         </div>
     </div>
 
+    <!-- Modale d'explication en cas d'erreur -->
+    <div id="error-modal-container" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-sm w-full border border-rose-200 modal-animation text-center">
+            <div class="w-10 h-10 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">
+                ⚠️
+            </div>
+            <h3 class="text-sm font-bold text-rose-900 mb-1">Rappel grammatical</h3>
+            <p id="error-explanation-text" class="text-xs sm:text-sm text-slate-600 mb-5 leading-relaxed">
+                <!-- Explication injectée -->
+            </p>
+            <button onclick="closeErrorModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl text-xs sm:text-sm transition cursor-pointer">
+                J'ai compris
+            </button>
+        </div>
+    </div>
+
     <script>
-        // --- BASE DE DONNÉES DES TEXTES (Extensible pour tes futurs ajouts) ---
+        // --- BASE DE DONNÉES DES TEXTES ---
         const textsDatabase = {
             camille: {
                 badge: "A1 — Unité 2 : Thématique \"j'aime\"",
                 title: "Camille Moreau",
                 subtitle: "Cliquez sur chaque espace vide pour choisir la bonne proposition.",
-                // Le premier élément du tableau de chaque trou est la bonne réponse de référence.
                 gaps: [
-                    { choices: ["m'appelle", "mapelle", "m'appel"] },
-                    { choices: ["J'ai 32 ans", "Je suis 32", "Je suis 32 ans"] },
-                    { choices: ["habite", "habites", "habitent"] },
-                    { choices: ["et", "ou", "alors"] },
-                    { choices: ["boulangère", "boulanger", "boulangers"] },
-                    { choices: ["voyager", "des voyages", "voyage"] },
-                    { choices: ["la marche", "de la marche", "des marche"] },
-                    { choices: ["Mon", "Son", "Ton"] },
-                    { choices: ["professeur", "un professeur", "une professeure"] },
-                    { choices: ["et", "ou", "alors"] },
-                    { choices: ["aime", "aiment", "aimes"] },
-                    { choices: ["aimons", "aimez", "aiment"] },
-                    { choices: ["des", "un", "une"] },
-                    { choices: ["habitent", "habites", "habitons"] },
-                    { choices: ["adorent", "aidorent", "édorent"] },
-                    { choices: ["danser", "une danse", "dansent"] }
+                    { 
+                        choices: ["m'appelle", "mapelle", "m'appel"],
+                        explanation: "Pour se présenter avec le verbe s'appeler, on écrit 'je m'appelle' (avec deux 'p' et un 'e' final)."
+                    },
+                    { 
+                        choices: ["J'ai 32 ans", "Je suis 32", "Je suis 32 ans"],
+                        explanation: "En français, on utilise le verbe **avoir** pour exprimer l'âge (ex: J'ai 32 ans)."
+                    },
+                    { 
+                        choices: ["habite", "habites", "habitent"],
+                        explanation: "Avec 'je', la terminaison du verbe habiter au présent est '-e' (j'habite)."
+                    },
+                    { 
+                        choices: ["et", "ou", "alors"],
+                        explanation: "On utilise 'et' pour ajouter une deuxième information (j'habite à Lyon et je travaille...)."
+                    },
+                    { 
+                        choices: ["boulangère", "boulanger", "boulangers"],
+                        explanation: "Camille est une femme. On utilise la forme féminine : boulangère."
+                    },
+                    { 
+                        choices: ["voyager", "des voyages", "voyage"],
+                        explanation: "Après un verbe de goût comme 'j'adore', le verbe suivant s'écrit à l'infinitif (voyager)."
+                    },
+                    { 
+                        choices: ["la marche", "de la marche", "des marche"],
+                        explanation: "Avec les verbes d'appréciation ('j'aime'), on utilise l'article défini (la marche)."
+                    },
+                    { 
+                        choices: ["Mon", "Son", "Ton"],
+                        explanation: "Camille parle de son propre mari à la 1ère personne : 'Mon mari'."
+                    },
+                    { 
+                        choices: ["professeur", "un professeur", "une professeure"],
+                        explanation: "On ne met pas d'article indéfini (un/une) directement devant une profession après le verbe être (est professeur)."
+                    },
+                    { 
+                        choices: ["et", "ou", "alors"],
+                        explanation: "On utilise 'et' pour lier deux langues parlées (français et anglais)."
+                    },
+                    { 
+                        choices: ["aime", "aiment", "aimes"],
+                        explanation: "Le sujet est 'Il' (3e personne du singulier) : 'Il aime'."
+                    },
+                    { 
+                        choices: ["aimons", "aimez", "aiment"],
+                        explanation: "Avec le pronom 'Nous', la terminaison est '-ons' (Nous aimons)."
+                    },
+                    { 
+                        choices: ["des", "un", "une"],
+                        explanation: "Marco et Elena sont au pluriel. On utilise l'article indéfini pluriel 'des'."
+                    },
+                    { 
+                        choices: ["habitent", "habites", "habitons"],
+                        explanation: "Le sujet est 'Ils' (3e personne du pluriel), la terminaison du verbe est '-ent'."
+                    },
+                    { 
+                        choices: ["adorent", "aidorent", "édorent"],
+                        explanation: "Orthographe correcte : le verbe adorer s'écrit avec un 'a' initial."
+                    },
+                    { 
+                        choices: ["danser", "une danse", "dansent"],
+                        explanation: "Après le verbe 'détester', le verbe d'action se met à l'infinitif (danser)."
+                    }
                 ],
                 template: `« Je {0} Camille Moreau. {1} et je suis française. J'{2} à Lyon {3} je travaille dans une boulangerie. Je suis {4}. J'adore {5} et j'aime {6}.\n\n{7} mari, Julien, est {8}. Il parle français {9} anglais. Il {10} cuisiner. Nous {11} danser ensemble.\n\nNous avons {12} amis, Marco et Elena. Ils {13} à Milan. Ils {14} chanter, mais ils détestent {15} ! »`
             }
         };
 
         let currentTextKey = "camille";
-        let gapStates = {}; // Stocke les choix faits par l'utilisateur pour le texte actif
+        let gapStates = {}; 
         let activeGapIndex = null;
 
         function changeText(key) {
             currentTextKey = key;
-            gapStates = {}; // Réinitialise les réponses lors du changement de texte
+            gapStates = {}; 
             renderExercise();
         }
 
         function renderExercise() {
             const data = textsDatabase[currentTextKey];
             
-            // Mise à jour des en-têtes
             document.getElementById('text-badge').innerText = data.badge;
             document.getElementById('text-title').innerText = data.title;
             document.getElementById('text-subtitle').innerText = data.subtitle;
@@ -148,7 +209,7 @@
                     // Bonne réponse
                     displayHtml = `<span class="inline-block px-2.5 py-1 mx-1 my-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs sm:text-sm font-semibold">${currentVal.text}</span>`;
                 } else {
-                    // Mauvaise réponse (cliquable pour réessayer)
+                    // Mauvaise réponse (cliquable pour re-tester)
                     displayHtml = `<button onclick="openGapModal(${index})" class="inline-flex items-center gap-1 px-2.5 py-1 mx-1 my-0.5 bg-rose-100 hover:bg-rose-200 border border-rose-300 text-rose-700 rounded-lg text-xs sm:text-sm font-semibold transition shadow-2xs align-baseline cursor-pointer" title="Erreur - Cliquez pour réessayer">${currentVal.text} ❌</button>`;
                 }
 
@@ -163,9 +224,8 @@
             activeGapIndex = index;
             const data = textsDatabase[currentTextKey];
             const gap = data.gaps[index];
-            const correctWord = gap.choices[0]; // La première est la bonne réponse de référence
+            const correctWord = gap.choices[0]; 
 
-            // Mélange aléatoire des propositions pour l'affichage
             const shuffledChoices = [...gap.choices].sort(() => Math.random() - 0.5);
 
             const listContainer = document.getElementById('modal-choices-list');
@@ -176,24 +236,34 @@
                 const btn = document.createElement('button');
                 btn.className = "w-full text-left bg-slate-50 hover:bg-indigo-50 hover:border-indigo-400 border border-slate-200 text-slate-800 font-medium py-2.5 px-3.5 rounded-xl text-xs sm:text-sm transition-all shadow-xs cursor-pointer";
                 btn.innerText = choice;
-                btn.onclick = () => selectChoice(choice, isCorrect);
+                btn.onclick = () => selectChoice(choice, isCorrect, gap.explanation);
                 listContainer.appendChild(btn);
             });
 
             document.getElementById('gap-modal-container').classList.remove('hidden');
         }
 
-        function selectChoice(text, isCorrect) {
+        function selectChoice(text, isCorrect, explanation) {
             if (activeGapIndex !== null) {
                 gapStates[activeGapIndex] = { text: text, correct: isCorrect };
             }
             closeModal();
             renderExercise();
+
+            // Si c'est une erreur, afficher la modale d'explication
+            if (!isCorrect && explanation) {
+                document.getElementById('error-explanation-text').innerText = explanation;
+                document.getElementById('error-modal-container').classList.remove('hidden');
+            }
         }
 
         function closeModal() {
             document.getElementById('gap-modal-container').classList.add('hidden');
             activeGapIndex = null;
+        }
+
+        function closeErrorModal() {
+            document.getElementById('error-modal-container').classList.add('hidden');
         }
 
         function updateScore() {
@@ -220,7 +290,6 @@
             renderExercise();
         }
 
-        // Lancement au chargement de la page
         window.onload = () => {
             renderExercise();
         };
