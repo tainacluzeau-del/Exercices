@@ -14,6 +14,10 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Ajout d'un défilement fluide pour le confort mobile */
+        #chat-window {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col items-center p-3 sm:p-6">
@@ -170,39 +174,39 @@
                     {
                         interlocutor: "Bonjour Élodie ! Dites-moi, vous êtes mariée ? Vous avez des enfants ?",
                         options: [
-                            { text: "Non, je suis célibataire, mais j'ai un chien !", correct: true, feedback: "🥇 Parfait ! Utilisation exacte du statut et présence du verbe avoir (j'ai un chien)." },
-                            { text: "Oui, je suis célibataire. Je suis un chien.", correct: false, feedback: "⚠️ mariée= married ; célibataire = single. Attention au verbe : on utilise avoir (j'ai un chien), pas le verbe être." },
+                            { text: "Non, je suis célibataire. J'ai 0 enfant, mais j'ai un chien !", correct: true, feedback: "🥇 Parfait ! Utilisation exacte du statut et présence du verbe avoir (j'ai un chien)." },
+                            { text: "Non, je suis célibataire. Je suis un chien.", correct: false, feedback: "⚠️ Attention au verbe : on utilise avoir (j'ai un chien), pas le verbe être." },
                             { text: "Oui, je suis mariée et j'ai deux enfants.", correct: false, feedback: "💡 Regarde la fiche d'Élodie : elle est célibataire et elle a 0 enfant !" }
                         ]
                     },
                     {
                         interlocutor: "Ah un chien ! Comment il s'appelle ? Il a quel âge ?",
                         options: [
-                            { text: "C'est Toby et il a 4 ans.", correct: true, feedback: "🥇 Excellent ! Bonne conjugaison du verbe avoir à la 3ᵉ personne (il a)." },
+                            { text: "Il s'appelle Toby et il a 4 ans.", correct: true, feedback: "🥇 Excellent ! Bonne conjugaison du verbe avoir à la 3ᵉ personne (il a)." },
                             { text: "Il s'appelle Toby et il est 4 ans.", correct: false, feedback: "⚠ En français, on utilise le verbe avoir pour donner l'âge (il a 4 ans)." },
-                            { text: "Il s'appelle Toby et il a 4.", correct: false, feedback: "⚠ L'âge est toujours suivi de 'ans'" }
+                            { text: "Il s'appelle Toby et il ont 4 ans.", correct: false, feedback: "⚠ Ont est réservé au pluriel (ils ont). Pour un seul chien, on utilise a (il a)." }
                         ]
                     },
                     {
                         interlocutor: "D'accord ! Et vous avez des frères et sœurs ?",
                         options: [
                             { text: "Oui, j'ai deux frères : Julien et Thomas.", correct: true, feedback: "🥇 Bravo ! Utilisation exacte du vocabulaire de la famille (mes frères) et du verbe avoir (j'ai)." },
-                            { text: "Oui, j'est deux sœurs : Julien et Thomas.", correct: false, feedback: "💡  Attention à la conjugaison : avec je, le verbe avoir s'écrit j'ai (et pas j'est). Julien et Thomas sont des prénoms masculins : ce sont ses frères !" },
+                            { text: "Oui, j'ai deux sœurs : Julien et Thomas.", correct: false, feedback: "💡 Julien et Thomas sont des prénoms masculins : ce sont ses frères !" },
                             { text: "Oui, j'est deux frères : Julien et Thomas.", correct: false, feedback: "⚠️ Attention à la conjugaison : avec je, le verbe avoir s'écrit j'ai (et pas j'est)." }
                         ]
                     },
                     {
                         interlocutor: "Qu'est-ce qu'ils font dans la vie ? Ils ont quel âge ?",
                         options: [
-                            { text: "Ils ont 30 et 26 ans. Ils sont étudiants.", correct: true, feedback: "🥇 Parfait ! Bonne forme du verbe avoir au pluriel (ils ont)." },
+                            { text: "Ils ont 30 ans et 26 ans. Ils sont étudiants.", correct: true, feedback: "🥇 Parfait ! Bonne forme du verbe avoir au pluriel (ils ont)." },
                             { text: "Ils a 30 ans et 26 ans.", correct: false, feedback: "⚠️ Avec ils (au pluriel), le verbe avoir devient ont (ils ont)." },
                             { text: "Ils sont 30 ans et 26 ans.", correct: false, feedback: "⚠️ Attention à ne pas confondre être (ils sont) et avoir (ils ont)." }
                         ]
                     },
                     {
-                        interlocutor: "Et vos parents, ils habitent à Bruxelles aussi ?",
+                        interlocutor: "C'est une très jolie famille ! Et vos parents, ils habitent à Bruxelles aussi ?",
                         options: [
-                            { text: "Non, ils vivent à Liège. Et vous ?", correct: true, feedback: "🥇 Bravo ! Relance parfaite et polie avec le vouvoiement (vous avez)." },
+                            { text: "Non, ils habitent à Liège. Et vous, vous avez des frères et sœurs ?", correct: true, feedback: "🥇 Bravo ! Relance parfaite et polie avec le vouvoiement (vous avez)." },
                             { text: "Non, ils habitent à Liège. Et toi, tu as des frères et sœurs ?", correct: false, feedback: "⚠ L'interlocuteur vous vouvoie, il faut continuer à utiliser \"vous\"." },
                             { text: "Non, il habite à Liège. Et vous, vous avez des frères et sœurs ?", correct: false, feedback: "⚠️ Attention : \"les parents\" est un nom au pluriel, il faut utiliser ils (ils habitent), pas il." }
                         ]
@@ -222,18 +226,18 @@
                 `,
                 steps: [
                     {
-                        interlocutor: "Salut Thomas ! Qu'est-ce que tu fais ce week-end ?",
+                        interlocutor: "Salut Thomas ! Qu'est-ce que tu fais aujourd'hui pour le week-end ?",
                         options: [
                             { text: "Je fais du sport le matin, et l'après-midi je ne travaille pas.", correct: true, feedback: "🥇 Parfait ! Utilisation exacte du verbe faire et de la négation ne... pas." },
                             { text: "Je fais du sport le matin, et l'après-midi je ne travaille.", correct: false, feedback: "⚠️ Attention : la négation se compose de deux mots (ne... pas)." },
-                            { text: "Je fais le sport et je travaille pas.", correct: false, feedback: "⚠️️ On dit faire du sport (article partitif/contracté)." }
+                            { text: "Je fais le sport et je travaille pas.", correct: false, feedback: "⚠ On dit faire du sport (article partitif/contracté)." }
                         ]
                     },
                     {
                         interlocutor: "Super ! Est-ce que tu aimes le cinéma ou le théâtre ?",
                         options: [
                             { text: "J'aime le cinéma, mais je n'aime pas le théâtre.", correct: true, feedback: "🥇 Excellent ! On utilise l'article défini (le) avec les verbes de goût (aimer)." },
-                            { text: "J'aime un cinéma, mais je n'aime pas le théâtre.", correct: false, feedback: "⚠️️ Attention : pour parler d'une catégorie générale avec le verbe aimer, on utilise l'article défini le (j'aime le cinéma), pas l'article indéfini un." },
+                            { text: "J'aime un cinéma, mais je n'aime pas le théâtre.", correct: false, feedback: "⚠ Attention : pour parler d'une catégorie générale avec le verbe aimer, on utilise l'article défini le (j'aime le cinéma), pas l'article indéfini un." },
                             { text: "J'aime le cinéma, mais je ne aime pas le théâtre.", correct: false, feedback: "⚠️ Devant une voyelle, ne devient n' (je n'aime pas)." }
                         ]
                     },
@@ -241,12 +245,12 @@
                         interlocutor: "Ah moi aussi j'adore le cinéma ! Alors, est-ce que tu regardes un film ce week-end ?",
                         options: [
                             { text: "Oui, je regarde un film samedi ou dimanche.", correct: true, feedback: "🥇 Parfait ! Conjugaison exacte du verbe en -er (je regarde) et utilisation de la conjonction de choix ou." },
-                            { text: "Oui, je regardes un film samedi ou dimanche.", correct: false, feedback: "⚠️ Attention à la terminaison : avec je, le verbe prend un -e (je regarde), pas -es." },
+                            { text: "Oui, je regardes un film samedi ou dimanche.", correct: false, feedback: "⚠️️ Attention à la terminaison : avec je, le verbe prend un -e (je regarde), pas -es." },
                             { text: "Oui, je regarde un film, alors je n'aime pas le cinéma.", correct: false, feedback: "💡 Incohérence : alors indique une conséquence, et tu as dit précédemment que tu aimais le cinéma !" }
                         ]
                     },
                     {
-                        interlocutor: "Demain après-midi, tu es libre ?",
+                        interlocutor: "Demain après-midi, c'est parfait ! Tu es libre ?",
                         options: [
                             { text: "Oui ! Demain je ne travaille pas, mais maintenant je travaille.", correct: true, feedback: "🥇 Excellent ! Utilisation exacte des adverbes demain et maintenant avec la bonne structure de négation (ne... pas)." },
                             { text: "Oui ! Aujourd'hui je ne travaille pas demain.", correct: false, feedback: "⚠️ Attention à la logique temporelle : on ne peut pas combiner aujourd'hui et demain dans la même phrase." },
@@ -256,7 +260,7 @@
                     {
                         interlocutor: "D'accord ! Et maintenant, qu'est-ce que tu fais ?",
                         options: [
-                            { text: "Maintenant, je travaille et j'écoute de la musique. Est-ce que tu écoutes de la musique aussi ?", correct: true, feedback: "🥇 Bravo ! Utilisation exacte du présent de l'indicatif avec l'adverbe maintenant, et bonne structure interrogative avec Est-ce que." },
+                            { text: "Maintenant, j'écoute de la musique. Est-ce que tu écoutes de la musique aussi ?", correct: true, feedback: "🥇 Bravo ! Utilisation exacte du présent de l'indicatif avec l'adverbe maintenant, et bonne structure interrogative avec Est-ce que." },
                             { text: "Maintenant, je écoute de la musique. Est-ce que tu écoutes de la musique aussi ?", correct: false, feedback: "⚠️ Attention à l'élision : devant une voyelle (é), je devient j' (j'écoute)." },
                             { text: "Maintenant, j'écoutais de la musique. Écoutes-tu de la musique aussi ?", correct: false, feedback: "⚠️ Attention au temps du verbe ! L'adverbe maintenant indique une action présente. Il faut utiliser le présent (j'écoute) et non l'imparfait (j'écoutais)." }
                         ]
@@ -285,6 +289,15 @@
             container.classList.toggle('hidden');
             container.classList.toggle('flex');
             chevron.classList.toggle('rotate-180');
+        }
+
+        // Fonction pour faire défiler automatiquement le chat vers le bas
+        function scrollToBottom() {
+            const chatWindow = document.getElementById('chat-window');
+            // Utilisation d'un petit délai pour s'assurer que le rendu DOM est terminé
+            setTimeout(() => {
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }, 50);
         }
 
         function initDialogue() {
@@ -372,7 +385,7 @@
                 </div>
             `;
             chatWindow.insertAdjacentHTML('beforeend', msgHtml);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            scrollToBottom();
         }
 
         function appendUserMessage(text) {
@@ -385,7 +398,7 @@
                 </div>
             `;
             chatWindow.insertAdjacentHTML('beforeend', msgHtml);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+            scrollToBottom();
         }
 
         function showFeedback(message, isCorrect) {
