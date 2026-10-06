@@ -407,7 +407,7 @@
     <span class="pill">🔁 Manche : <span id="round">0</span></span>
   </div>
 
-  <div class="banner" id="switchBanner">🔄 10 manches faites — pensez à changer de rôle !</div>
+  <div class="banner" id="switchBanner">N'hésitez pas à changer d'exercice ;)</div>
 
   <div class="game-container">
     <div class="wheels">
@@ -440,7 +440,7 @@
         <button class="validate-btn" id="validateBtn">Valider ✔️</button>
       </div>
       <div class="feedback" id="feedback"></div>
-      <button class="next-btn" id="nextBtn">Manche suivante 🔁</button>
+      <button class="next-btn" id="nextBtn">Continuer ➡️️</button>
     </div>
   </div>
 
@@ -497,6 +497,7 @@
   let subjectDone = false, verbDone = false;
   let currentSubjectIndex = null, currentVerbIndex = null;
   let subjectRotation = 0, verbRotation = 0;
+  let answerValidated = false; // Variable pour bloquer les roues après validation
 
   const el = id => document.getElementById(id);
 
@@ -572,6 +573,7 @@
   }
 
   el('spinSubject').addEventListener('click', () => {
+    if (answerValidated) return; // Bloqué si la réponse est validée
     el('spinSubject').disabled = true;
     el('feedback').className = 'feedback';
     const targetIdx = drawSubject();
@@ -579,12 +581,13 @@
       currentSubjectIndex = idx;
       subjectDone = true;
       el('subjectResult').textContent = SUBJECTS[idx];
-      el('spinSubject').disabled = false;
+      if (!answerValidated) el('spinSubject').disabled = false;
       checkReady();
     });
   });
 
   el('spinVerb').addEventListener('click', () => {
+    if (answerValidated) return; // Bloqué si la réponse est validée
     el('spinVerb').disabled = true;
     el('feedback').className = 'feedback';
     const targetIdx = drawVerb();
@@ -592,7 +595,7 @@
       currentVerbIndex = idx;
       verbDone = true;
       el('verbResult').textContent = VERBS[idx];
-      el('spinVerb').disabled = false;
+      if (!answerValidated) el('spinVerb').disabled = false;
       checkReady();
     });
   });
@@ -617,7 +620,13 @@
   }
 
   function validate() {
-    if (!subjectDone || !verbDone) return;
+    if (!subjectDone || !verbDone || answerValidated) return;
+    answerValidated = true; // Active le verrouillage des roues
+
+    // Désactive explicitement les boutons pour tourner les roues
+    el('spinSubject').disabled = true;
+    el('spinVerb').disabled = true;
+
     const expected = expectedSentence(currentSubjectIndex, currentVerbIndex);
     const given = el('answerInput').value;
     const ok = normalize(given) === normalize(expected);
@@ -642,7 +651,7 @@
     el('answerInput').disabled = true;
     el('nextBtn').classList.add('show');
 
-    if (round > 0 && round % 10 === 0) {
+    if (round > 0 && round % 24 === 0) {
       const b = el('switchBanner');
       b.classList.remove('show');
       void b.offsetWidth;
@@ -658,8 +667,11 @@
   el('nextBtn').addEventListener('click', () => {
     subjectDone = false; verbDone = false;
     currentSubjectIndex = null; currentVerbIndex = null;
+    answerValidated = false; // Déverrouille les roues pour la manche suivante
     el('subjectResult').textContent = '—';
     el('verbResult').textContent = '—';
+    el('spinSubject').disabled = false;
+    el('spinVerb').disabled = false;
     el('answerCard').classList.remove('show');
     el('feedback').className = 'feedback';
     el('validateBtn').disabled = false;
@@ -669,8 +681,11 @@
 
   el('resetBtn').addEventListener('click', () => {
     score = 0; round = 0;
+    answerValidated = false;
     el('score').textContent = '0';
     el('round').textContent = '0';
+    el('spinSubject').disabled = false;
+    el('spinVerb').disabled = false;
     el('switchBanner').classList.remove('show');
   });
 
