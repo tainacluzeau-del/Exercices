@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>L'Atelier du Français — FLE A1</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,18 +14,26 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Ajout d'un défilement fluide pour le confort mobile */
-        #chat-window {
-            scroll-behavior: smooth;
-        }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col items-center p-3 sm:p-6">
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col items-center p-2 sm:p-6">
 
     <!-- En-tête principal -->
-    <header class="w-full max-w-4xl mb-4 text-center">
-        <h1 class="text-2xl sm:text-3xl font-bold text-indigo-700">L'Atelier du Français — A1</h1>
-        <p class="text-slate-600 text-xs sm:text-sm mt-1">Application interactive de dialogues guidés</p>
+    <header class="w-full max-w-4xl mb-3 flex items-center justify-between px-1">
+        <!-- Bouton de retour vers la liste des exercices -->
+        <a href="https://tainacluzeau-del.github.io/Exercices/" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-indigo-700 bg-white hover:bg-indigo-50 px-3 py-2 rounded-xl transition shadow-sm border border-slate-200">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-indigo-600">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            <span class="hidden sm:inline">Retour aux exercices</span>
+            <span class="sm:hidden">Accueil</span>
+        </a>
+
+        <!-- Titre centré ou aligné -->
+        <div class="text-right sm:text-center flex-1 ml-2">
+            <h1 class="text-base sm:text-2xl font-bold text-indigo-700">L'Atelier du Français — A1</h1>
+            <p class="text-slate-600 text-[11px] sm:text-xs">Dialogues guidés</p>
+        </div>
     </header>
 
     <!-- Conteneur principal séparé en 2 colonnes sur écran large -->
@@ -37,7 +45,7 @@
             <label for="dialogue-selector" class="text-xs font-semibold text-indigo-900 uppercase tracking-wider mb-1.5 block">
                 Sélectionner un profil
             </label>
-            <select id="dialogue-selector" onchange="changeDialogue(this.value)" class="bg-white text-indigo-950 text-xs sm:text-sm font-medium rounded-lg p-2 outline-none border border-indigo-200 cursor-pointer w-full mb-3 shadow-sm">
+            <select id="dialogue-selector" onchange="changeDialogue(this.value)" class="bg-white text-indigo-950 text-xs sm:text-sm font-medium rounded-lg p-2 outline-none border border-indigo-200 cursor-pointer w-full mb-2 sm:mb-3 shadow-sm">
                 <option value="lucas" selected>Unité 1 : Lucas (Se présenter)</option>
                 <option value="elodie">Unité 1 : Élodie (La famille)</option>
                 <option value="thomas">Unité 2 : Thomas (Le week-end)</option>
@@ -68,32 +76,32 @@
             </div>
         </aside>
 
-        <!-- PANNEAU DROIT : Fenêtre de discussion WhatsApp -->
-        <section class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50">
+        <!-- PANNEAU DROIT : Fenêtre de discussion -->
+        <section class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50 relative">
             
-            <!-- Barre supérieure avec bouton Retour -->
-            <div class="p-3 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+            <!-- Barre supérieure avec bouton Recommencer -->
+            <div class="p-2.5 sm:p-3 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
                 <button onclick="resetExercise()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition border border-indigo-200">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 016 6v3" />
                     </svg>
-                    <span>Retour / Recommencer</span>
+                    <span>Recommencer l'exercice</span>
                 </button>
                 <span class="text-xs font-medium text-slate-500" id="step-indicator">Étape 1</span>
             </div>
 
             <!-- Zone des messages du chat -->
-            <div id="chat-window" class="flex-1 p-4 overflow-y-auto space-y-3">
+            <div id="chat-window" class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3">
                 <!-- Les messages du dialogue s'affichent ici -->
             </div>
 
             <!-- Boîte de Feedback pédagogique -->
-            <div id="feedback-box" class="hidden p-3 mx-4 my-2 rounded-xl border text-xs sm:text-sm transition-all duration-300">
+            <div id="feedback-box" class="hidden p-3 mx-3 sm:mx-4 my-2 rounded-xl border text-xs sm:text-sm transition-all duration-300">
                 <!-- Correction explicative -->
             </div>
 
             <!-- Zone des propositions de réponses -->
-            <div id="options-container" class="p-3 sm:p-4 border-t border-slate-200 bg-white flex flex-col gap-2 shrink-0">
+            <div id="options-container" class="p-2.5 sm:p-4 border-t border-slate-200 bg-white flex flex-col gap-2 shrink-0">
                 <!-- Boutons générés dynamiquement -->
             </div>
         </section>
@@ -208,7 +216,7 @@
                         options: [
                             { text: "Non, ils habitent à Liège. Et vous, vous avez des frères et sœurs ?", correct: true, feedback: "🥇 Bravo ! Relance parfaite et polie avec le vouvoiement (vous avez)." },
                             { text: "Non, ils habitent à Liège. Et toi, tu as des frères et sœurs ?", correct: false, feedback: "⚠ L'interlocuteur vous vouvoie, il faut continuer à utiliser \"vous\"." },
-                            { text: "Non, il habite à Liège. Et vous, vous avez des frères et sœurs ?", correct: false, feedback: "⚠️ Attention : \"les parents\" est un nom au pluriel, il faut utiliser ils (ils habitent), pas il." }
+                            { text: "Non, il habite à Liège. Et vous, vous avez des frères et sœurs ?", correct: false, feedback: "⚠ Attention : \"les parents\" est un nom au pluriel, il faut utiliser ils (ils habitent), pas il." }
                         ]
                     }
                 ]
@@ -245,7 +253,7 @@
                         interlocutor: "Ah moi aussi j'adore le cinéma ! Alors, est-ce que tu regardes un film ce week-end ?",
                         options: [
                             { text: "Oui, je regarde un film samedi ou dimanche.", correct: true, feedback: "🥇 Parfait ! Conjugaison exacte du verbe en -er (je regarde) et utilisation de la conjonction de choix ou." },
-                            { text: "Oui, je regardes un film samedi ou dimanche.", correct: false, feedback: "⚠️️ Attention à la terminaison : avec je, le verbe prend un -e (je regarde), pas -es." },
+                            { text: "Oui, je regardes un film samedi ou dimanche.", correct: false, feedback: "⚠ Attention à la terminaison : avec je, le verbe prend un -e (je regarde), pas -es." },
                             { text: "Oui, je regarde un film, alors je n'aime pas le cinéma.", correct: false, feedback: "💡 Incohérence : alors indique une conséquence, et tu as dit précédemment que tu aimais le cinéma !" }
                         ]
                     },
@@ -291,13 +299,15 @@
             chevron.classList.toggle('rotate-180');
         }
 
-        // Fonction pour faire défiler automatiquement le chat vers le bas
+        // --- CORRECTION MOBILE DE DÉFILEMENT ---
         function scrollToBottom() {
             const chatWindow = document.getElementById('chat-window');
-            // Utilisation d'un petit délai pour s'assurer que le rendu DOM est terminé
-            setTimeout(() => {
-                chatWindow.scrollTop = chatWindow.scrollHeight;
-            }, 50);
+            const lastChild = chatWindow.lastElementChild;
+            if (lastChild) {
+                setTimeout(() => {
+                    lastChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 100);
+            }
         }
 
         function initDialogue() {
@@ -318,7 +328,6 @@
         function renderStep() {
             const data = dialogues[currentDialogueKey];
             
-            // Mise à jour de l'indicateur d'étape
             const indicator = document.getElementById('step-indicator');
             if (currentStepIndex < data.steps.length) {
                 indicator.innerText = `Étape ${currentStepIndex + 1} / ${data.steps.length}`;
@@ -338,13 +347,10 @@
 
             const currentStep = data.steps[currentStepIndex];
             
-            // Afficher le message de l'interlocuteur
             appendInterlocutorMessage(currentStep.interlocutor);
 
-            // Mélanger les options aléatoirement
             const shuffledOptions = [...currentStep.options].sort(() => Math.random() - 0.5);
 
-            // Générer les boutons d'options
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
 
