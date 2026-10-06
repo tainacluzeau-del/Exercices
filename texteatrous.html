@@ -87,4 +87,207 @@
     </div>
 
     <!-- Modale d'explication en cas d'erreur -->
-    <div id="error-modal-container" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4
+    <div id="error-modal-container" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-sm w-full border border-rose-200 modal-animation text-center">
+            <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+                ⚠️
+            </div>
+            <h3 class="text-base font-bold text-rose-900 mb-1">Oups, ce n'est pas tout à fait ça !</h3>
+            <p id="error-explanation-text" class="text-xs sm:text-sm text-slate-600 mb-5 leading-relaxed">
+                <!-- Explication injectée -->
+            </p>
+            <button onclick="closeModal('error-modal-container')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl text-xs sm:text-sm transition shadow-sm cursor-pointer">
+                Réessayer
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- BASE DE DONNÉES DES TEXTES ---
+        const textsDatabase = {
+            camille: {
+                badge: "A1 — Unité 2 : Thématique \"j'aime\"",
+                title: "Camille Moreau",
+                subtitle: "Cliquez sur chaque espace vide (...) pour choisir la bonne proposition.",
+                gaps: [
+                    { 
+                        choices: ["m'appelle", "mapelle", "m'appel"],
+                        explanation: "Pour se présenter avec le verbe s'appeler à la 1ère personne, on écrit 'je m'appelle' (avec deux 'p' et un 'e' final)."
+                    },
+                    { 
+                        choices: ["J'ai 32 ans", "Je suis 32", "Je suis 32 ans"],
+                        explanation: "En français, on utilise le verbe **avoir** pour exprimer l'âge (ex: J'ai 32 ans), et non le verbe être."
+                    },
+                    { 
+                        choices: ["habite", "habites", "habitent"],
+                        explanation: "Avec le pronom 'je', le verbe du 1er groupe (habiter) prend un '-e' final (j'habite)."
+                    },
+                    { 
+                        choices: ["et", "ou", "alors"],
+                        explanation: "On utilise la conjonction 'et' pour lier deux informations qui s'ajoutent (j'habite à Lyon et je travaille...)."
+                    },
+                    { 
+                        choices: ["boulangère", "boulanger", "boulangers"],
+                        explanation: "Camille est une femme (indiqué par 'française', 'boulangère'). Le féminin de boulanger est boulangère."
+                    },
+                    { 
+                        choices: ["voyager", "des voyages", "voyage"],
+                        explanation: "Après le verbe aimer ('j'adore'), le deuxième verbe s'écrit à l'infinitif (j'adore voyager)."
+                    },
+                    { 
+                        choices: ["la marche", "de la marche", "des marche"],
+                        explanation: "Avec les verbes de goût ('j'aime'), on utilise l'article défini (la marche) pour exprimer une préférence générale."
+                    },
+                    { 
+                        choices: ["Mon", "Son", "Ton"],
+                        explanation: "Le sujet de la phrase parle de son propre mari. L'adjectif possessif pour la 1ère personne (je) est 'Mon'."
+                    },
+                    { 
+                        choices: ["professeur", "un professeur", "une professeure"],
+                        explanation: "En français, après le verbe être, on n'utilise pas d'article indéfini (un/une) devant une profession (Julien est professeur)."
+                    },
+                    { 
+                        choices: ["et", "ou", "alors"],
+                        explanation: "Pour lier deux langues parlées, on utilise la conjonction 'et'."
+                    },
+                    { 
+                        choices: ["aime", "aiment", "aimes"],
+                        explanation: "Le sujet est 'Il' (au singulier). Le verbe aimer se conjugue 'Il aime'."
+                    },
+                    { 
+                        choices: ["aimons", "aimez", "aiment"],
+                        explanation: "Le sujet est 'Nous'. La terminaison du verbe aimer avec nous est '-ons' (Nous aimons)."
+                    },
+                    { 
+                        choices: ["des", "un", "une"],
+                        explanation: "Marco et Elena sont deux personnes (pluriel). On utilise l'article indéfini pluriel 'des' (des amis)."
+                    },
+                    { 
+                        choices: ["habitent", "habites", "habitons"],
+                        explanation: "Le sujet est 'Ils' (masculin pluriel). Le verbe habitent prend la terminaison '-ent'."
+                    },
+                    { 
+                        choices: ["adorent", "aidorent", "édorent"],
+                        explanation: "Le verbe s'écrit 'adorer' (sans 'i' ni accent aigu au début)."
+                    },
+                    { 
+                        choices: ["danser", "une danse", "dansent"],
+                        explanation: "Après le verbe détester, le verbe suivant s'écrit à l'infinitif (détestent danser)."
+                    }
+                ],
+                template: "« Je {0} Camille Moreau. {1} et je suis française. J'{2} à Lyon {3} je travaille dans une boulangerie. Je suis {4}. J'adore {5} et j'aime {6}.\n\n{7} mari, Julien, est {8}. Il parle français {9} anglais. Il {10} cuisiner. Nous {11} danser ensemble.\n\nNous avons {12} amis, Marco et Elena. Ils {13} à Milan. Ils {14} chanter, mais ils détestent {15} ! »"
+            }
+        };
+
+        let currentTextKey = "camille";
+        let gapStates = {}; 
+        let activeGapIndex = null;
+
+        function changeText(key) {
+            currentTextKey = key;
+            gapStates = {}; 
+            renderExercise();
+        }
+
+        function renderExercise() {
+            const data = textsDatabase[currentTextKey];
+            
+            document.getElementById('text-badge').innerText = data.badge;
+            document.getElementById('text-title').innerText = data.title;
+            document.getElementById('text-subtitle').innerText = data.subtitle;
+
+            let htmlText = data.template;
+
+            data.gaps.forEach((gap, index) => {
+                let currentVal = gapStates[index];
+                let displayHtml = "";
+                
+                if (!currentVal) {
+                    displayHtml = `<button onclick="openGapModal(${index})" class="inline-flex items-center justify-center px-2.5 py-1 mx-1 my-0.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-lg text-xs sm:text-sm font-bold transition shadow-2xs align-baseline cursor-pointer tracking-widest">...</button>`;
+                } else if (currentVal.correct) {
+                    displayHtml = `<span class="inline-block px-2.5 py-1 mx-1 my-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs sm:text-sm font-semibold">${currentVal.text}</span>`;
+                } else {
+                    displayHtml = `<button onclick="openGapModal(${index})" class="inline-flex items-center gap-1 px-2.5 py-1 mx-1 my-0.5 bg-rose-100 hover:bg-rose-200 border border-rose-300 text-rose-700 rounded-lg text-xs sm:text-sm font-semibold transition shadow-2xs align-baseline cursor-pointer" title="Erreur - Cliquez pour corriger">${currentVal.text} ❌</button>`;
+                }
+
+                htmlText = htmlText.replaceAll(`{${index}}`, displayHtml);
+            });
+
+            document.getElementById('text-window').innerHTML = htmlText;
+            updateScore();
+        }
+
+        function openGapModal(index) {
+            activeGapIndex = index;
+            const data = textsDatabase[currentTextKey];
+            const gap = data.gaps[index];
+            const correctWord = gap.choices[0]; 
+
+            const shuffledChoices = [...gap.choices].sort(() => Math.random() - 0.5);
+
+            const listContainer = document.getElementById('modal-choices-list');
+            listContainer.innerHTML = '';
+
+            shuffledChoices.forEach(choice => {
+                const isCorrect = (choice === correctWord);
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-50 hover:bg-indigo-50 hover:border-indigo-400 border border-slate-200 text-slate-800 font-medium py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-2xs cursor-pointer active:scale-[0.98]";
+                btn.innerText = choice;
+                btn.onclick = () => selectChoice(choice, isCorrect, gap.explanation);
+                listContainer.appendChild(btn);
+            });
+
+            document.getElementById('gap-modal-container').classList.remove('hidden');
+        }
+
+        function selectChoice(text, isCorrect, explanation) {
+            closeModal('gap-modal-container');
+            
+            if (activeGapIndex !== null) {
+                gapStates[activeGapIndex] = { text: text, correct: isCorrect };
+            }
+            renderExercise();
+
+            if (!isCorrect) {
+                document.getElementById('error-explanation-text').innerText = explanation;
+                document.getElementById('error-modal-container').classList.remove('hidden');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            if (modalId === 'gap-modal-container') {
+                activeGapIndex = null;
+            }
+        }
+
+        function updateScore() {
+            const data = textsDatabase[currentTextKey];
+            const total = data.gaps.length;
+            let correctCount = 0;
+            
+            Object.keys(gapStates).forEach(idx => {
+                if (gapStates[idx].correct) correctCount++;
+            });
+
+            const indicator = document.getElementById('score-indicator');
+            if (correctCount === total) {
+                indicator.innerText = "🎉 Excellent ! Tout est correct !";
+                indicator.className = "font-bold text-emerald-600";
+            } else {
+                indicator.innerText = `Progrès : ${correctCount} / ${total} résolus`;
+                indicator.className = "font-bold text-indigo-900";
+            }
+        }
+
+        function resetExercise() {
+            gapStates = {};
+            renderExercise();
+        }
+
+        window.onload = () => {
+            renderExercise();
+        };
+    </script>
+</body>
+</html>
