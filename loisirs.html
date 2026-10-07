@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>L'Atelier du Français — Les Loisirs (A1)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .chat-bubble { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col items-center p-2 sm:p-6">
+
+    <!-- En-tête -->
+    <header class="w-full max-w-4xl mb-3 flex items-center justify-between px-1">
+        <a href="https://tainacluzeau-del.github.io/Exercices/" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-indigo-700 bg-white hover:bg-indigo-50 px-3 py-2 rounded-xl transition shadow-sm border border-slate-200">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-indigo-600">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            <span>Retour aux exercices</span>
+        </a>
+        <div class="text-right sm:text-center flex-1 ml-2">
+            <h1 class="text-base sm:text-2xl font-bold text-indigo-700">L'Atelier du Français — A1</h1>
+            <p class="text-slate-600 text-[11px] sm:text-xs">Atelier conversationnel : Exprimer ses goûts (Aimer / Détester / Adorer)</p>
+        </div>
+    </header>
+
+    <!-- Conteneur principal -->
+    <main class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row h-[85vh] max-h-[780px] border border-slate-200">
+        
+        <!-- Panneau Gauche -->
+        <aside class="w-full md:w-72 bg-indigo-50 border-b md:border-b-0 md:border-r border-indigo-100 p-3 md:p-4 flex flex-col shrink-0">
+            <label class="text-xs font-semibold text-indigo-900 uppercase tracking-wider mb-1.5 block">
+                Objectif de l'unité
+            </label>
+            <div class="bg-white rounded-xl p-3.5 border border-indigo-100 shadow-sm flex-1 overflow-y-auto flex flex-col">
+                <span class="text-[10px] uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-bold w-max mb-2">Unité 2 — Loisirs</span>
+                <h2 class="text-base font-bold text-indigo-950 mb-2">Parler de ses loisirs</h2>
+                <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                    Réponds en utilisant les verbes de goût : <b>aimer</b>, <b>adorer</b> ou <b>détester</b> !
+                </p>
+                <div class="bg-indigo-50/70 p-2.5 rounded-lg border border-indigo-100 text-[11px] text-indigo-950">
+                    💡 <i>Astuce : Évite de dire juste "oui" ou "non", argumente avec ton avis !</i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Panneau Droit : Chat -->
+        <section class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50 relative">
+            <div class="p-2.5 sm:p-3 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+                <button onclick="startNewSession()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition border border-indigo-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 016 6v3" />
+                    </svg>
+                    <span>Nouvelle session (4 activités)</span>
+                </button>
+                <span class="text-xs font-medium text-slate-500" id="step-indicator">Étape 1 / 4</span>
+            </div>
+
+            <div id="chat-window" class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3"></div>
+
+            <div id="feedback-box" class="hidden p-3 mx-3 sm:mx-4 my-2 rounded-xl border text-xs sm:text-sm transition-all duration-300"></div>
+
+            <div class="p-2.5 sm:p-4 border-t border-slate-200 bg-white flex gap-2 shrink-0">
+                <input type="text" id="user-input" placeholder="Écris ta réponse (ex: J'adore faire du vélo)..." 
+                    class="flex-1 bg-slate-100 border border-slate-300 text-slate-800 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 outline-none focus:border-indigo-600 focus:bg-white transition"
+                    onkeypress="handleKeyPress(event)">
+                <button onclick="submitUserAnswer()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition shadow-sm flex items-center justify-center shrink-0">
+                    Envoyer
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // La banque complète de tes 11 activités
+        const masterActivities = [
+            { name: "du vélo", labelActivity: "le vélo", image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=500&auto=format&fit=crop&q=60" },
+            { name: "courir", labelActivity: "courir", image: "https://pixabay.com/fr/images/download/x-9636165_1920.jpg" },
+            { name: "du kayak", labelActivity: "le kayak", image: "https://pixabay.com/fr/images/download/x-10079799_1920.jpg" },
+            { name: "du roller", labelActivity: "le roller", image: "https://pixabay.com/fr/images/download/x-9590790_1920.jpg" },
+            { name: "de la gym", labelActivity: "la gym", image: "https://pixabay.com/fr/images/download/x-8996390_1920.jpg" },
+            { name: "de la randonnée", labelActivity: "la randonnée", image: "https://pixabay.com/fr/images/download/x-8296472_1920.jpg" },
+            { name: "de la moto", labelActivity: "la moto", image: "https://pixabay.com/fr/images/download/x-7506265_1920.jpg" },
+            { name: "du bateau", labelActivity: "le bateau", image: "https://pixabay.com/fr/images/download/x-6258801_1920.jpg" },
+            { name: "des puzzles", labelActivity: "les puzzles", image: "https://pixabay.com/fr/images/download/x-4014283_1920.jpg" },
+            { name: "de l'escalade", labelActivity: "l'escalade", image: "https://pixabay.com/fr/images/download/x-204547_1920.jpg" },
+            { name: "de la peinture", labelActivity: "la peinture", image: "https://pixabay.com/fr/images/download/x-1822690_1920.jpg" }
+        ];
+
+        let currentSessionActivities = [];
+        let currentStepIndex = 0;
+
+        function startNewSession() {
+            currentStepIndex = 0;
+            document.getElementById('chat-window').innerHTML = '';
+            hideFeedback();
+            document.getElementById('user-input').disabled = false;
+
+            // Mélange aléatoire et sélection des 4 premières activités
+            const shuffled = [...masterActivities].sort(() => 0.5 - Math.random());
+            currentSessionActivities = shuffled.slice(0, 4);
+
+            loadStep();
+        }
+
+        function loadStep() {
+            const indicator = document.getElementById('step-indicator');
+            if (currentStepIndex < currentSessionActivities.length) {
+                indicator.innerText = `Étape ${currentStepIndex + 1} / ${currentSessionActivities.length}`;
+                const act = currentSessionActivities[currentStepIndex];
+                
+                let promptHtml = "";
+
+                // Variation des répliques du bot selon l'étape (0, 1, 2, 3)
+                if (currentStepIndex === 0) {
+                    promptHtml = `Salut ! Je fais ${act.name} tous les dimanches.<br>`;
+                } else if (currentStepIndex === 1) {
+                    promptHtml = `Tu vois ça ? Je n'aime pas trop faire ${act.name}.<br>`;
+                } else if (currentStepIndex === 2) {
+                    promptHtml = `Ah, regarde ! J'adore ${act.name} !<br>`;
+                } else if (currentStepIndex === 3) {
+                    promptHtml = `Franchement, je déteste ${act.name} !<br>`;
+                }
+
+                promptHtml += `
+                    <img src='${act.image}' class='mt-2 rounded-xl max-h-40 w-full object-cover shadow-sm' alt='Loisir'><br>
+                    Et toi, tu aimes <b>${act.labelActivity}</b> ?
+                `;
+
+                appendInterlocutorMessage(promptHtml);
+            } else {
+                indicator.innerText = "Terminé";
+                appendInterlocutorMessage("🎉 Bravo ! Tu as terminé cette session de conversation sur les loisirs avec brio.");
+                document.getElementById('user-input').disabled = true;
+            }
+        }
+
+        function submitUserAnswer() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendUserMessage(text);
+            input.value = '';
+
+            const act = currentSessionActivities[currentStepIndex];
+            const t = text.toLowerCase();
+
+            // 1. Si la réponse est juste "oui" ou "non" (trop court)
+            if (t === 'oui' || t === 'non' || t === 'oui.' || t === 'non.') {
+                showFeedback(`⚠️ C'est un peu court ! Dis-nous si tu <b>aimes</b>, tu <b>adores</b> ou tu <b>détestes</b> ${act.labelActivity}.`, false);
+                return;
+            }
+
+            // 2. Si l'élève utilise les verbes de goût attendus
+            const hasTasteVerb = t.includes('aim') || t.includes('ador') || t.includes('détes') || t.includes('detes') || t.includes('préfér') || t.includes('prefer') || t.includes('pas');
+
+            if (hasTasteVerb) {
+                showFeedback(`🥇 Parfait ! Superbe expression de tes goûts.`, true);
+                currentStepIndex++;
+                setTimeout(() => {
+                    hideFeedback();
+                    loadStep();
+                }, 2000);
+            } else {
+                // 3. Si la réponse est floue
+                showFeedback(`💡 Je n'ai pas bien compris... Tu <b>aimes</b>, tu <b>détestes</b> ou tu <b>adores</b> ${act.labelActivity} ? (Essaie de reformuler)`, false);
+                currentStepIndex++;
+                setTimeout(() => {
+                    hideFeedback();
+                    loadStep();
+                }, 3000);
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') submitUserAnswer();
+        }
+
+        function appendInterlocutorMessage(html) {
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.insertAdjacentHTML('beforeend', `
+                <div class="flex items-start gap-2 chat-bubble">
+                    <div class="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">💬</div>
+                    <div class="bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-tl-none p-3 max-w-[85%] text-xs sm:text-sm shadow-sm">
+                        ${html}
+                    </div>
+                </div>
+            `);
+            scrollToBottom();
+        }
+
+        function appendUserMessage(text) {
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.insertAdjacentHTML('beforeend', `
+                <div class="flex items-start gap-2 justify-end chat-bubble">
+                    <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none p-3 max-w-[85%] text-xs sm:text-sm shadow-sm">
+                        ${escapeHtml(text)}
+                    </div>
+                </div>
+            `);
+            scrollToBottom();
+        }
+
+        function showFeedback(msg, isCorrect) {
+            const box = document.getElementById('feedback-box');
+            box.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-900', 'bg-amber-50', 'border-amber-300', 'text-amber-900');
+            box.classList.add(isCorrect ? 'bg-emerald-50' : 'bg-amber-50', isCorrect ? 'border-emerald-300' : 'border-amber-300', isCorrect ? 'text-emerald-900' : 'text-amber-900');
+            box.innerHTML = msg;
+        }
+
+        function hideFeedback() {
+            document.getElementById('feedback-box').classList.add('hidden');
+        }
+
+        function scrollToBottom() {
+            const win = document.getElementById('chat-window');
+            win.scrollTop = win.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        window.onload = () => {
+            startNewSession();
+        };
+    </script>
+</body>
+</html>
