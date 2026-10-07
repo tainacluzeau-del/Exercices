@@ -86,17 +86,17 @@
             { 
                 verbPhrase: "courir", 
                 labelActivity: "courir", 
-                image: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=500&auto=format&fit=crop&q=60" 
+                image: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
             },
             { 
                 verbPhrase: "faire du kayak", 
                 labelActivity: "le kayak", 
-                image: "https://images.unsplash.com/photo-1516054575922-f044ee341527?w=500&auto=format&fit=crop&q=60" 
+                image: "https://images.unsplash.com/photo-1620903669944-de50fbe78210?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
             },
             { 
                 verbPhrase: "faire du roller", 
                 labelActivity: "le roller", 
-                image: "https://images.unsplash.com/photo-1526726538690-5cbf956ae2fd?w=500&auto=format&fit=crop&q=60" 
+                image: "https://images.unsplash.com/photo-1623091034795-46701649f6e9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
             },
             { 
                 verbPhrase: "faire de la gym", 
@@ -116,22 +116,22 @@
             { 
                 verbPhrase: "faire du bateau", 
                 labelActivity: "le bateau", 
-                image: "https://images.unsplash.com/photo-1569263979104-865ab9cd8d5c?w=500&auto=format&fit=crop&q=60" 
+                image: "https://plus.unsplash.com/premium_photo-1675802755792-a7cfd346b5be?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
             },
             { 
                 verbPhrase: "faire des puzzles", 
                 labelActivity: "les puzzles", 
-                image: "https://images.unsplash.com/photo-1618336753974-aae8e04506aa?w=500&auto=format&fit=crop&q=60" 
+                image: "https://images.unsplash.com/photo-1588591795084-1770cb3be374?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
             },
             { 
                 verbPhrase: "faire de l'escalade", 
                 labelActivity: "l'escalade", 
-                    image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=500&auto=format&fit=crop&q=60" 
+                image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=500&auto=format&fit=crop&q=60" 
             },
             { 
                 verbPhrase: "faire de la peinture", 
                 labelActivity: "la peinture", 
-                image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=500&auto=format&fit=crop&q=60" 
+                image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?q=80&w=1958&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
             }
         ];
 
@@ -154,10 +154,9 @@
         function loadStep() {
             const indicator = document.getElementById('step-indicator');
             if (currentStepIndex < currentSessionActivities.length) {
-                indicator.innerText = `Étape ${currentStepIndex + 1} / ${currentSessionActivities.length}`;
+                indicator.innerText = `Étape ${currentStepIndex + 1} /${currentSessionActivities.length}`;
                 const act = currentSessionActivities[currentStepIndex];
                 
-                // Distinction textuelle selon si l'activité utilise "faire" ou non (ex: courir)
                 let botStatement = "";
                 if (currentStepIndex === 0) {
                     botStatement = act.verbPhrase === "courir" ? `Salut ! Je cours tous les dimanches.` : `Salut ! Je fais ${act.verbPhrase.replace('faire ', '')} tous les dimanches.`;
@@ -181,8 +180,7 @@
 
                 const promptHtml = `
                     ${botStatement}<br>
-                    <img src='${act.image}' class='mt-2 rounded-xl max-h-40 w-full object-cover shadow-sm' alt='Loisir'><br>
-                    ${selectedQ.text}
+                    <img src='${act.image}' class='mt-2 rounded-xl max-h-40 w-full object-cover shadow-sm' alt='Loisir'><br>${selectedQ.text}
                 `;
 
                 appendInterlocutorMessage(promptHtml);
@@ -228,99 +226,4 @@
                 const usesCorrectConjugation = t.includes('aime') || t.includes('adore') || t.includes('deteste') || t.includes('prefere');
                 if (!usesJe || !usesCorrectConjugation) {
                     subjectCheck = false;
-                    errorMessage = `⚠️ Puisque la question était <b>"Et toi..."</b>, réponds avec <b>"Je..."</b> (ex: <i>"J'adore..."</i> ou <i>"Je n'aime pas..."</i>).`;
-                }
-            } 
-            else if (currentQuestionType === 'mere') {
-                const usesShe = t.includes('elle') || t.includes('mere') || t.includes('maman');
-                const usesCorrectConjugation = t.includes('aime') || t.includes('adore') || t.includes('deteste') || t.includes('prefere');
-                if (!usesShe || !usesCorrectConjugation) {
-                    subjectCheck = false;
-                    errorMessage = `⚠️ Puisque la question était sur <b>"ta mère"</b>, utilise <b>"Elle"</b> ou <b>"Ma mère"</b> avec le verbe conjugué (ex: <i>"Elle aime..."</i> ou <i>"Ma mère adore..."</i>).`;
-                }
-            } 
-            else if (currentQuestionType === 'amis') {
-                const usesThey = t.includes('ils') || t.includes('amis') || t.includes('copains');
-                const usesCorrectConjugation = t.includes('aiment') || t.includes('adorent') || t.includes('detestent') || t.includes('preferent');
-                if (!usesThey || !usesCorrectConjugation) {
-                    subjectCheck = false;
-                    errorMessage = `⚠️ Puisque la question était sur <b>"tes amis"</b> (pluriel), utilise <b>"Ils"</b> ou <b>"Mes amis"</b> avec la bonne terminaison en <b>-ent</b> (ex: <i>"Mes amis aiment..."</i>).`;
-                }
-            } 
-            else if (currentQuestionType === 'vous') {
-                const usesWe = t.includes('nous') || t.includes('moi') || t.includes('on');
-                const usesCorrectConjugation = t.includes('aimons') || t.includes('adorons') || t.includes('detestons') || t.includes('preferons');
-                if (!usesWe || !usesCorrectConjugation) {
-                    subjectCheck = false;
-                    errorMessage = `⚠️ Puisque la question était <b>"Vous..."</b>, réponds avec <b>"Nous"</b> ou <b>"Mes amis et moi"</b> et accorde le verbe en <b>-ons</b> (ex: <i>"Nous aimons..."</i> ou <i>"Mes amis et moi adorons..."</i>).`;
-                }
-            }
-
-            if (!subjectCheck) {
-                showFeedback(errorMessage, false);
-                return;
-            }
-
-            showFeedback(`🥇 Parfait ! Excellent accord du sujet et du verbe.`, true);
-            currentStepIndex++;
-            setTimeout(() => {
-                hideFeedback();
-                loadStep();
-            }, 2200);
-        }
-
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') submitUserAnswer();
-        }
-
-        function appendInterlocutorMessage(html) {
-            const chatWindow = document.getElementById('chat-window');
-            chatWindow.insertAdjacentHTML('beforeend', `
-                <div class="flex items-start gap-2 chat-bubble">
-                    <div class="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">💬</div>
-                    <div class="bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-tl-none p-3 max-w-[85%] text-xs sm:text-sm shadow-sm">
-                        ${html}
-                    </div>
-                </div>
-            `);
-            scrollToBottom();
-        }
-
-        function appendUserMessage(text) {
-            const chatWindow = document.getElementById('chat-window');
-            chatWindow.insertAdjacentHTML('beforeend', `
-                <div class="flex items-start gap-2 justify-end chat-bubble">
-                    <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none p-3 max-w-[85%] text-xs sm:text-sm shadow-sm">
-                        ${escapeHtml(text)}
-                    </div>
-                </div>
-            `);
-            scrollToBottom();
-        }
-
-        function showFeedback(msg, isCorrect) {
-            const box = document.getElementById('feedback-box');
-            box.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-900', 'bg-amber-50', 'border-amber-300', 'text-amber-900');
-            box.classList.add(isCorrect ? 'bg-emerald-50' : 'bg-amber-50', isCorrect ? 'border-emerald-300' : 'border-amber-300', isCorrect ? 'text-emerald-900' : 'text-amber-900');
-            box.innerHTML = msg;
-        }
-
-        function hideFeedback() {
-            document.getElementById('feedback-box').classList.add('hidden');
-        }
-
-        function scrollToBottom() {
-            const win = document.getElementById('chat-window');
-            win.scrollTop = win.scrollHeight;
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        window.onload = () => {
-            startNewSession();
-        };
-    </script>
-</body>
-</html>
+                    errorMessage = `⚠️
