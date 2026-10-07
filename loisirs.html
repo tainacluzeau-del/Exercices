@@ -91,12 +91,12 @@
             { 
                 verbPhrase: "faire du kayak", 
                 labelActivity: "le kayak", 
-                image: "https://images.unsplash.com/photo-1620903669944-de50fbe78210?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                image: "https://images.unsplash.com/photo-1620903669944-de50fbe78210?q=80&w=2070&auto=format&fit=crop&q=60" 
             },
             { 
                 verbPhrase: "faire du roller", 
                 labelActivity: "le roller", 
-                image: "https://images.unsplash.com/photo-1623091034795-46701649f6e9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                image: "https://images.unsplash.com/photo-1623091034795-46701649f6e9?q=80&w=2070&auto=format&fit=crop&q=60" 
             },
             { 
                 verbPhrase: "faire de la gym", 
@@ -121,7 +121,7 @@
             { 
                 verbPhrase: "faire des puzzles", 
                 labelActivity: "les puzzles", 
-                image: "https://images.unsplash.com/photo-1588591795084-1770cb3be374?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                image: "https://images.unsplash.com/photo-1588591795084-1770cb3be374?q=80&w=2070&auto=format&fit=crop&q=60" 
             },
             { 
                 verbPhrase: "faire de l'escalade", 
@@ -207,23 +207,4 @@
             const t = normalizeText(text);
 
             if (t === 'oui' || t === 'non' || t === 'oui.' || t === 'non.') {
-                showFeedback(`⚠️ C'est un peu court ! Fais une phrase complète avec le bon sujet et ton avis.`, false);
-                return;
-            }
-
-            const hasTasteVerb = t.includes('aim') || t.includes('ador') || t.includes('detes') || t.includes('prefer');
-
-            if (!hasTasteVerb) {
-                showFeedback(`💡 Il manque un verbe de goût (aimer, adorer, détester) dans ta phrase !`, false);
-                return;
-            }
-
-            let subjectCheck = true;
-            let errorMessage = "";
-
-            if (currentQuestionType === 'tu') {
-                const usesJe = t.includes('je ') || t.includes("j'");
-                const usesCorrectConjugation = t.includes('aime') || t.includes('adore') || t.includes('deteste') || t.includes('prefere');
-                if (!usesJe || !usesCorrectConjugation) {
-                    subjectCheck = false;
-                    errorMessage = `⚠️
+                showFeedback(`⚠️ C'est un peu court ! Fais
