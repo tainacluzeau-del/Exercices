@@ -25,7 +25,7 @@
         </a>
         <div class="text-right sm:text-center flex-1 ml-2">
             <h1 class="text-base sm:text-2xl font-bold text-indigo-700">L'Atelier du Français — A1</h1>
-            <p class="text-slate-600 text-[11px] sm:text-xs">Atelier conversationnel : Exprimer ses goûts (Aimer / Détester / Adorer)</p>
+            <p class="text-slate-600 text-[11px] sm:text-xs">Atelier conversationnel : Sujets et conjugaison des verbes de goût</p>
         </div>
     </header>
 
@@ -38,13 +38,13 @@
                 Objectif de l'unité
             </label>
             <div class="bg-white rounded-xl p-3.5 border border-indigo-100 shadow-sm flex-1 overflow-y-auto flex flex-col">
-                <span class="text-[10px] uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-bold w-max mb-2">Unité 2 — Loisirs</span>
-                <h2 class="text-base font-bold text-indigo-950 mb-2">Parler de ses loisirs</h2>
+                <span class="text-[10px] uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-bold w-max mb-2">Unité 2 — Grammaire</span>
+                <h2 class="text-base font-bold text-indigo-950 mb-2">Accords & Sujets</h2>
                 <p class="text-xs text-slate-600 leading-relaxed mb-3">
-                    Réponds en utilisant les verbes de goût : <b>aimer</b>, <b>adorer</b> ou <b>détester</b> !
+                    Fais attention au sujet demandé (<b>tu</b>, <b>elle / ma mère</b>, <b>ils / mes amis</b>, <b>nous / mes amis et moi</b>) et accorde bien la conjugaison !
                 </p>
                 <div class="bg-indigo-50/70 p-2.5 rounded-lg border border-indigo-100 text-[11px] text-indigo-950">
-                    💡 <i>Astuce : Évite de dire juste "oui" ou "non", argumente avec ton avis !</i>
+                    💡 <i>Attention : « Et vous ? » ➔ « Nous aimons... » ou « Mes amis et moi aimons... »</i>
                 </div>
             </div>
         </aside>
@@ -66,7 +66,7 @@
             <div id="feedback-box" class="hidden p-3 mx-3 sm:mx-4 my-2 rounded-xl border text-xs sm:text-sm transition-all duration-300"></div>
 
             <div class="p-2.5 sm:p-4 border-t border-slate-200 bg-white flex gap-2 shrink-0">
-                <input type="text" id="user-input" placeholder="Écris ta réponse (ex: J'adore faire du vélo)..." 
+                <input type="text" id="user-input" placeholder="Écris ta phrase complète..." 
                     class="flex-1 bg-slate-100 border border-slate-300 text-slate-800 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 outline-none focus:border-indigo-600 focus:bg-white transition"
                     onkeypress="handleKeyPress(event)">
                 <button onclick="submitUserAnswer()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition shadow-sm flex items-center justify-center shrink-0">
@@ -77,23 +77,23 @@
     </main>
 
     <script>
-        // La banque complète de tes 11 activités
         const masterActivities = [
             { name: "du vélo", labelActivity: "le vélo", image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=500&auto=format&fit=crop&q=60" },
-            { name: "courir", labelActivity: "courir", image: "https://pixabay.com/fr/images/download/x-9636165_1920.jpg" },
-            { name: "du kayak", labelActivity: "le kayak", image: "https://pixabay.com/fr/images/download/x-10079799_1920.jpg" },
-            { name: "du roller", labelActivity: "le roller", image: "https://pixabay.com/fr/images/download/x-9590790_1920.jpg" },
-            { name: "de la gym", labelActivity: "la gym", image: "https://pixabay.com/fr/images/download/x-8996390_1920.jpg" },
-            { name: "de la randonnée", labelActivity: "la randonnée", image: "https://pixabay.com/fr/images/download/x-8296472_1920.jpg" },
-            { name: "de la moto", labelActivity: "la moto", image: "https://pixabay.com/fr/images/download/x-7506265_1920.jpg" },
-            { name: "du bateau", labelActivity: "le bateau", image: "https://pixabay.com/fr/images/download/x-6258801_1920.jpg" },
-            { name: "des puzzles", labelActivity: "les puzzles", image: "https://pixabay.com/fr/images/download/x-4014283_1920.jpg" },
-            { name: "de l'escalade", labelActivity: "l'escalade", image: "https://pixabay.com/fr/images/download/x-204547_1920.jpg" },
-            { name: "de la peinture", labelActivity: "la peinture", image: "https://pixabay.com/fr/images/download/x-1822690_1920.jpg" }
+            { name: "courir", labelActivity: "courir", image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=500&auto=format&fit=crop&q=60" },
+            { name: "du kayak", labelActivity: "le kayak", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format&fit=crop&q=60" },
+            { name: "du roller", labelActivity: "le roller", image: "https://images.unsplash.com/photo-1565992441121-4367c2967103?w=500&auto=format&fit=crop&q=60" },
+            { name: "de la gym", labelActivity: "la gym", image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500&auto=format&fit=crop&q=60" },
+            { name: "de la randonnée", labelActivity: "la randonnée", image: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=500&auto=format&fit=crop&q=60" },
+            { name: "de la moto", labelActivity: "la moto", image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=500&auto=format&fit=crop&q=60" },
+            { name: "du bateau", labelActivity: "le bateau", image: "https://images.unsplash.com/photo-1569263979104-865ab9cd8d5c?w=500&auto=format&fit=crop&q=60" },
+            { name: "des puzzles", labelActivity: "les puzzles", image: "https://images.unsplash.com/photo-1588580000645-4562a6d2c839?w=500&auto=format&fit=crop&q=60" },
+            { name: "de l'escalade", labelActivity: "l'escalade", image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=500&auto=format&fit=crop&q=60" },
+            { name: "de la peinture", labelActivity: "la peinture", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=500&auto=format&fit=crop&q=60" }
         ];
 
         let currentSessionActivities = [];
         let currentStepIndex = 0;
+        let currentQuestionType = "";
 
         function startNewSession() {
             currentStepIndex = 0;
@@ -101,7 +101,6 @@
             hideFeedback();
             document.getElementById('user-input').disabled = false;
 
-            // Mélange aléatoire et sélection des 4 premières activités
             const shuffled = [...masterActivities].sort(() => 0.5 - Math.random());
             currentSessionActivities = shuffled.slice(0, 4);
 
@@ -114,22 +113,31 @@
                 indicator.innerText = `Étape ${currentStepIndex + 1} / ${currentSessionActivities.length}`;
                 const act = currentSessionActivities[currentStepIndex];
                 
-                let promptHtml = "";
-
-                // Variation des répliques du bot selon l'étape (0, 1, 2, 3)
+                let botStatement = "";
                 if (currentStepIndex === 0) {
-                    promptHtml = `Salut ! Je fais ${act.name} tous les dimanches.<br>`;
+                    botStatement = `Salut ! Je fais ${act.name} tous les dimanches.`;
                 } else if (currentStepIndex === 1) {
-                    promptHtml = `Tu vois ça ? Je n'aime pas trop faire ${act.name}.<br>`;
+                    botStatement = `Tu vois ça ? Je n'aime pas trop faire ${act.name}.`;
                 } else if (currentStepIndex === 2) {
-                    promptHtml = `Ah, regarde ! J'adore ${act.name} !<br>`;
+                    botStatement = `Ah, regarde ! J'adore ${act.name} !`;
                 } else if (currentStepIndex === 3) {
-                    promptHtml = `Franchement, je déteste ${act.name} !<br>`;
+                    botStatement = `Franchement, je déteste ${act.name} !`;
                 }
 
-                promptHtml += `
+                const questionTypes = [
+                    { type: 'tu', text: `Et toi, tu aimes <b>${act.labelActivity}</b> ?` },
+                    { type: 'mere', text: `Et ta mère, elle aime <b>${act.labelActivity}</b> ?` },
+                    { type: 'amis', text: `Et tes amis, ils aiment <b>${act.labelActivity}</b> ?` },
+                    { type: 'vous', text: `Et toi et tes amis, vous aimez <b>${act.labelActivity}</b> ?` }
+                ];
+
+                const selectedQ = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+                currentQuestionType = selectedQ.type;
+
+                const promptHtml = `
+                    ${botStatement}<br>
                     <img src='${act.image}' class='mt-2 rounded-xl max-h-40 w-full object-cover shadow-sm' alt='Loisir'><br>
-                    Et toi, tu aimes <b>${act.labelActivity}</b> ?
+                    ${selectedQ.text}
                 `;
 
                 appendInterlocutorMessage(promptHtml);
@@ -138,6 +146,11 @@
                 appendInterlocutorMessage("🎉 Bravo ! Tu as terminé cette session de conversation sur les loisirs avec brio.");
                 document.getElementById('user-input').disabled = true;
             }
+        }
+
+        // Fonction utilitaire pour nettoyer les accents et faciliter la détection
+        function normalizeText(str) {
+            return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         }
 
         function submitUserAnswer() {
@@ -149,33 +162,72 @@
             input.value = '';
 
             const act = currentSessionActivities[currentStepIndex];
-            const t = text.toLowerCase();
+            const t = normalizeText(text);
 
-            // 1. Si la réponse est juste "oui" ou "non" (trop court)
+            // 1. Détection anti "oui" / "non" seuls
             if (t === 'oui' || t === 'non' || t === 'oui.' || t === 'non.') {
-                showFeedback(`⚠️ C'est un peu court ! Dis-nous si tu <b>aimes</b>, tu <b>adores</b> ou tu <b>détestes</b> ${act.labelActivity}.`, false);
+                showFeedback(`⚠️ C'est un peu court ! Fais une phrase complète avec le bon sujet et ton avis.`, false);
                 return;
             }
 
-            // 2. Si l'élève utilise les verbes de goût attendus
-            const hasTasteVerb = t.includes('aim') || t.includes('ador') || t.includes('détes') || t.includes('detes') || t.includes('préfér') || t.includes('prefer') || t.includes('pas');
+            // 2. Vérification de la présence d'un verbe de goût (avec ou sans accent)
+            const hasTasteVerb = t.includes('aim') || t.includes('ador') || t.includes('detes') || t.includes('prefer');
 
-            if (hasTasteVerb) {
-                showFeedback(`🥇 Parfait ! Superbe expression de tes goûts.`, true);
-                currentStepIndex++;
-                setTimeout(() => {
-                    hideFeedback();
-                    loadStep();
-                }, 2000);
-            } else {
-                // 3. Si la réponse est floue
-                showFeedback(`💡 Je n'ai pas bien compris... Tu <b>aimes</b>, tu <b>détestes</b> ou tu <b>adores</b> ${act.labelActivity} ? (Essaie de reformuler)`, false);
-                currentStepIndex++;
-                setTimeout(() => {
-                    hideFeedback();
-                    loadStep();
-                }, 3000);
+            if (!hasTasteVerb) {
+                showFeedback(`💡 Il manque un verbe de goût (aimer, adorer, détester) dans ta phrase !`, false);
+                return;
             }
+
+            // 3. Validation croisée du sujet et de la conjugaison
+            let subjectCheck = true;
+            let errorMessage = "";
+
+            if (currentQuestionType === 'tu') {
+                const usesJe = t.includes('je ') || t.includes("j'");
+                const usesCorrectConjugation = t.includes('aime') || t.includes('adore') || t.includes('deteste') || t.includes('prefere');
+                if (!usesJe || !usesCorrectConjugation) {
+                    subjectCheck = false;
+                    errorMessage = `⚠️ Puisque la question était <b>"Et toi..."</b>, réponds avec <b>"Je..."</b> (ex: <i>"J'adore..."</i> ou <i>"Je n'aime pas..."</i>).`;
+                }
+            } 
+            else if (currentQuestionType === 'mere') {
+                const usesShe = t.includes('elle') || t.includes('mere') || t.includes('maman');
+                const usesCorrectConjugation = t.includes('aime') || t.includes('adore') || t.includes('deteste') || t.includes('prefere');
+                if (!usesShe || !usesCorrectConjugation) {
+                    subjectCheck = false;
+                    errorMessage = `⚠️ Puisque la question était sur <b>"ta mère"</b>, utilise <b>"Elle"</b> ou <b>"Ma mère"</b> avec le verbe conjugué (ex: <i>"Elle aime..."</i> ou <i>"Ma mère adore..."</i>).`;
+                }
+            } 
+            else if (currentQuestionType === 'amis') {
+                const usesThey = t.includes('ils') || t.includes('amis') || t.includes('copains');
+                const usesCorrectConjugation = t.includes('aiment') || t.includes('adorent') || t.includes('detestent') || t.includes('preferent');
+                if (!usesThey || !usesCorrectConjugation) {
+                    subjectCheck = false;
+                    errorMessage = `⚠️ Puisque la question était sur <b>"tes amis"</b> (pluriel), utilise <b>"Ils"</b> ou <b>"Mes amis"</b> avec la bonne terminaison en <b>-ent</b> (ex: <i>"Mes amis aiment..."</i>).`;
+                }
+            } 
+            else if (currentQuestionType === 'vous') {
+                const usesWe = t.includes('nous') || t.includes('moi') || t.includes('on');
+                // Vérification stricte de la terminaison en -ons pour le "nous"
+                const usesCorrectConjugation = t.includes('aimons') || t.includes('adorons') || t.includes('detestons') || t.includes('preferons');
+                if (!usesWe || !usesCorrectConjugation) {
+                    subjectCheck = false;
+                    errorMessage = `⚠️ Puisque la question était <b>"Vous..."</b>, réponds avec <b>"Nous"</b> ou <b>"Mes amis et moi"</b> et accorde le verbe en <b>-ons</b> (ex: <i>"Nous aimons..."</i> ou <i>"Mes amis et moi adorons..."</i>).`;
+                }
+            }
+
+            if (!subjectCheck) {
+                showFeedback(errorMessage, false);
+                return;
+            }
+
+            // Si tout est validé avec succès
+            showFeedback(`🥇 Parfait ! Excellent accord du sujet et du verbe.`, true);
+            currentStepIndex++;
+            setTimeout(() => {
+                hideFeedback();
+                loadStep();
+            }, 2200);
         }
 
         function handleKeyPress(e) {
