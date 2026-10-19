@@ -21,7 +21,7 @@
       </p>
     </header>
 
-    <!-- Sélecteur de vue (Menu déroulant) -->
+    <!-- Sélecteur de vue -->
     <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-center gap-3">
       <label for="view-select" class="font-semibold text-slate-700">Afficher :</label>
       <select id="view-select" class="bg-slate-50 border border-slate-300 text-slate-800 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 font-medium cursor-pointer">
@@ -72,7 +72,7 @@
       </div>
     </section>
 
-    <!-- VUE 1 : Valises de Léa et Karim (Côte à côte) -->
+    <!-- VUE 1 : Valises de Léa et Karim -->
     <div id="view-reference" class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
       <!-- Valise de Léa -->
@@ -131,7 +131,7 @@
 
     </div>
 
-    <!-- VUE 2 : Ma Valise (Activité libre) -->
+    <!-- VUE 2 : Ma Valise -->
     <div id="view-mine" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hidden space-y-6">
       <div class="border-b pb-3 flex items-center justify-between">
         <h2 class="text-xl font-bold text-slate-800">🧳 Ma valise (Activité libre)</h2>
@@ -226,7 +226,6 @@
 
     let selectedItem = null;
 
-    // Gestion du sélecteur de vue
     const viewSelect = document.getElementById('view-select');
     const viewReference = document.getElementById('view-reference');
     const viewMine = document.getElementById('view-mine');
@@ -241,13 +240,11 @@
       }
     });
 
-    // Sélection d'un objet au clic
     const items = document.querySelectorAll('.item');
     items.forEach(item => {
       item.addEventListener('click', (e) => {
         e.stopPropagation();
         
-        // Si l'objet est déjà dans une valise, un clic le renvoie au placard
         if (item.parentElement.id !== 'closet') {
           document.getElementById('closet').appendChild(item);
           item.classList.remove('selected-item');
@@ -256,7 +253,6 @@
           return;
         }
 
-        // Sinon, sélection de l'objet
         items.forEach(i => i.classList.remove('selected-item'));
         if (selectedItem === item) {
           selectedItem = null;
@@ -267,7 +263,6 @@
       });
     });
 
-    // Clic sur une zone de valise pour y déposer l'objet sélectionné
     const dropzones = document.querySelectorAll('.dropzone');
     dropzones.forEach(zone => {
       zone.addEventListener('click', () => {
@@ -342,7 +337,6 @@
       }
     }
 
-    // Génération et vérification de l'exercice
     const generateExerciseBtn = document.getElementById('generate-exercise-btn');
     const exerciseSection = document.getElementById('exercise-section');
     const exerciseQuestions = document.getElementById('exercise-questions');
@@ -367,7 +361,7 @@
         qDiv.innerHTML = `
           <span class="font-bold text-slate-500 w-6">${index + 1}.</span>
           <span class="text-slate-700">${data.reason} alors je prends :</span>
-          <input type="text" data-valid='${JSON.stringify(data.valid)}' class="ex-input flex-1 border border-slate-300 rounded px-3 py-1.5 focus:ring-2 focus:ring-blue-400 focus:outline-none" placeholder="ex: ${data.valid[0]}">
+          <input type="text" data-valid='${JSON.stringify(data.valid)}' class="ex-input flex-1 border border-slate-300 rounded px-3 py-1.5 focus:ring-2 focus:ring-blue-400 focus:outline-none" placeholder="un / mon ...">
           <span class="feedback text-xs font-bold px-2 py-1 rounded hidden"></span>
         `;
         exerciseQuestions.appendChild(qDiv);
