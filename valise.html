@@ -9,6 +9,11 @@
     .dragging { opacity: 0.4; scale: 0.95; }
     /* Empêcher le défilement de la page pendant le glisser au doigt */
     .touch-none { touch-action: none; }
+    .item {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen p-3 sm:p-6 font-sans">
@@ -262,30 +267,53 @@
     });
 
     // 2. Support Écran Tactile (Mobile Touch Event + Clic direct)
-    let draggedTouchItem = null;
+   // 2. Support Écran Tactile (Mobile Touch Event + Clic direct)
+let draggedTouchItem = null;
+let touchInteractionUsed = false;
 
-    items.forEach(item => {
-      // Touch events
-      item.addEventListener('touchstart', (e) => {
-        draggedTouchItem = item;
-        item.classList.add('dragging');
-      }, { passive: true });
+items.forEach(item => {
+  item.addEventListener('touchstart', (e) => {
+    draggedTouchItem = item;
+    touchInteractionUsed = false;
+    item.classList.add('dragging');
+  }, { passive: true });
 
-      item.addEventListener('touchend', (e) => {
-        if (!draggedTouchItem) return;
-        item.classList.remove('dragging');
-        
-        const touch = e.changedTouches[0];
-        const targetElem = document.elementFromPoint(touch.clientX, touch.clientY);
-        const dropTarget = targetElem ? targetElem.closest('.dropzone') : null;
+  item.addEventListener('touchmove', () => {
+    touchInteractionUsed = true;
+  }, { passive: true });
 
-        if (dropTarget) {
-          dropTarget.appendChild(draggedTouchItem);
-          updateAllSuitcases();
-        }
-        draggedTouchItem = null;
-      });
+  item.addEventListener('touchend', (e) => {
+    if (!draggedTouchItem) return;
 
+    item.classList.remove('dragging');
+
+    const touch = e.changedTouches[0];
+    const targetElem = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = targetElem ? targetElem.closest('.dropzone') : null;
+
+    if (dropTarget) {
+      dropTarget.appendChild(draggedTouchItem);
+      updateAllSuitcases();
+    }
+
+    draggedTouchItem = null;
+  });
+
+  item.addEventListener('click', () => {
+    if (touchInteractionUsed) {
+      touchInteractionUsed = false;
+      return;
+    }
+
+    const parentZone = item.parentElement;
+    if (parentZone.id !== 'closet') {
+      document.getElementById('closet').appendChild(item);
+    } else {
+      document.getElementById('suitcase-moi').appendChild(item);
+    }
+    updateAllSuitcases();
+  });
+});
       // Clic rapide alternatif pour mobile (si le glisser est difficile)
       item.addEventListener('click', () => {
         const parentZone = item.parentElement;
