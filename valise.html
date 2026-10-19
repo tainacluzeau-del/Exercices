@@ -6,59 +6,407 @@
   <title>Préparation des Valises - FLE</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .dragging { opacity: 0.4; scale: 0.95; }
-    .touch-none { touch-action: none; }
-
-    .item {
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-    }
+    .selected-item { ring: 3px solid #3b82f6; background-color: #eff6ff !important; transform: scale(1.05); }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-3 sm:p-6 font-sans">
+<body class="bg-slate-100 min-h-screen p-4 sm:p-6 font-sans select-none">
 
-  <div class="max-w-6xl mx-auto space-y-4 sm:space-y-6">
+  <div class="max-w-6xl mx-auto space-y-6">
     
     <!-- En-tête -->
-    <header class="text-center bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
-      <h1 class="text-xl sm:text-3xl font-bold text-slate-800">🧳 Remplis ta valise !</h1>
-      <p class="text-slate-600 mt-1 sm:mt-2 text-xs sm:text-base">
-        Glisse ou touche un objet pour le mettre dans une valise.
+    <header class="text-center bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-800">🧳 Remplis ta valise !</h1>
+      <p class="text-slate-600 mt-2 text-sm sm:text-base">
+        Clique sur un objet pour le sélectionner, puis clique sur la valise de ton choix pour l'y placer.
       </p>
     </header>
 
+    <!-- Sélecteur de vue (Menu déroulant) -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-center gap-3">
+      <label for="view-select" class="font-semibold text-slate-700">Afficher :</label>
+      <select id="view-select" class="bg-slate-50 border border-slate-300 text-slate-800 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 font-medium cursor-pointer">
+        <option value="reference">Valises de Léa et Karim</option>
+        <option value="mine">Ma valise (Activité libre)</option>
+      </select>
+    </div>
+
     <!-- Zone supérieure : Placard -->
-    <section class="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200">
-      <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-2 sm:mb-3 border-b pb-2 flex items-center justify-between">
-        <span>🚪 Placard</span>
+    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+      <h2 class="text-lg font-bold text-slate-800 mb-3 border-b pb-2 flex items-center justify-between">
+        <span>🚪 Placard (Clique pour sélectionner un objet)</span>
         <span class="text-xs font-normal text-slate-500">(24 objets)</span>
       </h2>
       
-      <div id="closet" class="dropzone touch-none min-h-[140px] max-h-[260px] overflow-y-auto p-2 sm:p-3 bg-slate-50 rounded-lg border-2 border-dashed border-slate-300 flex flex-wrap gap-2 content-start">
+      <div id="closet" class="min-h-[160px] max-h-[260px] overflow-y-auto p-3 bg-slate-50 rounded-lg border-2 border-dashed border-slate-300 flex flex-wrap gap-2 content-start transition-colors">
         
         <!-- Objets du dialogue -->
-        <div draggable="true" id="item-1" data-name="un maillot de bain" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un maillot de bain</div>
-        <div draggable="true" id="item-2" data-name="des lunettes de soleil" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">des lunettes de soleil</div>
-        <div draggable="true" id="item-3" data-name="une robe bleue" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">une robe bleue</div>
-        <div draggable="true" id="item-4" data-name="un chargeur" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un chargeur</div>
-        <div draggable="true" id="item-5" data-name="un pantalon" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un pantalon</div>
-        <div draggable="true" id="item-6" data-name="un pull" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un pull</div>
-        <div draggable="true" id="item-7" data-name="des chaussures" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">des chaussures</div>
-        <div draggable="true" id="item-8" data-name="un appareil photo" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un appareil photo</div>
+        <div id="item-1" data-name="un maillot de bain" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🩱 un maillot de bain</div>
+        <div id="item-2" data-name="des lunettes de soleil" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🕶️ des lunettes de soleil</div>
+        <div id="item-3" data-name="une robe bleue" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">👗 une robe bleue</div>
+        <div id="item-4" data-name="un chargeur" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🔌 un chargeur</div>
+        <div id="item-5" data-name="un pantalon" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">👖 un pantalon</div>
+        <div id="item-6" data-name="un pull" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🧶 un pull</div>
+        <div id="item-7" data-name="des chaussures" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">👟 des chaussures</div>
+        <div id="item-8" data-name="un appareil photo" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">📷 un appareil photo</div>
 
         <!-- Objets additionnels -->
-        <div draggable="true" id="item-9" data-name="un t-shirt vert" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un t-shirt vert</div>
-        <div draggable="true" id="item-10" data-name="un chapeau" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un chapeau</div>
-        <div draggable="true" id="item-11" data-name="un manteau" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un manteau</div>
-        <div draggable="true" id="item-12" data-name="des chaussettes" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">des chaussettes</div>
-        <div draggable="true" id="item-13" data-name="une brosse à dents" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">une brosse à dents</div>
-        <div draggable="true" id="item-14" data-name="un livre" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un livre</div>
-        <div draggable="true" id="item-15" data-name="un pyjama" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un pyjama</div>
-        <div draggable="true" id="item-16" data-name="une gourde" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">une gourde</div>
+        <div id="item-9" data-name="un t-shirt vert" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">👕 un t-shirt vert</div>
+        <div id="item-10" data-name="un chapeau" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">👒 un chapeau</div>
+        <div id="item-11" data-name="un manteau" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🧥 un manteau</div>
+        <div id="item-12" data-name="des chaussettes" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🧦 des chaussettes</div>
+        <div id="item-13" data-name="une brosse à dents" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🪥 une brosse à dents</div>
+        <div id="item-14" data-name="un livre" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">📖 un livre</div>
+        <div id="item-15" data-name="un pyjama" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🥼 un pyjama</div>
+        <div id="item-16" data-name="une gourde" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🧴 une gourde</div>
 
         <!-- Objets insolites -->
-        <div draggable="true" id="item-17" data-name="un chaton" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un chaton</div>
-        <div draggable="true" id="item-18" data-name="un doudou" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 cursor-grab">un doudou</div>
-        <div draggable="true" id="item-19" data-name="un canard en plastique" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-
-
+        <div id="item-17" data-name="un chaton" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🐱 un chaton</div>
+        <div id="item-18" data-name="un doudou" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🧸 un doudou</div>
+        <div id="item-19" data-name="un canard en plastique" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🦆 un canard en plastique</div>
+        <div id="item-20" data-name="un passeport" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🛂 un passeport</div>
+        <div id="item-21" data-name="une baguette de pain" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🥖 une baguette de pain</div>
+        <div id="item-22" data-name="une plante verte" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🪴 une plante verte</div>
+        <div id="item-23" data-name="une guitare" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">🎸 une guitare</div>
+        <div id="item-24" data-name="un parapluie" class="item bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-2 text-xs sm:text-sm font-medium text-slate-700 cursor-pointer hover:border-blue-400 transition-all">☂️ un parapluie</div>
+
+      </div>
+    </section>
+
+    <!-- VUE 1 : Valises de Léa et Karim (Côte à côte) -->
+    <div id="view-reference" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Valise de Léa -->
+      <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800 mb-3 border-b pb-2">🧳 Valise de Léa</h2>
+          <div id="suitcase-lea" data-owner="Léa" class="dropzone min-h-[180px] max-h-[250px] overflow-y-auto p-3 bg-amber-50 rounded-lg border-2 border-dashed border-amber-300 flex flex-wrap gap-2 content-start transition-colors cursor-pointer hover:bg-amber-100">
+            <span class="text-xs text-amber-700 italic w-full text-center py-6 pointer-events-none">Clique ici pour y mettre l'objet sélectionné</span>
+          </div>
+
+          <div class="mt-3 text-center">
+            <span class="inline-block px-4 py-1.5 bg-amber-100 text-amber-900 font-bold rounded-full text-sm border border-amber-200">
+              Valise de Léa
+            </span>
+          </div>
+
+          <div id="status-lea" class="mt-3 p-3 rounded-lg text-center font-bold text-sm bg-rose-100 text-rose-800 border border-rose-300">
+            Oh, il manque quelque chose dans la valise !
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-200">
+          <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Dans la valise, il y a :</h3>
+          <ul id="summary-lea" class="list-disc list-inside text-sm text-slate-700 space-y-1 min-h-[30px]">
+            <li class="text-slate-400 italic list-none">La valise est vide.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Valise de Karim -->
+      <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800 mb-3 border-b pb-2">🧳 Valise de Karim</h2>
+          <div id="suitcase-karim" data-owner="Karim" class="dropzone min-h-[180px] max-h-[250px] overflow-y-auto p-3 bg-blue-50 rounded-lg border-2 border-dashed border-blue-300 flex flex-wrap gap-2 content-start transition-colors cursor-pointer hover:bg-blue-100">
+            <span class="text-xs text-blue-700 italic w-full text-center py-6 pointer-events-none">Clique ici pour y mettre l'objet sélectionné</span>
+          </div>
+
+          <div class="mt-3 text-center">
+            <span class="inline-block px-4 py-1.5 bg-blue-100 text-blue-900 font-bold rounded-full text-sm border border-blue-200">
+              Valise de Karim
+            </span>
+          </div>
+
+          <div id="status-karim" class="mt-3 p-3 rounded-lg text-center font-bold text-sm bg-rose-100 text-rose-800 border border-rose-300">
+            Oh, il manque quelque chose dans la valise !
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-200">
+          <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Dans la valise, il y a :</h3>
+          <ul id="summary-karim" class="list-disc list-inside text-sm text-slate-700 space-y-1 min-h-[30px]">
+            <li class="text-slate-400 italic list-none">La valise est vide.</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VUE 2 : Ma Valise (Activité libre) -->
+    <div id="view-mine" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hidden space-y-6">
+      <div class="border-b pb-3 flex items-center justify-between">
+        <h2 class="text-xl font-bold text-slate-800">🧳 Ma valise (Activité libre)</h2>
+        <span class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">Exercice dès 4 objets</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <div id="suitcase-moi" data-owner="Moi" class="dropzone min-h-[180px] max-h-[250px] overflow-y-auto p-3 bg-emerald-50 rounded-lg border-2 border-dashed border-emerald-300 flex flex-wrap gap-2 content-start transition-colors cursor-pointer hover:bg-emerald-100">
+            <span class="text-xs text-emerald-700 italic w-full text-center py-6 pointer-events-none">Clique ici pour y mettre l'objet sélectionné</span>
+          </div>
+
+          <div class="mt-3 text-center">
+            <span class="inline-block px-4 py-1.5 bg-emerald-100 text-emerald-900 font-bold rounded-full text-sm border border-emerald-200">
+              Ma valise
+            </span>
+          </div>
+
+          <div id="status-moi" class="mt-3 p-3 rounded-lg text-center font-bold text-sm bg-slate-100 text-slate-600 border border-slate-200">
+            La valise est vide.
+          </div>
+
+          <div id="exercise-btn-container" class="mt-4 text-center hidden">
+            <button id="generate-exercise-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg shadow transition-colors text-sm flex items-center justify-center gap-2">
+              <span>📝</span> Générer l'exercice de grammaire
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Dans la valise, il y a :</h3>
+          <ul id="summary-moi" class="list-disc list-inside text-sm text-slate-700 space-y-1 min-h-[60px]">
+            <li class="text-slate-400 italic list-none">La valise est vide.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone Exercice -->
+    <section id="exercise-section" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hidden space-y-4">
+      <div class="border-b pb-3 flex items-center justify-between">
+        <h2 class="text-xl font-bold text-slate-800">✍️ Exercice : Pourquoi as-tu pris ces objets ?</h2>
+        <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full">Niveau A1</span>
+      </div>
+      <p class="text-slate-600 text-sm">Remplis les trous avec le bon objet de ta valise (ex : <em>un maillot de bain</em> / <em>mon maillot de bain</em>) :</p>
+      
+      <div id="exercise-questions" class="space-y-4 pt-2">
+      </div>
+
+      <div class="pt-4 border-t flex items-center gap-3">
+        <button id="check-exercise-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-5 rounded-lg text-sm transition-colors">
+          Vérifier mes réponses
+        </button>
+        <div id="exercise-score" class="font-bold text-sm"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const itemData = {
+      "item-1": { reason: "J'aime nager à la plage,", valid: ["un maillot de bain", "mon maillot de bain"] },
+      "item-2": { reason: "Il y a beaucoup de soleil,", valid: ["des lunettes de soleil", "mes lunettes de soleil"] },
+      "item-3": { reason: "J'aime le bleu,", valid: ["une robe bleue", "ma robe bleue"] },
+      "item-4": { reason: "Mon téléphone n'a plus de batterie,", valid: ["un chargeur", "mon chargeur"] },
+      "item-5": { reason: "Je ne veux pas mettre de jupe,", valid: ["un pantalon", "mon pantalon"] },
+      "item-6": { reason: "Je veux sortir le soir,", valid: ["un pull", "mon pull"] },
+      "item-7": { reason: "Je veux marcher en ville,", valid: ["des chaussures", "mes chaussures"] },
+      "item-8": { reason: "Je veux faire des photos de la mer,", valid: ["un appareil photo", "mon appareil photo"] },
+      "item-9": { reason: "J'aime le vert,", valid: ["un t-shirt vert", "mon t-shirt vert"] },
+      "item-10": { reason: "Je veux me protéger le visage du soleil,", valid: ["un chapeau", "mon chapeau"] },
+      "item-11": { reason: "Je veux voyager en décembre,", valid: ["un manteau", "mon manteau"] },
+      "item-12": { reason: "Je veux couvrir mes pieds,", valid: ["des chaussettes", "mes chaussettes"] },
+      "item-13": { reason: "Je veux me laver les dents après le repas,", valid: ["une brosse à dents", "ma brosse à dents"] },
+      "item-14": { reason: "J'aime lire au calme le soir,", valid: ["un livre", "mon livre"] },
+      "item-15": { reason: "Je veux dormir habillé,", valid: ["un pyjama", "mon pyjama"] },
+      "item-16": { reason: "Je veux aller faire une randonnée,", valid: ["une gourde", "ma gourde"] },
+      "item-17": { reason: "Je ne veux pas laisser mon petit animal seul,", valid: ["un chaton", "mon chaton"] },
+      "item-18": { reason: "Je suis un petit enfant et je vais dormir,", valid: ["un doudou", "mon doudou"] },
+      "item-19": { reason: "J'adore jouer dans le bain,", valid: ["un canard en plastique", "mon canard en plastique"] },
+      "item-20": { reason: "Je vais voyager à l'étranger,", valid: ["un passeport", "mon passeport"] },
+      "item-21": { reason: "J'ai une petite faim,", valid: ["une baguette de pain", "ma baguette de pain"] },
+      "item-22": { reason: "J'aime la nature dans ma chambre,", valid: ["une plante verte", "ma plante verte"] },
+      "item-23": { reason: "Je veux jouer de la musique avec mes amis,", valid: ["une guitare", "ma guitare"] },
+      "item-24": { reason: "Il va pleuvoir aujourd'hui,", valid: ["un parapluie", "mon parapluie"] }
+    };
+
+    const expectedItems = {
+      "Léa": ["item-1", "item-2", "item-3", "item-4"],
+      "Karim": ["item-5", "item-6", "item-7", "item-8"]
+    };
+
+    let selectedItem = null;
+
+    // Gestion du sélecteur de vue
+    const viewSelect = document.getElementById('view-select');
+    const viewReference = document.getElementById('view-reference');
+    const viewMine = document.getElementById('view-mine');
+
+    viewSelect.addEventListener('change', (e) => {
+      if (e.target.value === 'reference') {
+        viewReference.classList.remove('hidden');
+        viewMine.classList.add('hidden');
+      } else {
+        viewReference.classList.add('hidden');
+        viewMine.classList.remove('hidden');
+      }
+    });
+
+    // Sélection d'un objet au clic
+    const items = document.querySelectorAll('.item');
+    items.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Si l'objet est déjà dans une valise, un clic le renvoie au placard
+        if (item.parentElement.id !== 'closet') {
+          document.getElementById('closet').appendChild(item);
+          item.classList.remove('selected-item');
+          selectedItem = null;
+          updateAllSuitcases();
+          return;
+        }
+
+        // Sinon, sélection de l'objet
+        items.forEach(i => i.classList.remove('selected-item'));
+        if (selectedItem === item) {
+          selectedItem = null;
+        } else {
+          selectedItem = item;
+          item.classList.add('selected-item');
+        }
+      });
+    });
+
+    // Clic sur une zone de valise pour y déposer l'objet sélectionné
+    const dropzones = document.querySelectorAll('.dropzone');
+    dropzones.forEach(zone => {
+      zone.addEventListener('click', () => {
+        if (selectedItem) {
+          zone.appendChild(selectedItem);
+          selectedItem.classList.remove('selected-item');
+          selectedItem = null;
+          updateAllSuitcases();
+        }
+      });
+    });
+
+    function updateAllSuitcases() {
+      updateSuitcaseState('lea', 'Léa');
+      updateSuitcaseState('karim', 'Karim');
+      updateSuitcaseState('moi', 'Moi');
+    }
+
+    function updateSuitcaseState(key, owner) {
+      const container = document.getElementById(`suitcase-${key}`);
+      const summary = document.getElementById(`summary-${key}`);
+      const status = document.getElementById(`status-${key}`);
+      const currentItems = Array.from(container.querySelectorAll('.item'));
+      const currentIds = currentItems.map(el => el.id);
+
+      summary.innerHTML = '';
+      if (currentItems.length === 0) {
+        summary.innerHTML = '<li class="text-slate-400 italic list-none">La valise est vide.</li>';
+      } else {
+        currentItems.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item.textContent.trim();
+          summary.appendChild(li);
+        });
+      }
+
+      if (owner === 'Moi') {
+        const count = currentIds.length;
+        const btnContainer = document.getElementById('exercise-btn-container');
+        if (count === 0) {
+          status.className = "mt-3 p-3 rounded-lg text-center font-bold text-sm bg-slate-100 text-slate-600 border border-slate-200";
+          status.textContent = "La valise est vide.";
+          btnContainer.classList.add('hidden');
+        } else if (count >= 4) {
+          status.className = "mt-3 p-3 rounded-lg text-center font-bold text-sm bg-amber-100 text-amber-800 border border-amber-300";
+          status.textContent = "La valise est pleine !";
+          btnContainer.classList.remove('hidden');
+        } else {
+          status.className = "mt-3 p-3 rounded-lg text-center font-bold text-sm bg-blue-100 text-blue-800 border border-blue-300";
+          status.textContent = "Est-ce que la valise est prête ?";
+          btnContainer.classList.add('hidden');
+        }
+        return;
+      }
+
+      const expected = expectedItems[owner];
+      const missingItems = expected.filter(id => !currentIds.includes(id));
+      const extraItems = currentIds.filter(id => !expected.includes(id));
+
+      if (missingItems.length === 0 && extraItems.length === 0) {
+        status.className = "mt-3 p-3 rounded-lg text-center font-bold text-sm bg-emerald-100 text-emerald-800 border border-emerald-300";
+        status.textContent = "🎉 C'est prêt !";
+      } else if (missingItems.length > 0 && extraItems.length > 0) {
+        status.className = "mt-3 p-3 rounded-lg text-center font-bold text-sm bg-rose-100 text-rose-800 border border-rose-300";
+        status.textContent = "Oh, il manque quelque chose ET il y a des objets en trop dans la valise !";
+      } else if (missingItems.length > 0) {
+        status.className = "mt-3 p-3 rounded-lg text-center font-bold text-sm bg-rose-100 text-rose-800 border border-rose-300";
+        status.textContent = "Oh, il manque quelque chose dans la valise !";
+      } else {
+        status.className = "mt-3 p-3 rounded-lg text-center font-bold text-sm bg-amber-100 text-amber-800 border border-amber-300";
+        status.textContent = "Oh, il y a des objets supplémentaires / en trop dans la valise !";
+      }
+    }
+
+    // Génération et vérification de l'exercice
+    const generateExerciseBtn = document.getElementById('generate-exercise-btn');
+    const exerciseSection = document.getElementById('exercise-section');
+    const exerciseQuestions = document.getElementById('exercise-questions');
+    const checkExerciseBtn = document.getElementById('check-exercise-btn');
+    const exerciseScore = document.getElementById('exercise-score');
+
+    generateExerciseBtn.addEventListener('click', () => {
+      const container = document.getElementById('suitcase-moi');
+      const activeIds = Array.from(container.querySelectorAll('.item')).map(el => el.id);
+
+      if (activeIds.length < 4) return;
+
+      exerciseQuestions.innerHTML = '';
+      exerciseScore.textContent = '';
+
+      activeIds.forEach((id, index) => {
+        const data = itemData[id];
+        if (!data) return;
+
+        const qDiv = document.createElement('div');
+        qDiv.className = "p-3.5 bg-slate-50 border border-slate-200 rounded-lg flex flex-col sm:flex-row sm:items-center gap-2 text-sm";
+        qDiv.innerHTML = `
+          <span class="font-bold text-slate-500 w-6">${index + 1}.</span>
+          <span class="text-slate-700">${data.reason} alors je prends :</span>
+          <input type="text" data-valid='${JSON.stringify(data.valid)}' class="ex-input flex-1 border border-slate-300 rounded px-3 py-1.5 focus:ring-2 focus:ring-blue-400 focus:outline-none" placeholder="ex: ${data.valid[0]}">
+          <span class="feedback text-xs font-bold px-2 py-1 rounded hidden"></span>
+        `;
+        exerciseQuestions.appendChild(qDiv);
+      });
+
+      exerciseSection.classList.remove('hidden');
+      exerciseSection.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    checkExerciseBtn.addEventListener('click', () => {
+      const inputs = exerciseQuestions.querySelectorAll('.ex-input');
+      let correctCount = 0;
+
+      inputs.forEach(input => {
+        const validOptions = JSON.parse(input.getAttribute('data-valid')).map(v => v.toLowerCase().trim());
+        const userAnswer = input.value.trim().toLowerCase().replace(/\s+/g, ' ');
+        const feedback = input.nextElementSibling;
+
+        if (validOptions.includes(userAnswer)) {
+          correctCount++;
+          input.className = "ex-input flex-1 border-2 border-emerald-500 bg-emerald-50 rounded px-3 py-1.5 font-medium text-emerald-900";
+          feedback.textContent = "Bravo !";
+          feedback.className = "feedback text-xs font-bold px-2 py-1 rounded bg-emerald-100 text-emerald-800 block";
+        } else {
+          input.className = "ex-input flex-1 border-2 border-rose-500 bg-rose-50 rounded px-3 py-1.5 font-medium text-rose-900";
+          feedback.textContent = `Réponse : ${validOptions[0]} (ou ${validOptions[1]})`;
+          feedback.className = "feedback text-xs font-bold px-2 py-1 rounded bg-rose-100 text-rose-800 block";
+        }
+      });
+
+      exerciseScore.textContent = `Score : ${correctCount} / ${inputs.length}`;
+      if (correctCount === inputs.length) {
+        exerciseScore.className = "font-bold text-sm text-emerald-600";
+      } else {
+        exerciseScore.className = "font-bold text-sm text-amber-600";
+      }
+    });
+
+    updateAllSuitcases();
+  </script>
+</body>
+</html>
