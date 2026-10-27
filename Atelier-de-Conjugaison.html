@@ -281,7 +281,7 @@
     border: 2px solid var(--primary);
     background: var(--tag-bg);
     color: var(--primary);
-    width: 190px;
+    width: 210px;
     outline: none;
   }
   .sentence-builder input[type="text"].shake {
@@ -335,20 +335,20 @@
     <div class="config-group">
       <label class="checkbox-label"><input type="checkbox" id="chkPresent" checked> Présent</label>
       <label class="checkbox-label"><input type="checkbox" id="chkPC" checked> Passé Composé</label>
-      <label class="checkbox-label"><input type="checkbox" id="chkFutur" checked> Futur (Proche / Simple)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkFutur" checked> Futur</label>
       <label class="checkbox-label"><input type="checkbox" id="chkImparfait" checked> Imparfait</label>
     </div>
 
     <div class="config-title" style="margin-top: 12px;">2. Catégories de verbes :</div>
     <div class="config-group">
-      <label class="checkbox-label"><input type="checkbox" id="chkG1Reg" checked> 1er gr. réguliers (chanter, étudier, parler, habiter...)</label>
-      <label class="checkbox-label"><input type="checkbox" id="chkGer" checked> Verbes en -ger (manger, voyager, ranger...)</label>
-      <label class="checkbox-label"><input type="checkbox" id="chkCer" checked> Verbes en -cer (commencer, avancer...)</label>
-      <label class="checkbox-label"><input type="checkbox" id="chkElerEter" checked> Verbes en -eler/-eter (appeler, acheter...)</label>
-      <label class="checkbox-label"><input type="checkbox" id="chkYer" checked> Verbes en -yer (envoyer, nettoyer, payer...)</label>
-      <label class="checkbox-label"><input type="checkbox" id="chkAccent" checked> Changement d'accent (préférer, espérer...)</label>
-      <label class="checkbox-label"><input type="checkbox" id="chkG2" checked> 2e groupe (finir, choisir, grandir, réussir...)</label>
-      <label class="checkbox-label"><input type="checkbox" id="chkG3" checked> 3e groupe (18 verbes fréquents dont s'asseoir)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkG1Reg" checked> 1er groupe réguliers</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkGer" checked> Verbes en -ger</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkCer" checked> Verbes en -cer</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkElerEter" checked> Verbes en -eler / -eter</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkYer" checked> Verbes en -yer</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkAccent" checked> Changement d'accent</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkG2" checked> 2e groupe</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkG3" checked> 3e groupe</label>
     </div>
   </div>
 
@@ -783,7 +783,7 @@
   });
 
   el('btnDrawVerb').addEventListener('click', () => {
-    if (answerValidated) return;
+    if (answerValidated, answerValidated) return;
     const list = getActiveVerbs();
     if (list.length === 0) { alert('Cochez au moins une catégorie de verbes !'); return; }
     currVerbObj = randomItem(list);
@@ -817,9 +817,11 @@
     if (!currTimeObj || !currSubj || !currVerbObj || answerValidated) return;
 
     const expectedForms = buildExpectedForms(currTimeObj, currSubj, currVerbObj);
-    const givenVerb = normalize(el('verbInput').value);
+    const givenVerbRaw = el('verbInput').value;
+    const givenVerbNorm = normalize(givenVerbRaw);
 
-    const isCorrect = expectedForms.some(form => normalize(form) === givenVerb);
+    const matchedForm = expectedForms.find(form => normalize(form) === givenVerbNorm);
+    const isCorrect = (matchedForm !== undefined);
 
     answerValidated = true;
     round += 1;
@@ -828,7 +830,10 @@
 
     const prefix = getPrefixText(currTimeObj.text, currSubj, currVerbObj);
     const complement = currVerbObj.comp[currTimeObj.horizon] || currVerbObj.comp['daily'];
-    const primaryExpected = `${prefix}${expectedForms[0]} ${complement}.`;
+    
+    // Si l'étudiant a répondu, on affiche la phrase exacte qu'il a tapée (qu'elle soit au futur proche ou simple)
+    const displayedForm = isCorrect ? givenVerbRaw.trim() : expectedForms[0];
+    const primaryExpected = `${prefix}${displayedForm} ${complement}.`;
 
     if (isCorrect) {
       score += 1;
@@ -837,7 +842,7 @@
       fb.innerHTML = `🎉 Excellent !<span class="correct-answer">${primaryExpected}</span>`;
     } else {
       fb.className = 'feedback show bad';
-      fb.innerHTML = `❌ Oups !<span class="correct-answer">Forme attendue : <b>${primaryExpected}</b></span>`;
+      fb.innerHTML = `❌ Oups !<span class="correct-answer">Forme attendue : <b>${prefix}${expectedForms[0]} ${complement}.</b></span>`;
       el('verbInput').classList.add('shake');
       setTimeout(() => el('verbInput').classList.remove('shake'), 400);
     }
