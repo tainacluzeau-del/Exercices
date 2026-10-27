@@ -292,4 +292,586 @@
 
   @keyframes shake {
     0%,100% { transform: translateX(0); }
-    25
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .validate-btn { background: var(--primary); color: #fff; font-size: 15px; padding: 10px 20px; }
+
+  .feedback {
+    margin-top: 14px;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.good { background: var(--good-bg); color: var(--good); }
+  .feedback.bad { background: var(--bad-bg); color: var(--bad); }
+  .feedback .correct-answer { display: block; margin-top: 4px; color: var(--ink); font-weight: 600; }
+
+  .next-btn { margin-top: 14px; background: var(--primary); color: #fff; display: none; }
+  .next-btn.show { display: inline-block; }
+
+  .footer-note { text-align: center; color: var(--ink-soft); font-size: 12.5px; margin-top: 20px; }
+  .reset-link { background: none; color: var(--ink-soft); text-decoration: underline; font-weight: 600; font-size: 13px; padding: 4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav-bar">
+    <a class="nav-btn" href="index.html">◂ Retour aux exercices</a>
+    <a class="nav-btn" href="https://tainacluzeau-del.github.io/Vocabulaire/">📚 Vocabulaire ↗</a>
+  </div>
+
+  <header>
+    <h1>🎯 Atelier de Conjugaison A2 FLE</h1>
+    <p class="subtitle">Sélectionne tes critères, tire les cartes et conjugue le verbe dans la phrase !</p>
+  </header>
+
+  <div class="config-panel">
+    <div class="config-title">1. Temps inclus :</div>
+    <div class="config-group">
+      <label class="checkbox-label"><input type="checkbox" id="chkPresent" checked> Présent</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkPC" checked> Passé Composé</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkFutur" checked> Futur (Proche / Simple)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkImparfait" checked> Imparfait</label>
+    </div>
+
+    <div class="config-title" style="margin-top: 12px;">2. Catégories de verbes :</div>
+    <div class="config-group">
+      <label class="checkbox-label"><input type="checkbox" id="chkG1Reg" checked> 1er gr. réguliers (chanter, étudier, parler, habiter...)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkGer" checked> Verbes en -ger (manger, voyager, ranger...)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkCer" checked> Verbes en -cer (commencer, avancer...)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkElerEter" checked> Verbes en -eler/-eter (appeler, acheter...)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkYer" checked> Verbes en -yer (envoyer, nettoyer, payer...)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkAccent" checked> Changement d'accent (préférer, espérer...)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkG2" checked> 2e groupe (finir, choisir, grandir, réussir...)</label>
+      <label class="checkbox-label"><input type="checkbox" id="chkG3" checked> 3e groupe (18 verbes fréquents dont s'asseoir)</label>
+    </div>
+  </div>
+
+  <div class="scoreboard">
+    <span class="pill score">⭐ Score : <span id="score">0</span></span>
+    <span class="pill">🔁 Manche : <span id="round">0</span></span>
+  </div>
+
+  <div class="game-container">
+    <div class="cards-grid">
+      <div class="draw-card">
+        <h2>⏱️ Indicateur</h2>
+        <div class="badge-display" id="timeDisplay">—</div>
+        <button class="draw-btn btn-time" id="btnDrawTime">Tirer 🎯</button>
+      </div>
+
+      <div class="draw-card">
+        <h2>👤 Sujet</h2>
+        <div class="badge-display" id="subjDisplay">—</div>
+        <button class="draw-btn btn-subj" id="btnDrawSubj">Tirer 🎯</button>
+      </div>
+
+      <div class="draw-card">
+        <h2>🎬 Verbe</h2>
+        <div class="badge-display" id="verbDisplay">—</div>
+        <button class="draw-btn btn-verb" id="btnDrawVerb">Tirer 🎯</button>
+      </div>
+    </div>
+
+    <div class="action-center">
+      <button class="generate-all-btn" id="btnDrawAll">🎲 Tout tirer d'un coup !</button>
+    </div>
+
+    <div class="answer-card" id="answerCard">
+      <p class="prompt-phrase">Conjugue le verbe <b id="verbPrompt">…</b> :</p>
+      
+      <div class="sentence-builder">
+        <span class="fixed-prefix" id="prefixDisplay">…</span>
+        <input type="text" id="verbInput" autocomplete="off" spellcheck="false" placeholder="verbe conjugué">
+        <span class="fixed-prefix" id="complementDisplay">…</span>
+      </div>
+
+      <div>
+        <button class="validate-btn" id="validateBtn">Valider ✔️</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn">Continuer ➡</button>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    Atelier FLE A2 — 39 verbes indispensables.
+    <br><button class="reset-link" id="resetBtn">Réinitialiser le score</button>
+  </p>
+</div>
+
+<script>
+(function () {
+  const INDICATORS = [
+    { text: "Aujourd'hui", allowedTenses: ['present', 'futur'], horizon: 'daily' },
+    { text: "En ce moment", allowedTenses: ['present'], horizon: 'daily' },
+    { text: "Tous les jours", allowedTenses: ['present'], horizon: 'daily' },
+    { text: "Ce matin", allowedTenses: ['pc', 'present', 'futur'], horizon: 'daily' },
+    { text: "Ce soir", allowedTenses: ['futur', 'present'], horizon: 'daily' },
+    { text: "Hier", allowedTenses: ['pc'], horizon: 'daily' },
+    { text: "La semaine dernière", allowedTenses: ['pc'], horizon: 'long' },
+    { text: "L'année dernière", allowedTenses: ['pc'], horizon: 'long' },
+    { text: "Demain", allowedTenses: ['futur'], horizon: 'daily' },
+    { text: "Bientôt", allowedTenses: ['futur'], horizon: 'daily' },
+    { text: "L'année prochaine", allowedTenses: ['futur'], horizon: 'long' },
+    { text: "Autrefois", allowedTenses: ['imp'], horizon: 'long' },
+    { text: "Quand j'étais jeune", allowedTenses: ['imp'], horizon: 'long' },
+    { text: "À cette époque-là", allowedTenses: ['imp'], horizon: 'long' }
+  ];
+
+  const SUBJECTS = ['je', 'tu', 'il', 'elle', 'nous', 'vous', 'ils', 'elles'];
+
+  const VERBS = [
+    // 1ER GROUPE RÉGULIERS (4)
+    { inf: 'chanter', g: 'g1_reg', aux: 'avoir', pp: 'chanté',
+      comp: { daily: 'une belle chanson', long: 'dans une chorale' },
+      pres: ['chante','chantes','chante','chante','chantons','chantez','chantent','chantent'],
+      imp: ['chantais','chantais','chantait','chantait','chantions','chantiez','chantaient','chantaient'],
+      fut: ['chanterai','chanteras','chantera','chantera','chanterons','chanterez','chanteront','chanteront'] },
+
+    { inf: 'étudier', g: 'g1_reg', aux: 'avoir', pp: 'étudié',
+      comp: { daily: 'la grammaire française', long: 'à l\'université de Paris' },
+      pres: ['étudie','étudies','étudie','étudie','étudions','étudiez','étudient','étudient'],
+      imp: ['étudiais','étudiais','étudiait','étudiait','étudiions','étudiiez','étudiaient','étudiaient'],
+      fut: ['étudierai','étudieras','étudiera','étudiera','étudierons','étudierez','étudieront','étudieront'] },
+
+    { inf: 'parler', g: 'g1_reg', aux: 'avoir', pp: 'parlé',
+      comp: { daily: 'avec le professeur', long: 'plusieurs langues étrangères' },
+      pres: ['parle','parles','parle','parle','parlons','parlez','parlent','parlent'],
+      imp: ['parlais','parlais','parlait','parlait','parlions','parliez','parlaient','parlaient'],
+      fut: ['parlerai','parleras','parlera','parlera','parlerons','parlerez','parleront','parleront'] },
+
+    { inf: 'habiter', g: 'g1_reg', aux: 'avoir', pp: 'habité',
+      comp: { daily: 'dans un bel appartement', long: 'dans un petit village en France' },
+      pres: ['habite','habites','habite','habite','habitons','habitez','habitent','habitent'],
+      imp: ['habitais','habitais','habitait','habitait','habitions','habitiez','habitaient','habitaient'],
+      fut: ['habiterai','habiteras','habitera','habitera','habiterons','habiterez','habiteront','habiteront'] },
+
+    // 1ER GROUPE PARTICULIERS (12)
+    { inf: 'manger', g: 'ger', aux: 'avoir', pp: 'mangé',
+      comp: { daily: 'un croissant à la boulangerie', long: 'des plats traditionnels du pays' },
+      pres: ['mange','manges','mange','mange','mangeons','mangez','mangent','mangent'],
+      imp: ['mangeais','mangeais','mangeait','mangeait','mangions','mangiez','mangeaient','mangeaient'],
+      fut: ['mangerai','mangeras','mangera','mangera','mangerons','mangerez','mangeront','mangeront'] },
+
+    { inf: 'voyager', g: 'ger', aux: 'avoir', pp: 'voyagé',
+      comp: { daily: 'en train pour le travail', long: 'dans toute l\'Europe' },
+      pres: ['voyage','voyages','voyage','voyage','voyageons','voyagez','voyagent','voyagent'],
+      imp: ['voyageais','voyageais','voyageait','voyageait','voyagions','voyagiez','voyageaient','voyageaient'],
+      fut: ['voyagerai','voyageras','voyagera','voyagera','voyagerons','voyagerez','voyageront','voyageront'] },
+
+    { inf: 'ranger', g: 'ger', aux: 'avoir', pp: 'rangé',
+      comp: { daily: 'les affaires dans la chambre', long: 'toute la maison de vacances' },
+      pres: ['range','ranges','range','range','rangeons','rangez','rangent','rangent'],
+      imp: ['rangeais','rangeais','rangeait','rangeait','rangions','rangiez','rangeaient','rangeaient'],
+      fut: ['rangerai','rangeras','rangera','rangera','rangerons','rangerez','rangeront','rangeront'] },
+
+    { inf: 'commencer', g: 'cer', aux: 'avoir', pp: 'commencé',
+      comp: { daily: 'le cours de français', long: 'une nouvelle formation' },
+      pres: ['commence','commences','commence','commence','commençons','commencez','commencent','commencent'],
+      imp: ['commençais','commençais','commençait','commençait','commencions','commenciez','commençaient','commençaient'],
+      fut: ['commencerai','commenceras','commencera','commencera','commencerons','commencerez','commenceront','commenceront'] },
+
+    { inf: 'avancer', g: 'cer', aux: 'avoir', pp: 'avancé',
+      comp: { daily: 'sur le projet de classe', long: 'dans l\'apprentissage des langues' },
+      pres: ['avance','avances','avance','avance','avançons','avancez','avancent','avancent'],
+      imp: ['avançais','avançais','avançait','avançait','avancions','avanciez','avançaient','avançaient'],
+      fut: ['avancerai','avanceras','avancera','avancera','avancerons','avancerez','avanceront','avanceront'] },
+
+    { inf: 'appeler', g: 'eler_eter', aux: 'avoir', pp: 'appelé',
+      comp: { daily: 'un ami au téléphone', long: 'les membres de la famille' },
+      pres: ['appelle','appelles','appelle','appelle','appelons','appelez','appellent','appellent'],
+      imp: ['appelais','appelais','appelait','appelait','appelions','appeliez','appelaient','appelaient'],
+      fut: ['appellerai','appelleras','appellera','appellera','appellerons','appellerez','appelleront','appelleront'] },
+
+    { inf: 'acheter', g: 'eler_eter', aux: 'avoir', pp: 'acheté',
+      comp: { daily: 'du pain et du lait', long: 'une nouvelle voiture familiale' },
+      pres: ['achète','achètes','achète','achète','achetons','achetez','achètent','achètent'],
+      imp: ['achetais','achetais','achetait','achetait','achetions','achetiez','achetaient','achetaient'],
+      fut: ['achèterai','achèteras','achètera','achètera','achèterons','achèterez','achèteront','achèteront'] },
+
+    { inf: 'envoyer', g: 'yer', aux: 'avoir', pp: 'envoyé',
+      comp: { daily: 'un courriel important', long: 'une carte postale du voyage' },
+      pres: ['envoie','envoies','envoie','envoie','envoyons','envoyez','envoient','envoient'],
+      imp: ['envoyais','envoyais','envoyait','envoyait','envoyions','envoyiez','envoyaient','envoyaient'],
+      fut: ['enverrai','enverras','enverra','enverra','enverrons','enverrez','enverront','enverront'] },
+
+    { inf: 'nettoyer', g: 'yer', aux: 'avoir', pp: 'nettoyé',
+      comp: { daily: 'la table de la cuisine', long: 'tout le jardin familial' },
+      pres: ['nettoie','nettoies','nettoie','nettoie','nettoyons','nettoyez','nettoient','nettoient'],
+      imp: ['nettoyais','nettoyais','nettoyait','nettoyait','nettoyions','nettoyiez','nettoyaient','nettoyaient'],
+      fut: ['nettoierai','nettoieras','nettoiera','nettoiera','nettoierons','nettoierez','nettoieront','nettoieront'] },
+
+    { inf: 'payer', g: 'yer', aux: 'avoir', pp: 'payé',
+      comp: { daily: 'l\'addition au restaurant', long: 'le loyer de l\'appartement' },
+      pres: ['paie','paies','paie','paie','payons','payez','paient','paient'],
+      imp: ['payais','payais','payait','payait','payions','payiez','payaient','payaient'],
+      fut: ['paierai','paieras','paiera','paiera','paierons','paierez','paieront','paieront'] },
+
+    { inf: 'préférer', g: 'accent', aux: 'avoir', pp: 'préféré',
+      comp: { daily: 'prendre le métro', long: 'habiter près de la mer' },
+      pres: ['préfère','préfères','préfère','préfère','préférons','préférez','préfèrent','préfèrent'],
+      imp: ['préférais','préférais','préférait','préférait','préférions','préfériez','préféraient','préféraient'],
+      fut: ['préférerai','préféreras','préférera','préférera','préférerons','préférerez','préféreront','préféreront'] },
+
+    { inf: 'espérer', g: 'accent', aux: 'avoir', pp: 'espéré',
+      comp: { daily: 'avoir de bons résultats', long: 'réussir cet examen important' },
+      pres: ['espère','espères','espère','espère','espérons','espérez','espèrent','espèrent'],
+      imp: ['espérais','espérais','espérait','espérait','espérions','espériez','espéraient','espéraient'],
+      fut: ['espérerai','espéreras','espérera','espérera','espérerons','espérerez','espéreront','espéreront'] },
+
+    // 2E GROUPE (4)
+    { inf: 'finir', g: 'g2', aux: 'avoir', pp: 'fini',
+      comp: { daily: 'les devoirs du jour', long: 'les études universitaires' },
+      pres: ['finis','finis','finit','finit','finissons','finissez','finissent','finissent'],
+      imp: ['finissais','finissais','finissait','finissait','finissions','finissiez','finissaient','finissaient'],
+      fut: ['finirai','finiras','finira','finira','finirons','finirez','finiront','finiront'] },
+
+    { inf: 'choisir', g: 'g2', aux: 'avoir', pp: 'choisi',
+      comp: { daily: 'un dessert au menu', long: 'une nouvelle orientation' },
+      pres: ['choisis','choisis','choisit','choisit','choisissons','choisissez','choisissent','choisissent'],
+      imp: ['choisissais','choisissais','choisissait','choisissait','choisissions','choisissiez','choisissaient','choisissaient'],
+      fut: ['choisirai','choisiras','choisira','choisira','choisirons','choisirez','choisiront','choisiront'] },
+
+    { inf: 'grandir', g: 'g2', aux: 'avoir', pp: 'grandi',
+      comp: { daily: 'très vite cet été', long: 'dans une grande ville' },
+      pres: ['grandis','grandis','grandit','grandit','grandissons','grandissez','grandissent','grandissent'],
+      imp: ['grandissais','grandissais','grandissait','grandissait','grandissions','grandissiez','grandissaient','grandissaient'],
+      fut: ['grandirai','grandiras','grandira','grandira','grandirons','grandirez','grandiront','grandiront'] },
+
+    { inf: 'réussir', g: 'g2', aux: 'avoir', pp: 'réussi',
+      comp: { daily: 'l\'exercice de français', long: 'le projet de toute une vie' },
+      pres: ['réussis','réussis','réussit','réussit','réussissons','réussissez','réussissent','réussissent'],
+      imp: ['réussissais','réussissais','réussissait','réussissait','réussissions','réussissiez','réussissaient','réussissaient'],
+      fut: ['réussirai','réussiras','réussira','réussira','réussirons','réussirez','réussiront','réussiront'] },
+
+    // 3E GROUPE FRÉQUENTS (18)
+    { inf: 'aller', g: 'g3', aux: 'être', pp: 'allé',
+      comp: { daily: 'au supermarché', long: 'en vacances au bord du lac' },
+      pres: ['vais','vas','va','va','allons','allez','vont','vont'],
+      imp: ['allais','allais','allait','allait','allions','alliez','allaient','allaient'],
+      fut: ['irai','iras','ira','ira','irons','irez','iront','iront'] },
+
+    { inf: 'venir', g: 'g3', aux: 'être', pp: 'venu',
+      comp: { daily: 'à la fête ce soir', long: 'vivre dans cette belle région' },
+      pres: ['viens','viens','vient','vient','venons','venez','viennent','viennent'],
+      imp: ['venais','venais','venait','venait','venions','veniez','venaient','venaient'],
+      fut: ['viendrai','viendras','viendra','viendra','viendrons','viendrez','viendront','viendront'] },
+
+    { inf: 'partir', g: 'g3', aux: 'être', pp: 'parti',
+      comp: { daily: 'à huit heures du matin', long: 'faire un tour du monde' },
+      pres: ['pars','pars','part','part','partons','partez','partent','partent'],
+      imp: ['partais','partais','partait','partait','partions','partiez','partaient','partaient'],
+      fut: ['partirai','partiras','partira','partira','partirons','partirez','partiront','partiront'] },
+
+    { inf: 'sortir', g: 'g3', aux: 'être', pp: 'sorti',
+      comp: { daily: 'avec des amis au parc', long: 'régulièrement au théâtre' },
+      pres: ['sors','sors','sort','sort','sortons','sortez','sortent','sortent'],
+      imp: ['sortais','sortais','sortait','sortait','sortions','sortiez','sortaient','sortaient'],
+      fut: ['sortirai','sortiras','sortira','sortira','sortirons','sortirez','sortiront','sortiront'] },
+
+    { inf: 'vouloir', g: 'g3', aux: 'avoir', pp: 'voulu',
+      comp: { daily: 'prendre une pause', long: 'changer de travail' },
+      pres: ['veux','veux','veut','veut','voulons','voulez','veulent','veulent'],
+      imp: ['voulais','voulais','voulait','voulait','voulions','vouliez','voulaient','voulaient'],
+      fut: ['voudrai','voudras','voudra','voudra','voudrons','voudrez','voudront','voudront'] },
+
+    { inf: 'pouvoir', g: 'g3', aux: 'avoir', pp: 'pu',
+      comp: { daily: 'répondre à la question', long: 'parler couramment français' },
+      pres: ['peux','peux','peut','peut','pouvons','pouvez','peuvent','peuvent'],
+      imp: ['pouvais','pouvais','pouvait','pouvait','pouvions','pouviez','pouvaient','pouvaient'],
+      fut: ['pourrai','pourras','pourra','pourra','pourrons','pourrez','pourront','pourront'] },
+
+    { inf: 'devoir', g: 'g3', aux: 'avoir', pp: 'dû',
+      comp: { daily: 'faire les courses', long: 'déménager dans une autre ville' },
+      pres: ['dois','dois','doit','doit','devons','devez','doivent','doivent'],
+      imp: ['devais','devais','devait','devait','devions','deviez','devaient','devaient'],
+      fut: ['devrai','devras','devra','devra','devrons','devrez','devront','devront'] },
+
+    { inf: 'savoir', g: 'g3', aux: 'avoir', pp: 'su',
+      comp: { daily: 'la réponse exacte', long: 'jouer du piano à la perfection' },
+      pres: ['sais','sais','sait','sait','savons','savez','savent','savent'],
+      imp: ['savais','savais','savait','savait','savions','saviez','savaient','savaient'],
+      fut: ['saurai','sauras','saura','saura','saurons','saurez','sauront','sauront'] },
+
+    { inf: 'faire', g: 'g3', aux: 'avoir', pp: 'fait',
+      comp: { daily: 'des exercices de grammaire', long: 'un beau voyage à l\'étranger' },
+      pres: ['fais','fais','fait','fait','faisons','faites','font','font'],
+      imp: ['faisais','faisais','faisait','faisait','faisions','faisiez','faisaient','faisaient'],
+      fut: ['ferai','feras','fera','fera','ferons','ferez','feront','feront'] },
+
+    { inf: 'prendre', g: 'g3', aux: 'avoir', pp: 'pris',
+      comp: { daily: 'le bus de huit heures', long: 'des cours de cuisine avec un chef' },
+      pres: ['prends','prends','prend','prend','prenons','prenez','prennent','prennent'],
+      imp: ['prenais','prenais','prenait','prenait','prenions','preniez','prenaient','prenaient'],
+      fut: ['prendrai','prendras','prendra','prendra','prendrons','prendrez','prendront','prendront'] },
+
+    { inf: 'mettre', g: 'g3', aux: 'avoir', pp: 'mis',
+      comp: { daily: 'un manteau chaud', long: 'de l\'argent de côté pour l\'avenir' },
+      pres: ['mets','mets','met','met','mettons','mettez','mettent','mettent'],
+      imp: ['mettais','mettais','mettait','mettait','mettions','mettiez','mettaient','mettaient'],
+      fut: ['mettrai','mettras','mettra','mettra','mettrons','mettrez','mettront','mettront'] },
+
+    { inf: 'voir', g: 'g3', aux: 'avoir', pp: 'vu',
+      comp: { daily: 'un film au cinéma', long: 'les merveilles du monde' },
+      pres: ['vois','vois','voit','voit','voyons','voyez','voient','voient'],
+      imp: ['voyais','voyais','voyait','voyait','voyions','voyiez','voyaient','voyaient'],
+      fut: ['verrai','verras','verra','verra','verrons','verrez','verront','verront'] },
+
+    { inf: 'dire', g: 'g3', aux: 'avoir', pp: 'dit',
+      comp: { daily: 'la vérité au professeur', long: 'des histoires passionnantes' },
+      pres: ['dis','dis','dit','dit','disons','dites','disent','disent'],
+      imp: ['disais','disais','disait','disait','disions','disiez','disaient','disaient'],
+      fut: ['dirai','diras','dira','dira','dirons','direz','diront','diront'] },
+
+    { inf: 'lire', g: 'g3', aux: 'avoir', pp: 'lu',
+      comp: { daily: 'un article de journal', long: 'tous les romans de cet auteur' },
+      pres: ['lis','lis','lit','lit','lisons','lisez','lisent','lisent'],
+      imp: ['lisais','lisais','lisait','lisait','lisions','lisiez','lisaient','lisaient'],
+      fut: ['lirai','liras','lira','lira','lirons','lirez','liront','liront'] },
+
+    { inf: 'écrire', g: 'g3', aux: 'avoir', pp: 'écrit',
+      comp: { daily: 'un message rapide', long: 'un livre sur son histoire' },
+      pres: ['écris','écris','écrit','écrit','écrivons','écrivez','écrivent','écrivent'],
+      imp: ['écrivais','écrivais','écrivait','écrivait','écrivions','écriviez','écrivaient','écrivaient'],
+      fut: ['écrirai','écriras','écrira','écrira','écrirons','écrirez','écriront','écriront'] },
+
+    { inf: 'attendre', g: 'g3', aux: 'avoir', pp: 'attendu',
+      comp: { daily: 'le bus à l\'arrêt', long: 'une grande opportunité' },
+      pres: ['attends','attends','attend','attend','attendons','attendez','attendent','attendent'],
+      imp: ['attendais','attendais','attendait','attendait','attendions','attendiez','attendaient','attendaient'],
+      fut: ['attendrai','attendras','attendra','attendra','attendrons','attendrez','attendront','attendront'] },
+
+    { inf: 'comprendre', g: 'g3', aux: 'avoir', pp: 'compris',
+      comp: { daily: 'la règle de grammaire', long: 'la culture du pays' },
+      pres: ['comprends','comprends','comprend','comprend','comprenons','comprenez','comprennent','comprennent'],
+      imp: ['comprenais','comprenais','comprenait','comprenait','comprenions','compreniez','comprenaient','comprenaient'],
+      fut: ['comprendrai','comprendras','comprendra','comprendra','comprendrons','comprendrez','comprendront','comprendront'] },
+
+    { inf: 's\'asseoir', g: 'g3', aux: 'être', pp: 'assis',
+      comp: { daily: 'près de la fenêtre', long: 'au premier rang de la classe' },
+      pres: ['m\'assieds','t\'assieds','s\'assied','s\'assied','nous asseyons','vous asseyez','s\'asseyent','s\'asseyent'],
+      presAlt: ['m\'assois','t\'assois','s\'assoit','s\'assoit','nous assoyons','vous assoyez','s\'assoient','s\'assoient'],
+      imp: ['m\'asseyais','t\'asseyais','s\'asseyait','s\'asseyait','nous asseyions','vous asseyiez','s\'asseyaient','s\'asseyaient'],
+      impAlt: ['m\'assoyais','t\'assoyais','s\'assoyait','s\'assoyait','nous assoyions','vous assoyiez','s\'assoyaient','s\'assoyaient'],
+      fut: ['m\'assiérai','t\'assiéras','s\'assiéra','s\'assiéra','nous assiérons','vous assiérez','s\'assiéront','s\'assiéront'],
+      futAlt: ['m\'assoirai','t\'assoiras','s\'assoira','s\'assoira','nous assoirons','vous assoirez','s\'assoiront','s\'assoiront'] }
+  ];
+
+  const CONJ_AVOIR = ['ai', 'as', 'a', 'a', 'avons', 'avez', 'ont', 'ont'];
+  const CONJ_ETRE = ['suis', 'es', 'est', 'est', 'sommes', 'êtes', 'sont', 'sont'];
+  const CONJ_ALLER_PRES = ['vais', 'vas', 'va', 'va', 'allons', 'allez', 'vont', 'vont'];
+
+  let score = 0, round = 0;
+  let currTimeObj = null, currSubj = null, currVerbObj = null;
+  let answerValidated = false;
+
+  const el = id => document.getElementById(id);
+
+  function getActiveIndicators() {
+    const selectedTenses = [];
+    if (el('chkPresent').checked) selectedTenses.push('present');
+    if (el('chkPC').checked) selectedTenses.push('pc');
+    if (el('chkFutur').checked) selectedTenses.push('futur');
+    if (el('chkImparfait').checked) selectedTenses.push('imp');
+
+    return INDICATORS.filter(ind => ind.allowedTenses.some(t => selectedTenses.includes(t)));
+  }
+
+  function getActiveVerbs() {
+    const active = [];
+    if (el('chkG1Reg').checked) active.push('g1_reg');
+    if (el('chkGer').checked) active.push('ger');
+    if (el('chkCer').checked) active.push('cer');
+    if (el('chkElerEter').checked) active.push('eler_eter');
+    if (el('chkYer').checked) active.push('yer');
+    if (el('chkAccent').checked) active.push('accent');
+    if (el('chkG2').checked) active.push('g2');
+    if (el('chkG3').checked) active.push('g3');
+    return VERBS.filter(v => active.includes(v.g));
+  }
+
+  function randomItem(arr) {
+    if (!arr || arr.length === 0) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function getPrefixText(indicatorText, subj, verbObj) {
+    if (subj === 'je') {
+      const firstForm = verbObj.pres[0];
+      const startsWithVowelOrH = /^[aeiouéèêàùh]/i.test(firstForm) || /^m['']/i.test(firstForm);
+      return `${indicatorText}, ${startsWithVowelOrH ? 'j\'' : 'je '}`;
+    }
+    return `${indicatorText}, ${subj} `;
+  }
+
+  function buildExpectedForms(timeObj, subj, verbObj) {
+    const sIdx = SUBJECTS.indexOf(subj);
+    const validTenses = timeObj.allowedTenses;
+    const forms = [];
+
+    const userSelectedTenses = [];
+    if (el('chkPresent').checked) userSelectedTenses.push('present');
+    if (el('chkPC').checked) userSelectedTenses.push('pc');
+    if (el('chkFutur').checked) userSelectedTenses.push('futur');
+    if (el('chkImparfait').checked) userSelectedTenses.push('imp');
+
+    const usableTenses = validTenses.filter(t => userSelectedTenses.includes(t));
+
+    usableTenses.forEach(tense => {
+      if (tense === 'present') {
+        forms.push(verbObj.pres[sIdx]);
+        if (verbObj.presAlt) forms.push(verbObj.presAlt[sIdx]);
+      } else if (tense === 'imp') {
+        forms.push(verbObj.imp[sIdx]);
+        if (verbObj.impAlt) forms.push(verbObj.impAlt[sIdx]);
+      } else if (tense === 'futur') {
+        if (verbObj.fut) forms.push(verbObj.fut[sIdx]);
+        if (verbObj.futAlt) forms.push(verbObj.futAlt[sIdx]);
+        const allerForm = CONJ_ALLER_PRES[sIdx];
+        forms.push(`${allerForm} ${verbObj.inf}`);
+      } else if (tense === 'pc') {
+        const aux = verbObj.aux === 'avoir' ? CONJ_AVOIR[sIdx] : CONJ_ETRE[sIdx];
+        let part = verbObj.pp;
+        if (verbObj.aux === 'être') {
+          if (subj === 'elle') part += 'e';
+          else if (subj === 'ils') part += 's';
+          else if (subj === 'elles') part += 'es';
+        }
+        forms.push(`${aux} ${part}`);
+      }
+    });
+
+    return [...new Set(forms)];
+  }
+
+  function checkReady() {
+    if (currTimeObj && currSubj && currVerbObj) {
+      el('answerCard').classList.add('show');
+      el('verbPrompt').textContent = currVerbObj.inf;
+
+      const prefix = getPrefixText(currTimeObj.text, currSubj, currVerbObj);
+      const complement = currVerbObj.comp[currTimeObj.horizon] || currVerbObj.comp['daily'];
+
+      el('prefixDisplay').textContent = prefix;
+      el('complementDisplay').textContent = ` ${complement}.`;
+      el('verbInput').value = '';
+      el('verbInput').focus();
+    }
+  }
+
+  el('btnDrawTime').addEventListener('click', () => {
+    if (answerValidated) return;
+    const list = getActiveIndicators();
+    if (list.length === 0) { alert('Cochez au moins un temps !'); return; }
+    currTimeObj = randomItem(list);
+    el('timeDisplay').textContent = currTimeObj.text;
+    checkReady();
+  });
+
+  el('btnDrawSubj').addEventListener('click', () => {
+    if (answerValidated) return;
+    currSubj = randomItem(SUBJECTS);
+    el('subjDisplay').textContent = currSubj;
+    checkReady();
+  });
+
+  el('btnDrawVerb').addEventListener('click', () => {
+    if (answerValidated) return;
+    const list = getActiveVerbs();
+    if (list.length === 0) { alert('Cochez au moins une catégorie de verbes !'); return; }
+    currVerbObj = randomItem(list);
+    el('verbDisplay').textContent = currVerbObj.inf;
+    checkReady();
+  });
+
+  el('btnDrawAll').addEventListener('click', () => {
+    if (answerValidated) return;
+    const indList = getActiveIndicators();
+    const verbList = getActiveVerbs();
+    if (indList.length === 0 || verbList.length === 0) {
+      alert('Vérifiez vos filtres de temps et de verbes !');
+      return;
+    }
+    currTimeObj = randomItem(indList);
+    currSubj = randomItem(SUBJECTS);
+    currVerbObj = randomItem(verbList);
+
+    el('timeDisplay').textContent = currTimeObj.text;
+    el('subjDisplay').textContent = currSubj;
+    el('verbDisplay').textContent = currVerbObj.inf;
+    checkReady();
+  });
+
+  function normalize(str) {
+    return str.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').replace(/[.!?]+$/g, '');
+  }
+
+  function validate() {
+    if (!currTimeObj || !currSubj || !currVerbObj || answerValidated) return;
+
+    const expectedForms = buildExpectedForms(currTimeObj, currSubj, currVerbObj);
+    const givenVerb = normalize(el('verbInput').value);
+
+    const isCorrect = expectedForms.some(form => normalize(form) === givenVerb);
+
+    answerValidated = true;
+    round += 1;
+    el('round').textContent = round;
+    const fb = el('feedback');
+
+    const prefix = getPrefixText(currTimeObj.text, currSubj, currVerbObj);
+    const complement = currVerbObj.comp[currTimeObj.horizon] || currVerbObj.comp['daily'];
+    const primaryExpected = `${prefix}${expectedForms[0]} ${complement}.`;
+
+    if (isCorrect) {
+      score += 1;
+      el('score').textContent = score;
+      fb.className = 'feedback show good';
+      fb.innerHTML = `🎉 Excellent !<span class="correct-answer">${primaryExpected}</span>`;
+    } else {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = `❌ Oups !<span class="correct-answer">Forme attendue : <b>${primaryExpected}</b></span>`;
+      el('verbInput').classList.add('shake');
+      setTimeout(() => el('verbInput').classList.remove('shake'), 400);
+    }
+
+    el('validateBtn').disabled = true;
+    el('verbInput').disabled = true;
+    el('nextBtn').classList.add('show');
+  }
+
+  el('validateBtn').addEventListener('click', validate);
+  el('verbInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !el('validateBtn').disabled) validate();
+  });
+
+  el('nextBtn').addEventListener('click', () => {
+    currTimeObj = null; currSubj = null; currVerbObj = null;
+    answerValidated = false;
+    el('timeDisplay').textContent = '—';
+    el('subjDisplay').textContent = '—';
+    el('verbDisplay').textContent = '—';
+    el('answerCard').classList.remove('show');
+    el('feedback').className = 'feedback';
+    el('validateBtn').disabled = false;
+    el('verbInput').disabled = false;
+    el('nextBtn').classList.remove('show');
+  });
+
+  el('resetBtn').addEventListener('click', () => {
+    score = 0; round = 0;
+    answerValidated = false;
+    el('score').textContent = '0';
+    el('round').textContent = '0';
+  });
+})();
+</script>
+</body>
+</html>
