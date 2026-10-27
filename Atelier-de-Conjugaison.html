@@ -409,16 +409,16 @@
 <script>
 (function () {
   const INDICATORS = [
-    { text: "Aujourd'hui", allowedTenses: ['present', 'futur'], horizon: 'daily' },
+    { text: "Aujourd'hui", allowedTenses: ['present', 'futur_proche'], horizon: 'daily' },
     { text: "En ce moment", allowedTenses: ['present'], horizon: 'daily' },
     { text: "Tous les jours", allowedTenses: ['present'], horizon: 'daily' },
-    { text: "Ce matin", allowedTenses: ['pc', 'present', 'futur'], horizon: 'daily' },
-    { text: "Ce soir", allowedTenses: ['futur', 'present'], horizon: 'daily' },
+    { text: "Ce matin", allowedTenses: ['pc', 'present', 'futur_proche'], horizon: 'daily' },
+    { text: "Ce soir", allowedTenses: ['futur_proche', 'present'], horizon: 'daily' },
     { text: "Hier", allowedTenses: ['pc'], horizon: 'daily' },
     { text: "La semaine dernière", allowedTenses: ['pc'], horizon: 'long' },
     { text: "L'année dernière", allowedTenses: ['pc'], horizon: 'long' },
-    { text: "Demain", allowedTenses: ['futur'], horizon: 'daily' },
-    { text: "Bientôt", allowedTenses: ['futur'], horizon: 'daily' },
+    { text: "Demain", allowedTenses: ['futur', 'futur_proche'], horizon: 'daily' },
+    { text: "Bientôt", allowedTenses: ['futur', 'futur_proche'], horizon: 'daily' },
     { text: "L'année prochaine", allowedTenses: ['futur'], horizon: 'long' },
     { text: "Autrefois", allowedTenses: ['imp'], horizon: 'long' },
     { text: "Quand j'étais jeune", allowedTenses: ['imp'], horizon: 'long' },
@@ -678,7 +678,10 @@
     const selectedTenses = [];
     if (el('chkPresent').checked) selectedTenses.push('present');
     if (el('chkPC').checked) selectedTenses.push('pc');
-    if (el('chkFutur').checked) selectedTenses.push('futur');
+    if (el('chkFutur').checked) {
+      selectedTenses.push('futur');
+      selectedTenses.push('futur_proche');
+    }
     if (el('chkImparfait').checked) selectedTenses.push('imp');
 
     return INDICATORS.filter(ind => ind.allowedTenses.some(t => selectedTenses.includes(t)));
@@ -719,7 +722,10 @@
     const userSelectedTenses = [];
     if (el('chkPresent').checked) userSelectedTenses.push('present');
     if (el('chkPC').checked) userSelectedTenses.push('pc');
-    if (el('chkFutur').checked) userSelectedTenses.push('futur');
+    if (el('chkFutur').checked) {
+      userSelectedTenses.push('futur');
+      userSelectedTenses.push('futur_proche');
+    }
     if (el('chkImparfait').checked) userSelectedTenses.push('imp');
 
     const usableTenses = validTenses.filter(t => userSelectedTenses.includes(t));
@@ -734,6 +740,7 @@
       } else if (tense === 'futur') {
         if (verbObj.fut) forms.push(verbObj.fut[sIdx]);
         if (verbObj.futAlt) forms.push(verbObj.futAlt[sIdx]);
+      } else if (tense === 'futur_proche') {
         const allerForm = CONJ_ALLER_PRES[sIdx];
         forms.push(`${allerForm} ${verbObj.inf}`);
       } else if (tense === 'pc') {
@@ -783,7 +790,7 @@
   });
 
   el('btnDrawVerb').addEventListener('click', () => {
-    if (answerValidated, answerValidated) return;
+    if (answerValidated) return;
     const list = getActiveVerbs();
     if (list.length === 0) { alert('Cochez au moins une catégorie de verbes !'); return; }
     currVerbObj = randomItem(list);
@@ -831,7 +838,6 @@
     const prefix = getPrefixText(currTimeObj.text, currSubj, currVerbObj);
     const complement = currVerbObj.comp[currTimeObj.horizon] || currVerbObj.comp['daily'];
     
-    // Si l'étudiant a répondu, on affiche la phrase exacte qu'il a tapée (qu'elle soit au futur proche ou simple)
     const displayedForm = isCorrect ? givenVerbRaw.trim() : expectedForms[0];
     const primaryExpected = `${prefix}${displayedForm} ${complement}.`;
 
