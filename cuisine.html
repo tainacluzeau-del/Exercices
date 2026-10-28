@@ -17,13 +17,20 @@
 
   <div class="max-w-5xl mx-auto space-y-4 sm:space-y-6">
     
-    <!-- En-tête -->
-    <header class="text-center bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-amber-200/80">
+    <!-- En-tête avec bouton de retour -->
+    <header class="text-center bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-amber-200/80 space-y-3">
+      <div class="flex justify-start">
+        <a href="https://tainacluzeau-del.github.io/Exercices" class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 border border-amber-300 px-3 py-1.5 rounded-xl transition-colors">
+          <span>⬅️ Retour aux exercices</span>
+        </a>
+      </div>
+
       <h1 class="text-xl sm:text-3xl font-extrabold text-amber-900 tracking-tight">🧑‍🍳 La Cuisine Interactive des Chefs</h1>
-      <p class="text-slate-600 mt-2 text-xs sm:text-base">
+      <p class="text-slate-600 text-xs sm:text-base">
         Sélectionne un ingrédient dans le frigo puis clique sur le chaudron pour l'y ajouter !
       </p>
-      <div class="mt-3 sm:mt-4 flex justify-center">
+      
+      <div class="pt-1 flex justify-center">
         <button id="open-dict-btn" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm border border-amber-300 transition-colors flex items-center gap-2">
           <span>📖 Dictionnaire des ingrédients</span>
         </button>
@@ -130,7 +137,7 @@
       <div class="border-b pb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <h2 class="text-lg sm:text-xl font-bold text-slate-800">👩‍🍳 Création Libre de la Cheffe Émilie</h2>
-          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Mets au moins 4 ingrédients dans le chaudron pour inventer une recette et faire l'exercice !</p>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Mets exactement les bons ingrédients d'une recette connue pour lancer l'exercice !</p>
         </div>
         
         <div class="flex items-center gap-2 w-full md:w-auto">
@@ -233,8 +240,8 @@
     const recipesSimon = {
       "crepes": {
         title: "Crêpes",
-        instruction: "Pour faire des crêpes, il faut : de la farine, du lait, des œufs, du beurre et du sucre.",
-        required: ["ing-1", "ing-2", "ing-3", "ing-4", "ing-5"],
+        instruction: "Pour faire des crêpes, il faut : de la farine, du lait, des œufs et du sucre.",
+        required: ["ing-1", "ing-2", "ing-3", "ing-5"],
         image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=800&q=80"
       },
       "omelette": {
@@ -305,7 +312,31 @@
       { key: "milkshake", title: "Milk-shake fraise-banane", required: ["ing-2", "ing-17", "ing-18", "ing-5"], image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=800&q=80" },
       { key: "tartine_miel", title: "Tartine sucrée au miel et fraises", required: ["ing-8", "ing-4", "ing-21", "ing-17"], image: "https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=800&q=80" },
       { key: "beignets_banane", title: "Beignets aux bananes", required: ["ing-1", "ing-18", "ing-3", "ing-5"], image: "https://images.unsplash.com/photo-1621236378699-8597faf6a176?auto=format&fit=crop&w=800&q=80" },
-      { key: "chocolat_chaud", title: "Chocolat chaud gourmand", required: ["ing-2", "ing-6", "ing-5", "ing-4"], image: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=800&q=80" }
+      { key: "chocolat_chaud", title: "Chocolat chaud gourmand", required: ["ing-2", "ing-6", "ing-5", "ing-4"], image: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=800&q=80" },
+
+      // 10 Recettes du quotidien
+      { key: "omelette_fromage", title: "Omelette au fromage", required: ["ing-3", "ing-4", "ing-13", "ing-20"], image: "https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=800&q=80" },
+      { key: "riz_au_lait", title: "Riz au lait gourmand", required: ["ing-19", "ing-2", "ing-5", "ing-21"], image: "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?auto=format&fit=crop&w=800&q=80" },
+      { key: "pates_boeuf", title: "Pâtes au bœuf", required: ["ing-9", "ing-10", "ing-4", "ing-20"], image: "https://images.unsplash.com/photo-1621996346565-e3def6164286?auto=format&fit=crop&w=800&q=80" },
+      { key: "porc_carottes_champignons", title: "Porc aux carottes et champignons", required: ["ing-11", "ing-16", "ing-14", "ing-22"], image: "https://images.unsplash.com/photo-1514944288352-fffac99f0bdf?auto=format&fit=crop&w=800&q=80" },
+      { key: "poulet_champignons", title: "Poulet poêlé aux champignons", required: ["ing-12", "ing-14", "ing-4", "ing-20"], image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80" },
+      { key: "dessert_banane_miel", title: "Dessert banane-miel-fraise", required: ["ing-18", "ing-17", "ing-21", "ing-7"], image: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=800&q=80" },
+      { key: "puree_fromage", title: "Purée de pommes de terre au fromage", required: ["ing-15", "ing-2", "ing-4", "ing-13"], image: "https://images.unsplash.com/photo-1514944288352-fffac99f0bdf?auto=format&fit=crop&w=800&q=80" },
+      { key: "boeuf_champignons", title: "Poêlée de bœuf et champignons", required: ["ing-10", "ing-14", "ing-22", "ing-20"], image: "https://images.unsplash.com/photo-1534939561126-855b8675edd7?auto=format&fit=crop&w=800&q=80" },
+      { key: "sandwich_poulet_fromage", title: "Sandwich chaud poulet-fromage", required: ["ing-8", "ing-12", "ing-13", "ing-4"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "legumes_sautes", title: "Légumes sautés (Carottes & Pommes de terre)", required: ["ing-16", "ing-15", "ing-22", "ing-20"], image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80" },
+
+      // 10 Variations de Sandwiches
+      { key: "sw_jambon_fromage", title: "Sandwich au jambon et fromage", required: ["ing-8", "ing-11", "ing-13", "ing-4"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_jambon_beurre", title: "Sandwich jambon-beurre", required: ["ing-8", "ing-11", "ing-4", "ing-20"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_poulet_carottes", title: "Sandwich au poulet et carottes", required: ["ing-8", "ing-12", "ing-16", "ing-22"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_poulet_fromage_2", title: "Sandwich poulet-fromage", required: ["ing-8", "ing-12", "ing-13", "ing-22"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_boeuf_fromage", title: "Sandwich au bœuf et fromage", required: ["ing-8", "ing-10", "ing-13", "ing-4"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_boeuf_carottes", title: "Sandwich bœuf-carottes", required: ["ing-8", "ing-10", "ing-16", "ing-22"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_champignons_fromage", title: "Sandwich aux champignons et fromage", required: ["ing-8", "ing-14", "ing-13", "ing-4"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_chocolat", title: "Sandwich sucré au chocolat", required: ["ing-8", "ing-6", "ing-4", "ing-5"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_banane_miel", title: "Sandwich à la banane et au miel", required: ["ing-8", "ing-18", "ing-21", "ing-4"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" },
+      { key: "sw_fraise_chocolat", title: "Sandwich fraise-chocolat", required: ["ing-8", "ing-17", "ing-6", "ing-5"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" }
     ];
 
     let selectedItem = null;
@@ -484,11 +515,12 @@
 
       if (currentIds.length < 4) return;
 
+      // Vérification exacte : même nombre d'ingrédients et correspondance parfaite
       let matchedRecipe = null;
       for (let r of knownRecipesFree) {
         const hasAll = r.required.every(id => currentIds.includes(id));
         const noExtra = currentIds.every(id => r.required.includes(id));
-        if (hasAll && noExtra) {
+        if (hasAll && noExtra && r.required.length === currentIds.length) {
           matchedRecipe = r;
           break;
         }
@@ -505,9 +537,10 @@
       } else {
         resultDiv.className = "mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl border bg-rose-50 border-rose-300 text-center space-y-1.5";
         resultDiv.innerHTML = `
-          <div class="font-bold text-rose-900 text-xs sm:text-sm">Pouah ! Qu'est-ce que c'est que cette recette ?</div>
-          <p class="text-xs text-rose-700">Ces ingrédients ne forment aucune recette connue de la Cheffe Émilie !</p>
+          <div class="font-bold text-rose-900 text-xs sm:text-sm">Pouah ! Ce n'est pas une recette valide !</div>
+          <p class="text-xs text-rose-700">Ces ingrédients ne forment aucune recette exacte de la Cheffe Émilie.</p>
         `;
+        return; // Stoppe la génération de l'exercice si la recette n'est pas exacte
       }
 
       exerciseQuestions.innerHTML = '';
