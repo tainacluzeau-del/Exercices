@@ -137,14 +137,14 @@
       <div class="border-b pb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
           <h2 class="text-lg sm:text-xl font-bold text-slate-800">👩‍🍳 Création Libre de la Cheffe Émilie</h2>
-          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Mets exactement les bons ingrédients d'une recette connue pour lancer l'exercice !</p>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Mets au moins 4 ingrédients dans le chaudron pour faire l'exercice de grammaire !</p>
         </div>
         
         <div class="flex items-center gap-2 w-full md:w-auto">
           <label for="grammar-mode-select" class="font-bold text-xs sm:text-sm text-slate-700 shrink-0">Focus :</label>
           <select id="grammar-mode-select" class="w-full md:w-auto max-w-full bg-amber-50 border border-amber-300 text-amber-900 font-bold text-xs sm:text-sm rounded-xl p-2 sm:p-2.5 truncate">
             <option value="partitifs">Articles partitifs (du, de la, de l', des...)</option>
-            <option value="quantites">Expressions de quantité (un peu de, 200g de...)</option>
+            <option value="quantites">Expressions de quantité (de, d', des...)</option>
           </select>
         </div>
       </div>
@@ -213,22 +213,22 @@
     const ingredientsData = {
       "ing-1": { name: "farine", type: "f", partitive: "de la", quant: "de", emoji: "🌾" },
       "ing-2": { name: "lait", type: "m", partitive: "du", quant: "de", emoji: "🥛" },
-      "ing-3": { name: "œufs", type: "pl", partitive: "des", quant: "", emoji: "🥚" },
+      "ing-3": { name: "œufs", type: "pl", partitive: "des", quant: "des", emoji: "🥚" },
       "ing-4": { name: "beurre", type: "m", partitive: "du", quant: "de", emoji: "🧈" },
       "ing-5": { name: "sucre", type: "m", partitive: "du", quant: "de", emoji: "🍬" },
       "ing-6": { name: "chocolat", type: "m", partitive: "du", quant: "de", emoji: "🍫" },
-      "ing-7": { name: "citrons", type: "pl", partitive: "des", quant: "de", emoji: "🍋" },
+      "ing-7": { name: "citrons", type: "pl", partitive: "des", quant: "des", emoji: "🍋" },
       "ing-8": { name: "pain", type: "m", partitive: "du", quant: "de", emoji: "🥖" },
       "ing-9": { name: "pâtes", type: "pl", partitive: "des", quant: "de", emoji: "🍝" },
       "ing-10": { name: "bœuf", type: "m", partitive: "du", quant: "de", emoji: "🐄" },
       "ing-11": { name: "porc", type: "m", partitive: "du", quant: "de", emoji: "🐖" },
       "ing-12": { name: "poulet", type: "m", partitive: "du", quant: "de", emoji: "🐔" },
       "ing-13": { name: "fromage", type: "m", partitive: "du", quant: "de", emoji: "🧀" },
-      "ing-14": { name: "champignons", type: "pl", partitive: "des", quant: "de", emoji: "🍄" },
-      "ing-15": { name: "pommes de terre", type: "pl", partitive: "des", quant: "de", emoji: "🥔" },
-      "ing-16": { name: "carottes", type: "pl", partitive: "des", quant: "de", emoji: "🥕" },
-      "ing-17": { name: "fraises", type: "pl", partitive: "des", quant: "de", emoji: "🍓" },
-      "ing-18": { name: "bananes", type: "pl", partitive: "des", quant: "de", emoji: "🍌" },
+      "ing-14": { name: "champignons", type: "pl", partitive: "des", quant: "des", emoji: "🍄" },
+      "ing-15": { name: "pommes de terre", type: "pl", partitive: "des", quant: "des", emoji: "🥔" },
+      "ing-16": { name: "carottes", type: "pl", partitive: "des", quant: "des", emoji: "🥕" },
+      "ing-17": { name: "fraises", type: "pl", partitive: "des", quant: "des", emoji: "🍓" },
+      "ing-18": { name: "bananes", type: "pl", partitive: "des", quant: "des", emoji: "🍌" },
       "ing-19": { name: "riz", type: "m", partitive: "du", quant: "de", emoji: "🍚" },
       "ing-20": { name: "sel", type: "m", partitive: "du", quant: "de", emoji: "🧂" },
       "ing-21": { name: "miel", type: "m", partitive: "du", quant: "de", emoji: "🍯" },
@@ -339,11 +339,34 @@
       { key: "sw_fraise_chocolat", title: "Sandwich fraise-chocolat", required: ["ing-8", "ing-17", "ing-6", "ing-5"], image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80" }
     ];
 
+    // Expressions pour la variété des consignes
+    const partitivePhrases = [
+      "Dans mon chaudron, je mets",
+      "Pour réussir la recette, j'ajoute",
+      "Il faut verser",
+      "N'oublie pas d'incorporer",
+      "Le chef conseille de mettre"
+    ];
+
+    const liquidLabels = ["10 cl", "une cuillère", "un filet", "un peu"];
+    const solidLabels = ["200 g", "un morceau", "une pincée", "un peu", "une tranche"];
+
     let selectedItem = null;
 
     const viewSelect = document.getElementById('view-select');
     const viewSimon = document.getElementById('view-simon');
     const viewEmilie = document.getElementById('view-emilie');
+    const exerciseSection = document.getElementById('exercise-section');
+    const grammarModeSelect = document.getElementById('grammar-mode-select');
+
+    // Réinitialisation complète pour éviter les blocages
+    function resetExerciseState() {
+      exerciseSection.classList.add('hidden');
+      document.getElementById('exercise-questions').innerHTML = '';
+      document.getElementById('exercise-score').textContent = '';
+      document.getElementById('result-emilie').classList.add('hidden');
+      document.getElementById('result-simon').classList.add('hidden');
+    }
 
     function resetCauldronsToFridge() {
       const fridge = document.getElementById('fridge');
@@ -353,6 +376,7 @@
         fridge.appendChild(item);
       });
       selectedItem = null;
+      resetExerciseState();
       updateAllCauldrons();
     }
 
@@ -367,6 +391,10 @@
       }
     });
 
+    grammarModeSelect.addEventListener('change', () => {
+      resetExerciseState();
+    });
+
     const items = document.querySelectorAll('.item');
     items.forEach(item => {
       item.addEventListener('click', (e) => {
@@ -375,6 +403,7 @@
           document.getElementById('fridge').appendChild(item);
           item.classList.remove('selected-item');
           selectedItem = null;
+          resetExerciseState();
           updateAllCauldrons();
           return;
         }
@@ -396,6 +425,7 @@
           zone.appendChild(selectedItem);
           selectedItem.classList.remove('selected-item');
           selectedItem = null;
+          resetExerciseState();
           updateAllCauldrons();
         }
       });
@@ -493,11 +523,9 @@
     });
 
     const generateExerciseBtn = document.getElementById('generate-exercise-btn');
-    const exerciseSection = document.getElementById('exercise-section');
     const exerciseQuestions = document.getElementById('exercise-questions');
     const checkExerciseBtn = document.getElementById('check-exercise-btn');
     const exerciseScore = document.getElementById('exercise-score');
-    const grammarModeSelect = document.getElementById('grammar-mode-select');
 
     function shuffleArray(array) {
       const shuffled = [...array];
@@ -515,7 +543,6 @@
 
       if (currentIds.length < 4) return;
 
-      // Vérification exacte : même nombre d'ingrédients et correspondance parfaite
       let matchedRecipe = null;
       for (let r of knownRecipesFree) {
         const hasAll = r.required.every(id => currentIds.includes(id));
@@ -535,12 +562,11 @@
         `;
         resetCauldronsToFridge();
       } else {
-        resultDiv.className = "mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl border bg-rose-50 border-rose-300 text-center space-y-1.5";
+        resultDiv.className = "mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl border bg-amber-50 border-amber-300 text-center space-y-1.5";
         resultDiv.innerHTML = `
-          <div class="font-bold text-rose-900 text-xs sm:text-sm">Pouah ! Ce n'est pas une recette valide !</div>
-          <p class="text-xs text-rose-700">Ces ingrédients ne forment aucune recette exacte de la Cheffe Émilie.</p>
+          <div class="font-bold text-amber-900 text-xs sm:text-sm">🧪 Drôle de création originale !</div>
+          <p class="text-xs text-amber-800">Ce n'est pas une recette classique, mais faisons quand même l'exercice de grammaire !</p>
         `;
-        return; // Stoppe la génération de l'exercice si la recette n'est pas exacte
       }
 
       exerciseQuestions.innerHTML = '';
@@ -558,25 +584,30 @@
 
         if (mode === 'partitifs') {
           expectedAnswer = data.partitive;
-          prefixText = "Dans mon chaudron, je mets";
+          const randomPrefix = partitivePhrases[Math.floor(Math.random() * partitivePhrases.length)];
+          prefixText = randomPrefix;
           suffixText = `${data.name}.`;
         } else {
+          // Mode Quantités : l'étudiant doit trouver de, d' ou des
+          expectedAnswer = data.quant;
           if (data.type === 'v') {
-            expectedAnswer = "d'";
-            prefixText = "Je verse une cuillère";
+            // Liquide : ex. "Je verse 10 cl _____ huile."
+            const label = liquidLabels[Math.floor(Math.random() * liquidLabels.length)];
+            prefixText = `Je verse ${label}`;
             suffixText = `${data.name}.`;
-          } else if (data.quant === "") {
-            expectedAnswer = "trois";
+          } else if (data.type === 'pl') {
+            // Elément comptable pluriel : ex. "J'ajoute _____ carottes."
             prefixText = "J'ajoute";
-            suffixText = `${data.name}. (ex: trois)`;
+            suffixText = `${data.name}.`;
           } else {
-            expectedAnswer = "de";
-            prefixText = "Je mets un peu";
+            // Solide / poudre : ex. "Je mets 200 g _____ farine."
+            const label = solidLabels[Math.floor(Math.random() * solidLabels.length)];
+            prefixText = `Je mets ${label}`;
             suffixText = `${data.name}.`;
           }
         }
 
-        const inputWidth = expectedAnswer.length > 3 ? "w-24 sm:w-28" : "w-16 sm:w-20";
+        const inputWidth = expectedAnswer.length > 3 ? "w-20 sm:w-24" : "w-14 sm:w-16";
 
         const qDiv = document.createElement('div');
         qDiv.className = "p-3 bg-white border border-amber-200 rounded-xl text-xs sm:text-sm leading-relaxed flex flex-wrap items-center gap-1.5 sm:gap-2";
@@ -605,11 +636,11 @@
 
         if (user === expected) {
           correctCount++;
-          input.className = "ex-input inline-block border-2 border-emerald-500 bg-emerald-50 px-2 py-0.5 font-bold text-emerald-900 text-center rounded w-20 sm:w-24";
+          input.className = "ex-input inline-block border-2 border-emerald-500 bg-emerald-50 px-2 py-0.5 font-bold text-emerald-900 text-center rounded w-16 sm:w-20";
           feedback.textContent = "✓ Bravo !";
           feedback.className = "feedback text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 inline-block";
         } else {
-          input.className = "ex-input inline-block border-2 border-rose-500 bg-rose-50 px-2 py-0.5 font-bold text-rose-900 text-center rounded w-20 sm:w-24";
+          input.className = "ex-input inline-block border-2 border-rose-500 bg-rose-50 px-2 py-0.5 font-bold text-rose-900 text-center rounded w-16 sm:w-20";
           feedback.textContent = `✗ (${expected})`;
           feedback.className = "feedback text-xs font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800 inline-block";
         }
