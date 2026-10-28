@@ -6,80 +6,84 @@
   <title>La Cuisine des Chefs - FLE</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .selected-item { ring: 4px solid #3b82f6; background-color: #eff6ff !important; transform: scale(1.08); }
+    .selected-item { 
+      outline: 4px solid #3b82f6; 
+      background-color: #eff6ff !important; 
+      transform: scale(1.08); 
+    }
   </style>
 </head>
-<body class="bg-amber-50/50 min-h-screen p-4 sm:p-6 font-sans select-none text-slate-800">
+<body class="bg-amber-50/50 min-h-screen p-3 sm:p-6 font-sans select-none text-slate-800">
 
-  <div class="max-w-6xl mx-auto space-y-6">
+  <div class="max-w-5xl mx-auto space-y-4 sm:space-y-6">
     
     <!-- En-tête -->
-    <header class="text-center bg-white p-6 rounded-2xl shadow-sm border border-amber-200/80">
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-amber-900 tracking-tight">🧑‍🍳 La Cuisine Interactive des Chefs</h1>
-      <p class="text-slate-600 mt-2 text-sm sm:text-base">
+    <header class="text-center bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-amber-200/80">
+      <h1 class="text-xl sm:text-3xl font-extrabold text-amber-900 tracking-tight">🧑‍🍳 La Cuisine Interactive des Chefs</h1>
+      <p class="text-slate-600 mt-2 text-xs sm:text-base">
         Sélectionne un ingrédient dans le frigo puis clique sur le chaudron pour l'y ajouter !
       </p>
-      <div class="mt-4 flex justify-center">
-        <button id="open-dict-btn" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-4 py-2 rounded-xl text-sm border border-amber-300 transition-colors flex items-center gap-2">
+      <div class="mt-3 sm:mt-4 flex justify-center">
+        <button id="open-dict-btn" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm border border-amber-300 transition-colors flex items-center gap-2">
           <span>📖 Dictionnaire des ingrédients</span>
         </button>
       </div>
     </header>
 
     <!-- Sélecteur de Chef / Vue -->
-    <div class="bg-white p-4 rounded-2xl shadow-sm border border-amber-200/80 flex flex-wrap items-center justify-center gap-3">
-      <label for="view-select" class="font-bold text-slate-700">Choisir l'activité :</label>
-      <select id="view-select" class="bg-slate-50 border border-slate-300 text-slate-800 text-base rounded-xl focus:ring-amber-500 focus:border-amber-500 p-2.5 font-bold cursor-pointer">
+    <div class="bg-white p-3 sm:p-4 rounded-2xl shadow-sm border border-amber-200/80 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3">
+      <label for="view-select" class="font-bold text-slate-700 text-sm sm:text-base text-center sm:text-left">Choisir l'activité :</label>
+      <select id="view-select" class="w-full sm:w-auto max-w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm sm:text-base rounded-xl focus:ring-amber-500 focus:border-amber-500 p-2.5 font-bold cursor-pointer truncate">
         <option value="simon">👨‍🍳 Les Recettes du Chef Simon (Recette guidée)</option>
         <option value="emilie">👩‍🍳 Création Libre de la Cheffe Émilie (Grammaire & Invention)</option>
       </select>
     </div>
 
     <!-- Zone Frigo / Placard (24 ingrédients) -->
-    <section class="bg-white p-5 rounded-2xl shadow-sm border border-amber-200/80">
-      <h2 class="text-lg font-bold text-slate-800 mb-3 border-b pb-2 flex items-center justify-between">
-        <span>🧊 Frigo & Placard (Clique sur un ingrédient)</span>
+    <section class="bg-white p-3 sm:p-5 rounded-2xl shadow-sm border border-amber-200/80">
+      <h2 class="text-base sm:text-lg font-bold text-slate-800 mb-3 border-b pb-2 flex items-center justify-between">
+        <span>🧊 Frigo & Placard</span>
         <span class="text-xs font-normal text-slate-500">(24 ingrédients)</span>
       </h2>
       
-      <div id="fridge" class="min-h-[160px] p-3 bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 flex flex-wrap gap-3 content-start transition-colors">
-        <div id="ing-1" data-id="ing-1" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🌾</div>
-        <div id="ing-2" data-id="ing-2" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🥛</div>
-        <div id="ing-3" data-id="ing-3" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🥚</div>
-        <div id="ing-4" data-id="ing-4" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🧈</div>
-        <div id="ing-5" data-id="ing-5" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍬</div>
-        <div id="ing-6" data-id="ing-6" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍫</div>
-        <div id="ing-7" data-id="ing-7" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍋</div>
-        <div id="ing-8" data-id="ing-8" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🥖</div>
-        <div id="ing-9" data-id="ing-9" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍝</div>
-        <div id="ing-10" data-id="ing-10" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🐄</div>
-        <div id="ing-11" data-id="ing-11" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🐖</div>
-        <div id="ing-12" data-id="ing-12" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🐔</div>
-        <div id="ing-13" data-id="ing-13" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🧀</div>
-        <div id="ing-14" data-id="ing-14" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍄</div>
-        <div id="ing-15" data-id="ing-15" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🥔</div>
-        <div id="ing-16" data-id="ing-16" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🥕</div>
-        <div id="ing-17" data-id="ing-17" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍓</div>
-        <div id="ing-18" data-id="ing-18" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍌</div>
-        <div id="ing-19" data-id="ing-19" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍚</div>
-        <div id="ing-20" data-id="ing-20" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🧂</div>
-        <div id="ing-21" data-id="ing-21" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🍯</div>
-        <div id="ing-22" data-id="ing-22" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🛢️</div>
-        <div id="ing-23" data-id="ing-23" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🧦</div>
-        <div id="ing-24" data-id="ing-24" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-3 text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-14 h-14">🧼</div>
+      <div id="fridge" class="min-h-[140px] sm:min-h-[160px] p-2 sm:p-3 bg-slate-50 rounded-xl border-2 border-dashed border-slate-300 flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 content-start transition-colors">
+        <div id="ing-1" data-id="ing-1" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🌾</div>
+        <div id="ing-2" data-id="ing-2" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🥛</div>
+        <div id="ing-3" data-id="ing-3" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🥚</div>
+        <div id="ing-4" data-id="ing-4" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🧈</div>
+        <div id="ing-5" data-id="ing-5" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍬</div>
+        <div id="ing-6" data-id="ing-6" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍫</div>
+        <div id="ing-7" data-id="ing-7" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍋</div>
+        <div id="ing-8" data-id="ing-8" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🥖</div>
+        <div id="ing-9" data-id="ing-9" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍝</div>
+        <div id="ing-10" data-id="ing-10" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🐄</div>
+        <div id="ing-11" data-id="ing-11" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🐖</div>
+        <div id="ing-12" data-id="ing-12" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🐔</div>
+        <div id="ing-13" data-id="ing-13" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🧀</div>
+        <div id="ing-14" data-id="ing-14" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍄</div>
+        <div id="ing-15" data-id="ing-15" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🥔</div>
+        <div id="ing-16" data-id="ing-16" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🥕</div>
+        <div id="ing-17" data-id="ing-17" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍓</div>
+        <div id="ing-18" data-id="ing-18" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍌</div>
+        <div id="ing-19" data-id="ing-19" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍚</div>
+        <div id="ing-20" data-id="ing-20" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🧂</div>
+        <div id="ing-21" data-id="ing-21" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🍯</div>
+        <div id="ing-22" data-id="ing-22" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🛢️</div>
+        <div id="ing-23" data-id="ing-23" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🧦</div>
+        <div id="ing-24" data-id="ing-24" class="item bg-white border border-slate-200 shadow-sm rounded-xl p-2 sm:p-3 text-2xl sm:text-3xl cursor-pointer hover:border-amber-400 transition-all flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14">🧼</div>
       </div>
     </section>
 
     <!-- VUE 1 : Chef Simon -->
-    <div id="view-simon" class="bg-white p-6 rounded-2xl shadow-sm border border-amber-200/80 space-y-6">
-      <div class="border-b pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div id="view-simon" class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-amber-200/80 space-y-4 sm:space-y-6">
+      <div class="border-b pb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <h2 class="text-xl font-bold text-slate-800">👨‍🍳 Les Recettes du Chef Simon</h2>
-          <p class="text-sm text-slate-600 mt-1">Choisis une recette et mets les bons ingrédients dans le chaudron !</p>
+          <h2 class="text-lg sm:text-xl font-bold text-slate-800">👨‍🍳 Les Recettes du Chef Simon</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Choisis une recette et mets les bons ingrédients dans le chaudron !</p>
         </div>
-        <div class="flex items-center gap-2">
-          <label for="recipe-select" class="font-bold text-sm text-slate-700">Recette :</label>
-          <select id="recipe-select" class="bg-amber-50 border border-amber-300 text-amber-900 font-bold text-sm rounded-xl p-2.5">
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <label for="recipe-select" class="font-bold text-xs sm:text-sm text-slate-700 shrink-0">Recette :</label>
+          <select id="recipe-select" class="w-full md:w-auto max-w-full bg-amber-50 border border-amber-300 text-amber-900 font-bold text-xs sm:text-sm rounded-xl p-2 sm:p-2.5 truncate">
             <option value="crepes">Crêpes</option>
             <option value="omelette">Omelette aux champignons</option>
             <option value="gateau">Gâteau au chocolat</option>
@@ -94,92 +98,92 @@
       </div>
 
       <!-- Instruction du Chef Simon -->
-      <div id="simon-instruction" class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-950 text-sm font-medium">
+      <div id="simon-instruction" class="bg-amber-50 border border-amber-200 p-3 sm:p-4 rounded-xl text-amber-950 text-xs sm:text-sm font-medium">
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div>
-          <h3 class="text-sm font-bold text-slate-700 mb-2">🥣 Le Chaudron du Chef Simon</h3>
-          <div id="cauldron-simon" data-owner="simon" class="dropzone min-h-[200px] max-h-[280px] overflow-y-auto p-4 bg-slate-900 rounded-2xl border-4 border-slate-700 flex flex-wrap gap-3 content-start transition-colors cursor-pointer shadow-inner">
-            <span class="text-xs text-slate-400 italic w-full text-center py-10 pointer-events-none">Clique ici pour y ajouter l'ingrédient sélectionné</span>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-700 mb-2">🥣 Le Chaudron du Chef Simon</h3>
+          <div id="cauldron-simon" data-owner="simon" class="dropzone min-h-[160px] sm:min-h-[200px] max-h-[280px] overflow-y-auto p-3 sm:p-4 bg-slate-900 rounded-2xl border-4 border-slate-700 flex flex-wrap gap-2 sm:gap-3 content-start transition-colors cursor-pointer shadow-inner">
+            <span class="text-xs text-slate-400 italic w-full text-center py-8 sm:py-10 pointer-events-none">Clique ici pour y ajouter l'ingrédient sélectionné</span>
           </div>
 
-          <button id="cook-simon-btn" class="mt-4 w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-xl shadow transition-colors text-sm flex items-center justify-center gap-2">
+          <button id="cook-simon-btn" class="mt-3 sm:mt-4 w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 sm:py-3 px-4 rounded-xl shadow transition-colors text-xs sm:text-sm flex items-center justify-center gap-2">
             <span>🔥 Cuisiner la recette !</span>
           </button>
         </div>
 
         <div>
           <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Dans le chaudron, il y a :</h3>
-          <ul id="summary-simon" class="list-disc list-inside text-sm text-slate-700 space-y-1 min-h-[60px] bg-slate-50 p-3 rounded-xl border">
+          <ul id="summary-simon" class="list-disc list-inside text-xs sm:text-sm text-slate-700 space-y-1 min-h-[60px] bg-slate-50 p-3 rounded-xl border">
             <li class="text-slate-400 italic list-none">Le chaudron est vide.</li>
           </ul>
 
-          <div id="result-simon" class="mt-4 hidden p-4 rounded-xl border">
+          <div id="result-simon" class="mt-3 sm:mt-4 hidden p-3 sm:p-4 rounded-xl border">
           </div>
         </div>
       </div>
     </div>
 
     <!-- VUE 2 : Cheffe Émilie -->
-    <div id="view-emilie" class="bg-white p-6 rounded-2xl shadow-sm border border-amber-200/80 hidden space-y-6">
-      <div class="border-b pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div id="view-emilie" class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-amber-200/80 hidden space-y-4 sm:space-y-6">
+      <div class="border-b pb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <h2 class="text-xl font-bold text-slate-800">👩‍🍳 Création Libre de la Cheffe Émilie</h2>
-          <p class="text-sm text-slate-600 mt-1">Mets au moins 4 ingrédients dans le chaudron pour inventer une recette et faire l'exercice !</p>
+          <h2 class="text-lg sm:text-xl font-bold text-slate-800">👩‍🍳 Création Libre de la Cheffe Émilie</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Mets au moins 4 ingrédients dans le chaudron pour inventer une recette et faire l'exercice !</p>
         </div>
         
-        <div class="flex items-center gap-2">
-          <label for="grammar-mode-select" class="font-bold text-sm text-slate-700">Focus Grammaire :</label>
-          <select id="grammar-mode-select" class="bg-amber-50 border border-amber-300 text-amber-900 font-bold text-sm rounded-xl p-2.5">
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <label for="grammar-mode-select" class="font-bold text-xs sm:text-sm text-slate-700 shrink-0">Focus :</label>
+          <select id="grammar-mode-select" class="w-full md:w-auto max-w-full bg-amber-50 border border-amber-300 text-amber-900 font-bold text-xs sm:text-sm rounded-xl p-2 sm:p-2.5 truncate">
             <option value="partitifs">Articles partitifs (du, de la, de l', des...)</option>
             <option value="quantites">Expressions de quantité (un peu de, 200g de...)</option>
           </select>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div>
-          <h3 class="text-sm font-bold text-slate-700 mb-2">🥣 Le Chaudron de la Cheffe Émilie</h3>
-          <div id="cauldron-emilie" data-owner="emilie" class="dropzone min-h-[200px] max-h-[280px] overflow-y-auto p-4 bg-slate-900 rounded-2xl border-4 border-slate-700 flex flex-wrap gap-3 content-start transition-colors cursor-pointer shadow-inner">
-            <span class="text-xs text-slate-400 italic w-full text-center py-10 pointer-events-none">Clique ici pour y ajouter l'ingrédient sélectionné</span>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-700 mb-2">🥣 Le Chaudron de la Cheffe Émilie</h3>
+          <div id="cauldron-emilie" data-owner="emilie" class="dropzone min-h-[160px] sm:min-h-[200px] max-h-[280px] overflow-y-auto p-3 sm:p-4 bg-slate-900 rounded-2xl border-4 border-slate-700 flex flex-wrap gap-2 sm:gap-3 content-start transition-colors cursor-pointer shadow-inner">
+            <span class="text-xs text-slate-400 italic w-full text-center py-8 sm:py-10 pointer-events-none">Clique ici pour y ajouter l'ingrédient sélectionné</span>
           </div>
 
-          <div id="status-emilie" class="mt-3 p-3 rounded-xl text-center font-bold text-sm bg-slate-100 text-slate-600 border border-slate-200">
+          <div id="status-emilie" class="mt-3 p-2.5 sm:p-3 rounded-xl text-center font-bold text-xs sm:text-sm bg-slate-100 text-slate-600 border border-slate-200">
             Le chaudron est vide.
           </div>
 
-          <button id="generate-exercise-btn" class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow transition-colors text-sm hidden flex items-center justify-center gap-2">
+          <button id="generate-exercise-btn" class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 sm:py-3 px-4 rounded-xl shadow transition-colors text-xs sm:text-sm hidden flex items-center justify-center gap-2">
             <span>📝 Générer l'exercice de grammaire</span>
           </button>
         </div>
 
         <div>
           <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Dans le chaudron, il y a :</h3>
-          <ul id="summary-emilie" class="list-disc list-inside text-sm text-slate-700 space-y-1 min-h-[60px] bg-slate-50 p-3 rounded-xl border">
-            <li class="text-slate-400 italic list-none">Le chaudron est vide.</li>
+          <ul id="summary-emilie" class="list-disc list-inside text-xs sm:text-sm text-slate-700 space-y-1 min-h-[60px] bg-slate-50 p-3 rounded-xl border">
+            <li class="text-slate-400 italic list-none">Le chaudron me paraît bien vide...</li>
           </ul>
 
-          <div id="result-emilie" class="mt-4 hidden p-4 rounded-xl border">
+          <div id="result-emilie" class="mt-3 sm:mt-4 hidden p-3 sm:p-4 rounded-xl border">
           </div>
         </div>
       </div>
 
       <!-- Zone Exercice de la Cheffe Émilie -->
-      <section id="exercise-section" class="bg-amber-50/60 p-6 rounded-2xl border border-amber-200 hidden space-y-4">
-        <div class="border-b border-amber-200 pb-3 flex items-center justify-between">
-          <h3 class="text-lg font-bold text-amber-950">✍️ Exercice : Remplis les trous avec le bon mot !</h3>
-          <span class="text-xs font-bold bg-amber-200 text-amber-900 px-3 py-1 rounded-full">Niveau A1</span>
+      <section id="exercise-section" class="bg-amber-50/70 p-4 sm:p-6 rounded-2xl border border-amber-200 hidden space-y-4">
+        <div class="border-b border-amber-200 pb-3 flex items-center justify-between gap-2">
+          <h3 class="text-base sm:text-lg font-bold text-amber-950">✍️ Exercice : Complète directement les phrases</h3>
+          <span class="text-xs font-bold bg-amber-200 text-amber-900 px-2.5 py-1 rounded-full shrink-0">Niveau A1</span>
         </div>
 
-        <div id="exercise-questions" class="space-y-3 pt-2">
+        <div id="exercise-questions" class="space-y-3 pt-1">
         </div>
 
-        <div class="pt-3 border-t border-amber-200 flex items-center gap-3">
-          <button id="check-exercise-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-5 rounded-xl text-sm transition-colors">
+        <div class="pt-3 border-t border-amber-200 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <button id="check-exercise-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-5 rounded-xl text-xs sm:text-sm transition-colors text-center">
             Vérifier mes réponses
           </button>
-          <div id="exercise-score" class="font-bold text-sm"></div>
+          <div id="exercise-score" class="font-bold text-xs sm:text-sm text-center sm:text-left"></div>
         </div>
       </section>
     </div>
@@ -187,13 +191,13 @@
   </div>
 
   <!-- Modal Dictionnaire -->
-  <div id="dict-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white max-w-2xl w-full rounded-2xl p-6 shadow-xl max-h-[85vh] flex flex-col">
+  <div id="dict-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white max-w-2xl w-full rounded-2xl p-4 sm:p-6 shadow-xl max-h-[85vh] flex flex-col">
       <div class="flex items-center justify-between border-b pb-3">
-        <h3 class="text-lg font-bold text-slate-800">📖 Dictionnaire des Ingrédients</h3>
+        <h3 class="text-base sm:text-lg font-bold text-slate-800">📖 Dictionnaire des Ingrédients</h3>
         <button id="close-dict-btn" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">✕</button>
       </div>
-      <div id="dict-content" class="overflow-y-auto py-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+      <div id="dict-content" class="overflow-y-auto py-3 sm:py-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 text-xs sm:text-sm">
       </div>
     </div>
   </div>
@@ -292,8 +296,6 @@
       { key: "carbonara", title: "Pâtes à la carbonara", required: ["ing-9", "ing-11", "ing-13", "ing-20"], image: "https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&w=800&q=80" },
       { key: "poulet_riz", title: "Poulet au riz frit", required: ["ing-12", "ing-19", "ing-22", "ing-20"], image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80" },
       { key: "salade_fruits", title: "Salade de fruits", required: ["ing-17", "ing-18", "ing-7", "ing-21"], image: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=800&q=80" },
-
-      // 10 nouvelles recettes exclusives pour Cheffe Émilie
       { key: "steak_frites", title: "Steak-frites", required: ["ing-10", "ing-15", "ing-4", "ing-20"], image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80" },
       { key: "poulet_roti", title: "Poulet rôti aux pommes de terre", required: ["ing-12", "ing-15", "ing-4", "ing-20"], image: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=800&q=80" },
       { key: "risotto", title: "Risotto aux champignons", required: ["ing-19", "ing-14", "ing-4", "ing-13"], image: "https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?auto=format&fit=crop&w=800&q=80" },
@@ -397,15 +399,15 @@
         const status = document.getElementById('status-emilie');
         const btnEx = document.getElementById('generate-exercise-btn');
         if (currentIds.length === 0) {
-          status.className = "mt-3 p-3 rounded-xl text-center font-bold text-sm bg-slate-100 text-slate-600 border border-slate-200";
+          status.className = "mt-3 p-2.5 sm:p-3 rounded-xl text-center font-bold text-xs sm:text-sm bg-slate-100 text-slate-600 border border-slate-200";
           status.textContent = "Le chaudron est vide.";
           btnEx.classList.add('hidden');
         } else if (currentIds.length >= 4) {
-          status.className = "mt-3 p-3 rounded-xl text-center font-bold text-sm bg-emerald-100 text-emerald-800 border border-emerald-300";
+          status.className = "mt-3 p-2.5 sm:p-3 rounded-xl text-center font-bold text-xs sm:text-sm bg-emerald-100 text-emerald-800 border border-emerald-300";
           status.textContent = "Prêt à cuisiner et à générer l'exercice !";
           btnEx.classList.remove('hidden');
         } else {
-          status.className = "mt-3 p-3 rounded-xl text-center font-bold text-sm bg-amber-100 text-amber-800 border border-amber-300";
+          status.className = "mt-3 p-2.5 sm:p-3 rounded-xl text-center font-bold text-xs sm:text-sm bg-amber-100 text-amber-800 border border-amber-300";
           status.textContent = `Encore ${4 - currentIds.length} ingrédient(s) pour générer l'exercice !`;
           btnEx.classList.add('hidden');
         }
@@ -441,19 +443,19 @@
       resultDiv.classList.remove('hidden');
 
       if (isExact) {
-        resultDiv.className = "mt-4 p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-center space-y-3";
+        resultDiv.className = "mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-center space-y-3";
         resultDiv.innerHTML = `
-          <div class="font-extrabold text-emerald-900 text-lg">🎉 Bravo ! Recette réussie !</div>
-          <img src="${recipe.image}" alt="${recipe.title}" class="w-full h-48 object-cover rounded-xl shadow-md border border-emerald-200">
+          <div class="font-extrabold text-emerald-900 text-base sm:text-lg">🎉 Bravo ! Recette réussie !</div>
+          <img src="${recipe.image}" alt="${recipe.title}" class="w-full h-40 sm:h-48 object-cover rounded-xl shadow-md border border-emerald-200">
         `;
         resetCauldronsToFridge();
       } else {
         const missingIds = recipe.required.filter(id => !currentIds.includes(id));
         const missingNames = missingIds.map(id => ingredientsData[id].partitive + " " + ingredientsData[id].name).join(', ');
 
-        resultDiv.className = "mt-4 p-4 rounded-xl border bg-rose-50 border-rose-300 space-y-3";
+        resultDiv.className = "mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl border bg-rose-50 border-rose-300 space-y-2";
         resultDiv.innerHTML = `
-          <div class="font-bold text-rose-900 text-center">Pouah ! C'est une bouillie indigeste !</div>
+          <div class="font-bold text-rose-900 text-center text-xs sm:text-sm">Pouah ! C'est une bouillie indigeste !</div>
           <p class="text-xs text-rose-800 text-center">Pour réussir la recette du Chef Simon, il fallait ajouter : <span class="font-bold">${missingNames}</span>.</p>
         `;
       }
@@ -494,16 +496,16 @@
 
       resultDiv.classList.remove('hidden');
       if (matchedRecipe) {
-        resultDiv.className = "mt-4 p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-center space-y-3";
+        resultDiv.className = "mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-center space-y-3";
         resultDiv.innerHTML = `
-          <div class="font-extrabold text-emerald-900 text-lg">🎉 Bravo ! Tu as préparé : ${matchedRecipe.title} !</div>
-          <img src="${matchedRecipe.image}" alt="${matchedRecipe.title}" class="w-full h-48 object-cover rounded-xl shadow-md border border-emerald-200">
+          <div class="font-extrabold text-emerald-900 text-base sm:text-lg">🎉 Bravo ! Tu as préparé : ${matchedRecipe.title} !</div>
+          <img src="${matchedRecipe.image}" alt="${matchedRecipe.title}" class="w-full h-40 sm:h-48 object-cover rounded-xl shadow-md border border-emerald-200">
         `;
         resetCauldronsToFridge();
       } else {
-        resultDiv.className = "mt-4 p-4 rounded-xl border bg-rose-50 border-rose-300 text-center space-y-2";
+        resultDiv.className = "mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl border bg-rose-50 border-rose-300 text-center space-y-1.5";
         resultDiv.innerHTML = `
-          <div class="font-bold text-rose-900">Pouah ! Qu'est-ce que c'est que cette recette ?</div>
+          <div class="font-bold text-rose-900 text-xs sm:text-sm">Pouah ! Qu'est-ce que c'est que cette recette ?</div>
           <p class="text-xs text-rose-700">Ces ingrédients ne forment aucune recette connue de la Cheffe Émilie !</p>
         `;
       }
@@ -518,31 +520,39 @@
         if (!data) return;
 
         let expectedAnswer = "";
-        let promptText = "";
+        let prefixText = "";
+        let suffixText = "";
 
         if (mode === 'partitifs') {
           expectedAnswer = data.partitive;
-          promptText = `Dans mon chaudron, je mets <span class="font-bold border-b-2 border-slate-400 px-2 text-blue-700">______</span> ${data.name}.`;
+          prefixText = "Dans mon chaudron, je mets";
+          suffixText = `${data.name}.`;
         } else {
           if (data.type === 'v') {
             expectedAnswer = "d'";
-            promptText = `Je verse une cuillère <span class="font-bold border-b-2 border-slate-400 px-2 text-blue-700">______</span> ${data.name}.`;
+            prefixText = "Je verse une cuillère";
+            suffixText = `${data.name}.`;
           } else if (data.quant === "") {
             expectedAnswer = "trois";
-            promptText = `J'ajoute <span class="font-bold border-b-2 border-slate-400 px-2 text-blue-700">______</span> ${data.name}. (ex: trois)`;
+            prefixText = "J'ajoute";
+            suffixText = `${data.name}. (ex: trois)`;
           } else {
             expectedAnswer = "de";
-            promptText = `Je mets un peu <span class="font-bold border-b-2 border-slate-400 px-2 text-blue-700">______</span> ${data.name}.`;
+            prefixText = "Je mets un peu";
+            suffixText = `${data.name}.`;
           }
         }
 
+        const inputWidth = expectedAnswer.length > 3 ? "w-24 sm:w-28" : "w-16 sm:w-20";
+
         const qDiv = document.createElement('div');
-        qDiv.className = "p-3.5 bg-white border border-amber-200 rounded-xl flex flex-col sm:flex-row sm:items-center gap-3 text-sm";
+        qDiv.className = "p-3 bg-white border border-amber-200 rounded-xl text-xs sm:text-sm leading-relaxed flex flex-wrap items-center gap-1.5 sm:gap-2";
         qDiv.innerHTML = `
-          <span class="font-bold text-amber-800 w-6">${index + 1}.</span>
-          <span class="text-slate-800 flex-1">${promptText}</span>
-          <input type="text" data-expected="${expectedAnswer}" class="ex-input border border-slate-300 rounded-lg px-3 py-1.5 font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-36" placeholder="Réponse...">
-          <span class="feedback text-xs font-bold px-2 py-1 rounded hidden"></span>
+          <span class="font-bold text-amber-800">${index + 1}.</span>
+          <span>${prefixText}</span>
+          <input type="text" data-expected="${expectedAnswer}" class="ex-input inline-block border-b-2 border-slate-400 bg-amber-50/50 px-2 py-0.5 font-bold text-blue-800 text-center focus:ring-2 focus:ring-amber-500 focus:outline-none rounded ${inputWidth}" placeholder="...">
+          <span>${suffixText}</span>
+          <span class="feedback text-xs font-bold px-2 py-0.5 rounded hidden ml-1"></span>
         `;
         exerciseQuestions.appendChild(qDiv);
       });
@@ -562,21 +572,21 @@
 
         if (user === expected) {
           correctCount++;
-          input.className = "ex-input border-2 border-emerald-500 bg-emerald-50 rounded-lg px-3 py-1.5 font-bold text-emerald-900 w-full sm:w-36";
-          feedback.textContent = "Bravo !";
-          feedback.className = "feedback text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 block";
+          input.className = "ex-input inline-block border-2 border-emerald-500 bg-emerald-50 px-2 py-0.5 font-bold text-emerald-900 text-center rounded w-20 sm:w-24";
+          feedback.textContent = "✓ Bravo !";
+          feedback.className = "feedback text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 inline-block";
         } else {
-          input.className = "ex-input border-2 border-rose-500 bg-rose-50 rounded-lg px-3 py-1.5 font-bold text-rose-900 w-full sm:w-36";
-          feedback.textContent = `Réponse : ${expected}`;
-          feedback.className = "feedback text-xs font-bold px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800 block";
+          input.className = "ex-input inline-block border-2 border-rose-500 bg-rose-50 px-2 py-0.5 font-bold text-rose-900 text-center rounded w-20 sm:w-24";
+          feedback.textContent = `✗ (${expected})`;
+          feedback.className = "feedback text-xs font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800 inline-block";
         }
       });
 
       exerciseScore.textContent = `Score : ${correctCount} / ${inputs.length}`;
       if (correctCount === inputs.length) {
-        exerciseScore.className = "font-bold text-sm text-emerald-700";
+        exerciseScore.className = "font-bold text-xs sm:text-sm text-emerald-700";
       } else {
-        exerciseScore.className = "font-bold text-sm text-amber-700";
+        exerciseScore.className = "font-bold text-xs sm:text-sm text-amber-700";
       }
     });
 
@@ -590,11 +600,11 @@
       Object.keys(ingredientsData).forEach(id => {
         const item = ingredientsData[id];
         const card = document.createElement('div');
-        card.className = "p-3 bg-slate-50 border rounded-xl flex items-center gap-3";
+        card.className = "p-2.5 sm:p-3 bg-slate-50 border rounded-xl flex items-center gap-3";
         card.innerHTML = `
           <span class="text-2xl">${item.emoji}</span>
           <div>
-            <div class="font-bold text-slate-800 capitalize">${item.name}</div>
+            <div class="font-bold text-slate-800 capitalize text-xs sm:text-sm">${item.name}</div>
             <div class="text-xs text-slate-500">Exemple : <span class="font-semibold text-amber-800">${item.partitive} ${item.name}</span></div>
           </div>
         `;
