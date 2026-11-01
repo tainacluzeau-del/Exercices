@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Atelier du Français — Textes à trous A2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .modal-animation {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col items-center justify-center p-3 sm:p-6">
+
+    <!-- En-tête de la page avec bouton de retour -->
+    <header class="w-full max-w-2xl mb-4 flex items-center justify-between">
+        <a href="https://tainacluzeau-del.github.io/Exercices/" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-indigo-700 hover:text-indigo-900 bg-white hover:bg-indigo-50 px-3.5 py-2 rounded-xl transition border border-indigo-200 shadow-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            <span>Retour aux exercices</span>
+        </a>
+        <div class="text-right hidden sm:block">
+            <h1 class="text-sm font-bold text-indigo-950">L'Atelier du Français</h1>
+            <p class="text-[11px] text-slate-500">Textes à trous (A2)</p>
+        </div>
+    </header>
+
+    <!-- Conteneur principal de l'exercice -->
+    <main class="w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col">
+        
+        <!-- Barre de sélection et d'état -->
+        <div class="px-5 py-3.5 bg-indigo-50/70 border-b border-indigo-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <!-- Sélecteur de texte -->
+            <div class="w-full sm:w-auto flex items-center gap-2">
+                <label for="text-selector" class="text-xs font-semibold text-indigo-900 uppercase tracking-wider shrink-0">Thématique :</label>
+                <select id="text-selector" onchange="changeText(this.value)" class="bg-white text-indigo-950 text-xs sm:text-sm font-medium rounded-lg p-1.5 outline-none border border-indigo-200 cursor-pointer w-full sm:w-auto shadow-xs">
+                    <option value="negation" selected>A2 — 1. Négations complexes (rien, jamais, personne, plus)</option>
+                    <option value="faire">A2 — 2. Expressions avec "FAIRE" (du, de la, la, un...)</option>
+                    <option value="cod">A2 — 3. Pronoms COD (le, la, l', les)</option>
+                    <option value="eny">A2 — 4. Pronoms EN et Y</option>
+                </select>
+            </div>
+
+            <!-- Bouton Recommencer -->
+            <button onclick="resetExercise()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-700 hover:text-indigo-900 bg-white hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition border border-indigo-200 shadow-xs shrink-0 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 016 6v3" />
+                </svg>
+                <span>Recommencer</span>
+            </button>
+        </div>
+
+        <!-- Informations sur le texte actif -->
+        <div class="px-6 pt-5 pb-2">
+            <span id="text-badge" class="text-[10px] uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded-full font-bold">A2 — Négations</span>
+            <h2 id="text-title" class="text-xl font-bold text-indigo-950 mt-2">Un dimanche très calme</h2>
+            <p id="text-subtitle" class="text-slate-600 text-xs sm:text-sm mt-0.5">Cliquez sur chaque espace vide pour choisir la bonne proposition.</p>
+        </div>
+
+        <!-- Zone du texte interactif -->
+        <div id="text-window" class="p-5 sm:p-8 leading-loose text-slate-700 text-sm sm:text-base whitespace-pre-line">
+            <!-- Injecté dynamiquement par JavaScript -->
+        </div>
+
+        <!-- Pied de page / Score -->
+        <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
+            <span id="score-indicator" class="font-bold text-indigo-900">Progrès : 0 / 0 résolus</span>
+            <span class="text-slate-500 hidden sm:inline">💡 Vert = correct, Rouge = erreur (cliquez pour réessayer)</span>
+        </div>
+    </main>
+
+    <!-- Modale de sélection des propositions -->
+    <div id="gap-modal-container" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-sm w-full border border-slate-200 modal-animation">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">Choisissez la bonne option</span>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg p-1 cursor-pointer">×</button>
+            </div>
+            <div id="modal-choices-list" class="flex flex-col gap-2">
+                <!-- Propositions injectées dynamiquement -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale d'explication en cas d'erreur -->
+    <div id="error-modal-container" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-5 max-w-sm w-full border border-rose-200 modal-animation text-center">
+            <div class="w-10 h-10 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-3 text-lg font-bold">
+                ⚠️
+            </div>
+            <h3 class="text-sm font-bold text-rose-900 mb-1">Rappel grammatical A2</h3>
+            <p id="error-explanation-text" class="text-xs sm:text-sm text-slate-600 mb-5 leading-relaxed">
+                <!-- Explication injectée -->
+            </p>
+            <button onclick="closeErrorModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl text-xs sm:text-sm transition cursor-pointer">
+                J'ai compris
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- BASE DE DONNÉES DES TEXTES (FLE A2) ---
+        const textsDatabase = {
+            negation: {
+                badge: "FLE A2 — Grammaire : Négations complexes",
+                title: "Un dimanche très calme",
+                subtitle: "Lucas explique comment s'est passé son week-end à la maison.",
+                gaps: [
+                    { 
+                        choices: ["jamais", "rien", "personne"], 
+                        explanation: "'Ne... jamais' indique une habitude ou une absence d'action dans le temps (ex: je ne me lève jamais tôt)."
+                    },
+                    { 
+                        choices: ["rien", "personne", "plus"], 
+                        explanation: "'Ne... rien' s'utilise pour désigner l'absence d'objet ou d'action (ex: je n'ai rien préparé)."
+                    },
+                    { 
+                        choices: ["personne", "rien", "jamais"], 
+                        explanation: "'Ne... personne' désigne l'absence d'êtres humains."
+                    },
+                    { 
+                        choices: ["plus", "jamais", "rien"], 
+                        explanation: "'Ne... plus' indique qu'une action passée s'est arrêtée (ex: je ne veux plus habiter en ville)."
+                    },
+                    { 
+                        choices: ["rien", "personne", "jamais"], 
+                        explanation: "Au passé composé, 'rien' se place entre l'auxiliaire et le participe passé (ex: je n'ai rien fait)."
+                    },
+                    { 
+                        choices: ["personne", "rien", "plus"], 
+                        explanation: "Au passé composé, 'personne' se place après le participe passé (ex: je n'ai croisé personne)."
+                    }
+                ],
+                template: `Aujourd'hui, c'est dimanche. D'habitude, je ne me lève {0} avant 10 heures. Ce matin, je n'avais {1} dans mon réfrigérateur. Je voulais inviter mon voisin, mais il n'y avait {2} dans l'immeuble. 
+
+Je n'ai {3} envie de sortir seul en ville. Donc cet après-midi, je n'ai {4} fait d'intéressant et je n'ai vu {5} du quartier !`
+            },
+            faire: {
+                badge: "FLE A2 — Lexique & Déterminants : Expressions avec FAIRE",
+                title: "La routine du week-end de Maxime",
+                subtitle: "Complétez le texte avec le bon type d'article (partitif, défini ou indéfini).",
+                gaps: [
+                    { 
+                        choices: ["du", "de la", "la"], 
+                        explanation: "Pour les activités sportives masculines, on utilise l'article partitif 'du' (faire du vélo)."
+                    },
+                    { 
+                        choices: ["la", "de la", "une"], 
+                        explanation: "Pour les tâches ménagères ciblées comme la lessive, on utilise l'article défini 'la' (faire la lessive)."
+                    },
+                    { 
+                        choices: ["de la", "du", "une"], 
+                        explanation: "Pour une activité artistique féminine, on utilise le partitif 'de la' (faire de la peinture)."
+                    },
+                    { 
+                        choices: ["un", "du", "le"], 
+                        explanation: "Dans l'expression idiomatique 'faire un tour' (se promener), on utilise l'article indéfini 'un'."
+                    },
+                    { 
+                        choices: ["la", "de la", "une"], 
+                        explanation: "Pour la vaisselle, on utilise l'article défini 'la' (faire la vaisselle)."
+                    },
+                    { 
+                        choices: ["de l'", "du", "la"], 
+                        explanation: "Devant un nom masculin commençant par une voyelle ou un h muet, le partitif devient 'de l'' (faire de l'escalade)."
+                    }
+                ],
+                template: `Chaque samedi matin, Maxime aime faire {0} vélo dans le parc. Quand il rentre chez lui, il doit faire {1} lessive et s'occuper de son appartement. L'après-midi, sa femme préfère faire {2} peinture dans le jardin. 
+
+Vers 17h, ils décident de faire {3} tour au marché du quartier. Le soir, après le dîner, Maxime aide toujours à faire {4} vaisselle. Dimanche prochain, ils vont faire {5} escalade en montagne.`
+            },
+            cod: {
+                badge: "FLE A2 — Grammaire : Pronoms compléments directs (COD)",
+                title: "La préparation de la fête",
+                subtitle: "Remplacez les noms compléments par le bon pronom COD (le, la, l', les).",
+                gaps: [
+                    { 
+                        choices: ["la", "le", "les"], 
+                        explanation: "'Tarte' est un nom féminin singulier -> pronom COD 'la'."
+                    },
+                    { 
+                        choices: ["l'", "le", "la"], 
+                        explanation: "Devant une voyelle ou un h muet ('invitation'), 'le' ou 'la' devient 'l''."
+                    },
+                    { 
+                        choices: ["les", "la", "l'"], 
+                        explanation: "'Décorations' est au pluriel -> pronom COD 'les'."
+                    },
+                    { 
+                        choices: ["le", "la", "les"], 
+                        explanation: "'Gâteau' est un nom masculin singulier -> pronom COD 'le'."
+                    },
+                    { 
+                        choices: ["les", "l'", "la"], 
+                        explanation: "'Invités' est au pluriel -> pronom COD 'les'."
+                    }
+                ],
+                template: `Sarah prépare l'anniversaire de son frère. Elle cuisine une grande tarte et elle {0} met dans le four. Ensuite, elle écrit l'invitation pour ses amis et elle {1} envoie par message. 
+
+Son frère achète des décorations et il {2} accroche dans le salon. Quand le gâteau est prêt, Sarah {3} sort du four. Enfin, ils attendent les invités et ils {4} accueillent avec le sourire.`
+            },
+            eny: {
+                badge: "FLE A2 — Grammaire : Pronoms EN et Y",
+                title: "Souvenirs de vacances et voyages",
+                subtitle: "Choisissez le pronom approprié (Y pour le lieu, EN pour la quantité/provenance).",
+                gaps: [
+                    { 
+                        choices: ["y", "en", "le"], 
+                        explanation: "'Y' remplace un lieu introduit par une préposition de lieu comme à, en, dans (ex: aller en Espagne -> j'y vais)."
+                    },
+                    { 
+                        choices: ["en", "y", "les"], 
+                        explanation: "'EN' remplace une quantité ou une chose introduite par de, du, des (ex: acheter des souvenirs -> j'en achète)."
+                    },
+                    { 
+                        choices: ["y", "en", "la"], 
+                        explanation: "'Y' s'utilise pour faire référence au lieu où l'on se trouve/habite (ex: j'y reste)."
+                    },
+                    { 
+                        choices: ["en", "y", "l'"], 
+                        explanation: "'EN' s'utilise avec une quantité précisée par un chiffre (ex: j'en ai visité trois)."
+                    },
+                    { 
+                        choices: ["y", "en", "un"], 
+                        explanation: "'Y' remplace un lieu où l'on retourne (ex: retourner à Madrid -> j'y retourne)."
+                    }
+                ],
+                template: `Thomas adore l'Espagne. L'année dernière, il {0} est allé pendant deux semaines avec ses amis. Il a pris beaucoup de photos et il {1} a montré à toute sa famille. 
+
+La ville de Madrid est magnifique et il {2} a passé des moments inoubliables. Il a découvert plusieurs musées d'art et il {3} a visité trois en quelques jours. L'été prochain, il veut absolument {4} retourner !`
+            }
+        };
+
+        let currentTextKey = "negation";
+        let gapStates = {}; 
+        let activeGapIndex = null;
+
+        function changeText(key) {
+            currentTextKey = key;
+            gapStates = {}; 
+            renderExercise();
+        }
+
+        function renderExercise() {
+            const data = textsDatabase[currentTextKey];
+            
+            document.getElementById('text-badge').innerText = data.badge;
+            document.getElementById('text-title').innerText = data.title;
+            document.getElementById('text-subtitle').innerText = data.subtitle;
+
+            let htmlText = data.template;
+
+            data.gaps.forEach((gap, index) => {
+                let currentVal = gapStates[index];
+                let displayHtml = "";
+                
+                if (!currentVal) {
+                    // Trou non rempli (bouton avec les points de suspension)
+                    displayHtml = `<button onclick="openGapModal(${index})" class="inline-flex items-center justify-center px-2.5 py-1 mx-1 my-0.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-lg text-xs sm:text-sm font-bold transition shadow-2xs align-baseline cursor-pointer tracking-widest">...</button>`;
+                } else if (currentVal.correct) {
+                    // Bonne réponse
+                    displayHtml = `<span class="inline-block px-2.5 py-1 mx-1 my-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs sm:text-sm font-semibold">${currentVal.text}</span>`;
+                } else {
+                    // Mauvaise réponse (cliquable pour re-tester)
+                    displayHtml = `<button onclick="openGapModal(${index})" class="inline-flex items-center gap-1 px-2.5 py-1 mx-1 my-0.5 bg-rose-100 hover:bg-rose-200 border border-rose-300 text-rose-700 rounded-lg text-xs sm:text-sm font-semibold transition shadow-2xs align-baseline cursor-pointer" title="Erreur - Cliquez pour réessayer">${currentVal.text} ❌</button>`;
+                }
+
+                htmlText = htmlText.replace(`{${index}}`, displayHtml);
+            });
+
+            document.getElementById('text-window').innerHTML = htmlText;
+            updateScore();
+        }
+
+        function openGapModal(index) {
+            activeGapIndex = index;
+            const data = textsDatabase[currentTextKey];
+            const gap = data.gaps[index];
+            const correctWord = gap.choices[0]; // La bonne réponse est toujours l'élément 0 dans le tableau
+
+            // Melange aléatoire des options
+            const shuffledChoices = [...gap.choices].sort(() => Math.random() - 0.5);
+
+            const listContainer = document.getElementById('modal-choices-list');
+            listContainer.innerHTML = '';
+
+            shuffledChoices.forEach(choice => {
+                const isCorrect = (choice === correctWord);
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-50 hover:bg-indigo-50 hover:border-indigo-400 border border-slate-200 text-slate-800 font-medium py-2.5 px-3.5 rounded-xl text-xs sm:text-sm transition-all shadow-xs cursor-pointer";
+                btn.innerText = choice;
+                btn.onclick = () => selectChoice(choice, isCorrect, gap.explanation);
+                listContainer.appendChild(btn);
+            });
+
+            document.getElementById('gap-modal-container').classList.remove('hidden');
+        }
+
+        function selectChoice(text, isCorrect, explanation) {
+            if (activeGapIndex !== null) {
+                gapStates[activeGapIndex] = { text: text, correct: isCorrect };
+            }
+            closeModal();
+            renderExercise();
+
+            // Si c'est une erreur, afficher la modale d'explication
+            if (!isCorrect && explanation) {
+                document.getElementById('error-explanation-text').innerText = explanation;
+                document.getElementById('error-modal-container').classList.remove('hidden');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('gap-modal-container').classList.add('hidden');
+            activeGapIndex = null;
+        }
+
+        function closeErrorModal() {
+            document.getElementById('error-modal-container').classList.add('hidden');
+        }
+
+        function updateScore() {
+            const data = textsDatabase[currentTextKey];
+            const total = data.gaps.length;
+            let correctCount = 0;
+            
+            Object.keys(gapStates).forEach(idx => {
+                if (gapStates[idx].correct) correctCount++;
+            });
+
+            const indicator = document.getElementById('score-indicator');
+            if (correctCount === total) {
+                indicator.innerText = `🎉 Excellent ! Tout est résolu (${total}/${total}) !`;
+                indicator.className = "font-bold text-emerald-600";
+            } else {
+                indicator.innerText = `Progrès : ${correctCount} / ${total} résolus`;
+                indicator.className = "font-bold text-indigo-900";
+            }
+        }
+
+        function resetExercise() {
+            gapStates = {};
+            renderExercise();
+        }
+
+        window.onload = () => {
+            renderExercise();
+        };
+    </script>
+</body>
+</html>
