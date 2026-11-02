@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> // erreur concernant la denomination du fichier, il devrait s'appeler conversation A2
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -14,9 +14,23 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Style de défilement discret */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col items-center p-2 sm:p-6">
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col items-center p-2 sm:p-6 font-sans">
 
     <!-- En-tête principal -->
     <header class="w-full max-w-4xl mb-3 flex items-center justify-between px-1">
@@ -32,26 +46,26 @@
         <!-- Titre centré -->
         <div class="text-right sm:text-center flex-1 ml-2">
             <h1 class="text-base sm:text-2xl font-bold text-indigo-700">L'Atelier du Français — A2</h1>
-            <p class="text-slate-600 text-[11px] sm:text-xs">Dialogues guidés & Pratique grammaticale</p>
+            <p class="text-slate-600 text-[11px] sm:text-xs">Dialogues guidés & Récits (4 choix - Règle A2)</p>
         </div>
     </header>
 
-    <!-- Conteneur principal -->
+    <!-- Conteneur principal séparé en 2 colonnes sur écran large -->
     <main class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row h-[85vh] max-h-[750px] border border-slate-200">
         
         <!-- PANNEAU GAUCHE : Fiche profil & sélection du personnage -->
-        <aside class="w-full md:w-72 bg-indigo-50 border-b md:border-b-0 md:border-r border-indigo-100 p-3 md:p-4 flex flex-col shrink-0">
+        <aside class="w-full md:w-80 bg-indigo-50/60 border-b md:border-b-0 md:border-r border-indigo-100 p-3 md:p-4 flex flex-col shrink-0">
             <!-- Choix du dialogue -->
             <label for="dialogue-selector" class="text-xs font-semibold text-indigo-900 uppercase tracking-wider mb-1.5 block">
                 Sélectionner un profil (A2)
             </label>
-            <select id="dialogue-selector" onchange="changeDialogue(this.value)" class="bg-white text-indigo-950 text-xs sm:text-sm font-medium rounded-lg p-2 outline-none border border-indigo-200 cursor-pointer w-full mb-2 sm:mb-3 shadow-sm">
+            <select id="dialogue-selector" onchange="changeDialogue(this.value)" class="bg-white text-indigo-950 text-xs sm:text-sm font-medium rounded-lg p-2.5 outline-none border border-indigo-200 cursor-pointer w-full mb-2 sm:mb-3 shadow-sm focus:ring-2 focus:ring-indigo-500">
                 <option value="chloe" selected>Unité 1 : Chloé (Le week-end dernier)</option>
-                <option value="antoine">Unité 2 : Antoine (Projets d'avenir)</option>
+                <option value="antoine">Unité 2 : Antoine (Projets de déménagement)</option>
                 <option value="sarah">Unité 3 : Sarah (Chez le médecin)</option>
             </select>
 
-            <!-- Bouton accordéon mobile -->
+            <!-- Bouton accordéon mobile pour basculer le profil -->
             <button onclick="toggleProfile()" class="md:hidden w-full flex items-center justify-between bg-white border border-indigo-200 text-indigo-950 px-3 py-2 rounded-xl text-xs font-semibold shadow-sm mb-2 active:scale-[0.99] transition">
                 <span id="profile-toggle-label" class="flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-indigo-600">
@@ -59,6 +73,7 @@
                     </svg>
                     Fiche profil : <span id="character-name-mobile" class="font-bold">...</span>
                 </span>
+                
                 <svg id="profile-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-indigo-600 transition-transform duration-300">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
@@ -70,8 +85,8 @@
                     <span id="unit-tag" class="text-[10px] uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full font-bold">Unité 1</span>
                 </div>
                 <h2 id="character-name" class="text-base font-bold text-indigo-950 mb-2">...</h2>
-                <div id="profile-card" class="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-1">
-                    <!-- Injecté en JS -->
+                <div id="profile-card" class="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-1.5">
+                    <!-- Contenu du profil injecté en JS -->
                 </div>
             </div>
         </aside>
@@ -92,16 +107,16 @@
 
             <!-- Zone des messages du chat -->
             <div id="chat-window" class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3">
-                <!-- Les messages s'affichent ici -->
+                <!-- Les messages du dialogue s'affichent ici -->
             </div>
 
             <!-- Boîte de Feedback pédagogique -->
-            <div id="feedback-box" class="hidden p-3 mx-3 sm:mx-4 my-2 rounded-xl border text-xs sm:text-sm transition-all duration-300">
-                <!-- Explication injectée -->
+            <div id="feedback-box" class="hidden p-3 mx-3 sm:mx-4 my-2 rounded-xl border text-xs sm:text-sm transition-all duration-300 shadow-sm">
+                <!-- Correction explicative -->
             </div>
 
-            <!-- Zone des options de réponses -->
-            <div id="options-container" class="p-2.5 sm:p-4 border-t border-slate-200 bg-white flex flex-col gap-2 shrink-0 max-h-[40%] overflow-y-auto">
+            <!-- Zone des propositions de réponses (4 options) -->
+            <div id="options-container" class="p-2.5 sm:p-4 border-t border-slate-200 bg-white flex flex-col gap-2 shrink-0 overflow-y-auto max-h-[48%]">
                 <!-- Boutons générés dynamiquement -->
             </div>
         </section>
@@ -123,4 +138,288 @@
                     {
                         interlocutor: "Salut Chloé ! Comment s'est passé ton week-end à Marseille ?",
                         options: [
-                            { text: "C'était super ! Je suis allée à Marseille pour visiter la ville.", correct: true, feedback: "🥇 Très bien ! Concordance exacte : verbe aller au passé composé avec 'être' (suis allée)."
+                            { text: "C'était super ! Je suis allée à Marseille pour visiter la ville.", correct: true, feedback: "🥇 Très bien ! Concordance exacte : verbe aller au passé composé avec 'être' (suis allée)." },
+                            { text: "C'était super ! J'ai aller à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ Attention à l'auxiliaire : avec le verbe aller, on utilise l'auxiliaire être (je suis allée), pas avoir." },
+                            { text: "C'était super ! Je suis allé à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ Attention à l'accord : Chloé est une femme, le participe passé avec être doit s'accorder au féminin (allée)." },
+                            { text: "C'était super ! Je vais à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ L'interlocuteur interroge sur un événement passé. Il faut employer le passé composé, pas le présent." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Génial ! Et qu'est-ce que tu as fait pendant la journée ?",
+                        options: [
+                            { text: "J'ai mangé une spécialité et j'ai pris des photos du port.", correct: true, feedback: "🥇 Excellent ! Formes exactes du passé composé avec l'auxiliaire avoir." },
+                            { text: "J'ai mangé une spécialité et j'ai prise des photos du port.", correct: false, feedback: "⚠️ Le participe passé 'pris' ne s'accorde pas ici avec 'photos' car le complément est placé après le verbe." },
+                            { text: "Je suis mangé une spécialité et je suis pris des photos du port.", correct: false, feedback: "⚠️ Manger et prendre se conjuguent avec l'auxiliaire avoir au passé composé, pas être." },
+                            { text: "J'ai manger une spécialité et j'ai prendre des photos du port.", correct: false, feedback: "⚠️ Après l'auxiliaire, il faut utiliser le participe passé (mangé / pris), pas l'infinitif." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Tu as logé à l'hôtel ?",
+                        options: [
+                            { text: "Non, je n'ai pas pris d'hôtel, j'ai dormi chez une amie.", correct: true, feedback: "🥇 Bravo ! Négation correcte ('d'hôtel') et bonne utilisation du verbe avoir ('j'ai dormi')." },
+                            { text: "Non, je n'ai pas pris un hôtel, je suis dormie chez une amie.", correct: false, feedback: "⚠️ Le verbe dormir prend l'auxiliaire avoir (j'ai dormi). On ne dit pas 'je suis dormie'." },
+                            { text: "Non, je n'ai pas pris de l'hôtel, j'ai dormi chez une amie.", correct: false, feedback: "⚠️ À la forme négative, l'article devant le nom se transforme en 'de' ou 'd'' (pas d'hôtel)." },
+                            { text: "Non, je n'ai pas prise d'hôtel, j'ai dormie chez une amie.", correct: false, feedback: "⚠️ Avec l'auxiliaire avoir, les participes passés 'pris' et 'dormi' ne s'accordent pas avec le sujet." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Avant de rentrer, tu as acheté des souvenirs pour tes amis ?",
+                        options: [
+                            { text: "Oui, j'ai acheté des petits cadeaux dans une boutique du port.", correct: true, feedback: "🥇 Parfait ! Utilisation correcte du passé composé et de l'article indéfini pluriel 'des'." },
+                            { text: "Oui, je suis acheté des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Le verbe 'acheter' se conjugue avec l'auxiliaire 'avoir' (j'ai acheté), pas 'être'." },
+                            { text: "Oui, j'ai achetée des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Avec l'auxiliaire 'avoir', le participe passé ne s'accorde pas avec le sujet féminin quand le COD est après." },
+                            { text: "Oui, j'ai achetez des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Après l'auxiliaire, le participe passé des verbes en -er prend un accent aigu (-é), pas -ez." }
+                        ]
+                    }
+                ]
+            },
+            antoine: {
+                unit: "Unité 2 — Futur proche & Projets",
+                title: "Antoine Mercier",
+                profile: `
+                    <p><b>Ville actuelle :</b> Paris</p>
+                    <p><b>Projets :</b> Déménagement à Lyon le mois prochain, recherche d'appartement, camion de location</p>
+                `,
+                steps: [
+                    {
+                        interlocutor: "Salut Antoine ! Tu vas changer de ville bientôt ?",
+                        options: [
+                            { text: "Oui, le mois prochain, je vais déménager à Lyon.", correct: true, feedback: "🥇 Parfait ! Structure exacte du futur proche (aller au présent + infinitif)." },
+                            { text: "Oui, le mois prochain, j'ai déménager à Lyon.", correct: false, feedback: "⚠️ Pour un projet futur, on emploie le futur proche (je vais déménager) ou le présent, pas 'j'ai'." },
+                            { text: "Oui, le mois prochain, j'ai déménagé à Lyon.", correct: false, feedback: "⚠️ 'J'ai déménagé' est au passé composé. Cela contredit l'expression 'le mois prochain'." },
+                            { text: "Oui, le mois prochain, je vais déménagé à Lyon.", correct: false, feedback: "⚠️ Après l'auxiliaire aller au futur proche, le verbe principal s'écrit à l'infinitif (-er), pas en -é." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Tu as déjà trouvé ton nouveau logement ?",
+                        options: [
+                            { text: "Je vais contacter deux agences pour visiter des logements la semaine prochaine.", correct: true, feedback: "🥇 Excellent ! Bonne formulation du futur proche." },
+                            { text: "J'irai contacter deux agences pour visiter des logements la semaine prochaine.", correct: false, feedback: "⚠️ On n'associe pas le futur simple du verbe aller avec un autre infinitif. On dit 'Je contacterai' ou 'Je vais contacter'." },
+                            { text: "Je vais contacté deux agences pour visiter des logements la semaine prochaine.", correct: false, feedback: "⚠️ Le verbe principal après 'aller' doit rester à l'infinitif (contacter)." },
+                            { text: "J'ai contacter deux agences pour visiter des logements la semaine prochaine.", correct: false, feedback: "⚠️ Forme incorrecte : il faut soit le passé composé ('J'ai contacté'), soit le futur proche ('Je vais contacter')." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Est-ce que tu penses louer un camion pour transporter tes meubles toi-même ?",
+                        options: [
+                            { text: "Non, je vais louer un camion et je vais demander à des amis de m'aider.", correct: true, feedback: "🥇 Excellent ! Coordination parfaite de deux verbes au futur proche." },
+                            { text: "Non, je vais louer un camion et je vais demandant à des amis de m'aider.", correct: false, feedback: "⚠️ Après 'aller', le verbe se met à l'infinitif (demander), pas au participe présent (-ant)." },
+                            { text: "Non, je vas louer un camion et je vais demander à des amis de m'aider.", correct: false, feedback: "⚠️ Conjugaison d'aller avec 'je' : on écrit 'je vais' (et non 'je vas')." },
+                            { text: "Non, je vais loué un camion et je vais demander à des amis de m me aider.", correct: false, feedback: "⚠️ Le premier verbe doit être à l'infinitif (louer) et attention à l'élision (de m'aider)." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Tu as peur de ce grand changement de vie ?",
+                        options: [
+                            { text: "Non, je ne stresse pas, j'ai hâte de commencer cette nouvelle aventure !", correct: true, feedback: "🥇 Bravo ! Structure de négation simple correcte et bonne locution 'avoir hâte de'." },
+                            { text: "Non, je ne stresse pas, j'ai hâte pour commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ L'expression correcte est 'avoir hâte de' suivie d'un infinitif." },
+                            { text: "Non, je ne pas stresse, j'ai hâte de commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ Le mot 'pas' se place obligatoirement après le verbe conjugué (je ne stresse pas)." },
+                            { text: "Non, je stresse pas de ne, j'ai hâte de commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ La structure de la négation est désordonnée. N'oublie pas 'ne' avant le verbe." }
+                        ]
+                    }
+                ]
+            },
+            sarah: {
+                unit: "Unité 3 — Négations complexes",
+                title: "Sarah Bennani",
+                profile: `
+                    <p><b>Consultation :</b> Chez le médecin</p>
+                    <p><b>Symptômes :</b> Fièvre, fatigue</p>
+                    <p><b>Précisions :</b> Aucune prise de médicament, aucun contact avec des malades</p>
+                `,
+                steps: [
+                    {
+                        interlocutor: "Bonjour Sarah, est-ce que tu es souvent malade ?",
+                        options: [
+                            { text: "Non, je ne suis jamais malade d'habitude.", correct: true, feedback: "🥇 Parfait ! Utilisation correcte de 'ne... jamais' pour exprimer l'absence de fréquence." },
+                            { text: "Non, je ne suis rien malade d'habitude.", correct: false, feedback: "⚠️ 'Rien' s'utilise pour les objets ou actions. Pour la fréquence, on emploie 'jamais'." },
+                            { text: "Non, je ne suis personne malade d'habitude.", correct: false, feedback: "⚠️ 'Personne' s'utilise pour les êtres humains, pas pour la fréquence." },
+                            { text: "Non, je suis ne jamais malade d'habitude.", correct: false, feedback: "⚠️ 'Ne' se place toujours avant le verbe conjugué (je ne suis jamais)." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Tu as mangé quelque chose ce matin avant la consultation ?",
+                        options: [
+                            { text: "Non, je n'ai rien mangé ce matin.", correct: true, feedback: "🥇 Excellent ! Au passé composé, 'rien' se place entre l'auxiliaire et le participe passé." },
+                            { text: "Non, je n'ai mangé rien ce matin.", correct: false, feedback: "⚠️ En français, 'rien' se place avant le participe passé (je n'ai rien mangé)." },
+                            { text: "Non, je n'ai personne mangé ce matin.", correct: false, feedback: "⚠️ Erreur de sens : 'personne' s'applique aux gens. Pour la nourriture/choses, on utilise 'rien'." },
+                            { text: "Non, je ne rien ai mangé ce matin.", correct: false, feedback: "⚠️ L'ordre correct au passé composé est : ne + auxiliaire + rien + participe passé." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Est-ce que tu as pris des antalgiques ou un autre traitement hier soir ?",
+                        options: [
+                            { text: "Non, je n'ai pris aucun médicament hier soir.", correct: true, feedback: "🥇 Parfait ! Utilisation correcte de 'ne... aucun' pour exprimer une quantité nulle." },
+                            { text: "Non, je ne ai pris aucun médicament hier soir.", correct: false, feedback: "⚠️ N'oublie pas l'élision : devant une voyelle, 'ne' devient 'n'' (je n'ai)." },
+                            { text: "Non, je n'ai pris pas aucun médicament hier soir.", correct: false, feedback: "⚠️ Ne cumule pas 'pas' et 'aucun'. 'Aucun' remplace 'pas'." },
+                            { text: "Non, je n'ai aucun pris médicament hier soir.", correct: false, feedback: "⚠️ Le mot 'aucun' se place devant le nom (aucun médicament) après le participe passé." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Et ce matin, tu as parlé à quelqu'un avant de venir ?",
+                        options: [
+                            { text: "Non, je n'ai parlé à personne ce matin.", correct: true, feedback: "🥇 Bravo ! Utilisation exacte de 'ne... personne' avec la préposition 'à'." },
+                            { text: "Non, je n'ai parlé personne ce matin.", correct: false, feedback: "⚠️ Le verbe 'parler à' exige de conserver la préposition 'à' (parler à personne)." },
+                            { text: "Non, je n'ai parlé à rien ce matin.", correct: false, feedback: "⚠️ Pour parler d'êtres humains, on utilise 'personne' et non 'rien'." },
+                            { text: "Non, je ne personne ai parlé ce matin.", correct: false, feedback: "⚠️ Au passé composé, 'personne' se place après le participe passé (n'ai parlé à personne)." }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- ÉTAT ET LOGIQUE DE L'APPLICATION ---
+        let currentDialogueKey = "chloe";
+        let currentStepIndex = 0;
+
+        function changeDialogue(key) {
+            currentDialogueKey = key;
+            resetExercise();
+        }
+
+        function resetExercise() {
+            currentStepIndex = 0;
+            initDialogue();
+        }
+
+        function toggleProfile() {
+            const container = document.getElementById('profile-container');
+            const chevron = document.getElementById('profile-chevron');
+            container.classList.toggle('hidden');
+            container.classList.toggle('flex');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        function scrollToBottom() {
+            const chatWindow = document.getElementById('chat-window');
+            const lastChild = chatWindow.lastElementChild;
+            if (lastChild) {
+                setTimeout(() => {
+                    lastChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 100);
+            }
+        }
+
+        function initDialogue() {
+            const data = dialogues[currentDialogueKey];
+            
+            document.getElementById('unit-tag').innerText = data.unit;
+            document.getElementById('character-name').innerText = data.title;
+            document.getElementById('character-name-mobile').innerText = data.title;
+            document.getElementById('profile-card').innerHTML = data.profile;
+            
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.innerHTML = '';
+            
+            hideFeedback();
+            renderStep();
+        }
+
+        function renderStep() {
+            const data = dialogues[currentDialogueKey];
+            const indicator = document.getElementById('step-indicator');
+            
+            if (currentStepIndex < data.steps.length) {
+                indicator.innerText = `Étape ${currentStepIndex + 1} / ${data.steps.length}`;
+            } else {
+                indicator.innerText = "Terminé";
+            }
+
+            if (currentStepIndex >= data.steps.length) {
+                appendInterlocutorMessage("Bravo ! Vous avez terminé cet exercice de niveau A2 avec un sans-faute grammatical ! 🎉");
+                document.getElementById('options-container').innerHTML = `
+                    <button onclick="resetExercise()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md active:scale-[0.99]">
+                        Recommencer ce dialogue
+                    </button>
+                `;
+                return;
+            }
+
+            const currentStep = data.steps[currentStepIndex];
+            
+            appendInterlocutorMessage(currentStep.interlocutor);
+
+            // Mélange aléatoire des 4 options
+            const shuffledOptions = [...currentStep.options].sort(() => Math.random() - 0.5);
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-50 hover:bg-indigo-50 hover:border-indigo-400 border border-slate-200 text-slate-800 font-medium py-2 px-3 rounded-xl text-xs sm:text-sm transition-all shadow-sm active:scale-[0.99]";
+                btn.innerText = opt.text;
+                btn.onclick = () => handleChoice(opt);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleChoice(option) {
+            showFeedback(option.feedback, option.correct);
+
+            if (option.correct) {
+                appendUserMessage(option.text);
+                document.getElementById('options-container').innerHTML = '';
+                
+                setTimeout(() => {
+                    hideFeedback();
+                    currentStepIndex++;
+                    renderStep();
+                }, 2200);
+            }
+        }
+
+        function appendInterlocutorMessage(text) {
+            const chatWindow = document.getElementById('chat-window');
+            const msgHtml = `
+                <div class="flex items-start gap-2 chat-bubble">
+                    <div class="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">
+                        💬
+                    </div>
+                    <div class="bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-tl-none p-3 max-w-[85%] text-xs sm:text-sm shadow-sm leading-relaxed">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            chatWindow.insertAdjacentHTML('beforeend', msgHtml);
+            scrollToBottom();
+        }
+
+        function appendUserMessage(text) {
+            const chatWindow = document.getElementById('chat-window');
+            const msgHtml = `
+                <div class="flex items-start gap-2 justify-end chat-bubble">
+                    <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none p-3 max-w-[85%] text-xs sm:text-sm shadow-sm leading-relaxed">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            chatWindow.insertAdjacentHTML('beforeend', msgHtml);
+            scrollToBottom();
+        }
+
+        function showFeedback(message, isCorrect) {
+            const box = document.getElementById('feedback-box');
+            box.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-900', 'bg-amber-50', 'border-amber-300', 'text-amber-900');
+            
+            if (isCorrect) {
+                box.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-900');
+            } else {
+                box.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-900');
+            }
+
+            box.innerHTML = message;
+        }
+
+        function hideFeedback() {
+            const box = document.getElementById('feedback-box');
+            box.classList.add('hidden');
+        }
+
+        // --- INITIALISATION ---
+        window.onload = () => {
+            initDialogue();
+        };
+    </script>
+</body>
+</html>
