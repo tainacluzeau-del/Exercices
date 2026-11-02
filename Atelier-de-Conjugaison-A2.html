@@ -124,102 +124,144 @@
     </main>
 
     <script>
-        // --- DONNÉES DES DIALOGUES FLE A2 (4 OPTIONS EXIGEANTES) ---
+        // --- BASE DE DONNÉES DES DIALOGUES COMPLETES ---
         const dialogues = {
             chloe: {
-                unit: "Unité 1 — Raconter son week-end",
-                title: "Chloé Durand (Femme)",
+                unit: "Unité 1 — Passé composé (Être / Avoir)",
+                title: "Chloé Durand",
                 profile: `
                     <p><b>Âge :</b> 26 ans</p>
-                    <p><b>Genre :</b> Féminin (Chloé)</p>
-                    <p><b>Destination :</b> Marseille (en TGV)</p>
-                    <hr class="my-1 border-indigo-100">
-                    <p><b>Activités :</b> Visite du Vieux-Port, dégustation d'une bouillabaisse, promenade au bord de la mer.</p>
-                    <p><b>Logement :</b> Chez son amie Sarah.</p>
+                    <p><b>Événement :</b> Week-end à Marseille</p>
+                    <p><b>Activités :</b> Visite, spécialités culinaires, photos, hébergement chez une amie</p>
                 `,
                 steps: [
                     {
-                        interlocutor: "Salut Chloé ! Alors, comment s'est passé ton week-end ?",
+                        interlocutor: "Salut Chloé ! Comment s'est passé ton week-end à Marseille ?",
                         options: [
-                            { text: "C'était super ! Je suis allée à Marseille pour visiter la ville.", correct: true, feedback: "🥇 Bravo ! Accord exact du participe passé ('allée' avec -e car Chloé est une femme) et bon auxiliaire 'être'." },
-                            { text: "C'était super ! Je suis allé à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ Attention à l'accord ! Chloé est une femme : au passé composé avec l'auxiliaire être, on ajoute un '-e' (je suis allée)." },
-                            { text: "C'était super ! J'ai allée à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ Le verbe 'aller' se conjugue avec l'auxiliaire 'être' (je suis allée), pas avec 'avoir'." },
-                            { text: "C'était super ! Je suis aller à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ Après l'auxiliaire 'être', le verbe s'écrit au participe passé ('allée'), pas à l'infinitif ('aller')." }
+                            { text: "C'était super ! Je suis allée à Marseille pour visiter la ville.", correct: true, feedback: "🥇 Très bien ! Concordance exacte : verbe aller au passé composé avec 'être' (suis allée)." },
+                            { text: "C'était super ! J'ai aller à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ Attention à l'auxiliaire : avec le verbe aller, on utilise l'auxiliaire être (je suis allée), pas avoir." },
+                            { text: "C'était super ! Je suis allé à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ Attention à l'accord : Chloé est une femme, le participe passé avec être doit s'accorder au féminin (allée)." },
+                            { text: "C'était super ! Je vais à Marseille pour visiter la ville.", correct: false, feedback: "⚠️ L'interlocuteur interroge sur un événement passé. Il faut employer le passé composé, pas le présent." }
                         ]
                     },
                     {
-                        interlocutor: "Génial ! Et qu'est-ce que tu as fait samedi soir ?",
+                        interlocutor: "Génial ! Et qu'est-ce que tu as fait pendant la journée ?",
                         options: [
-                            { text: "J'ai mangé une spécialité et j'ai pris des photos du port.", correct: true, feedback: "🥇 Parfait ! Bon choix des participes passés (mangé / pris) avec l'auxiliaire avoir." },
-                            { text: "J'ai mangée une spécialité et j'ai pris des photos du port.", correct: false, feedback: "⚠️ Avec l'auxiliaire 'avoir', le participe passé ne s'accorde pas avec le sujet (Chloé) quand le COD est après le verbe (j'ai mangé)." },
-                            { text: "Je suis mangé une spécialité et j'ai prenez des photos du port.", correct: false, feedback: "⚠️ Le verbe 'manger' s'utilise avec 'avoir' (j'ai mangé), et le participe passé de 'prendre' est 'pris'." },
-                            { text: "J'ai manger une spécialité et j'ai pris des photos du port.", correct: false, feedback: "⚠️ Au passé composé, on utilise le participe passé en '-é' (mangé) et non l'infinitif en '-er' (manger)." }
+                            { text: "J'ai mangé une spécialité et j'ai pris des photos du port.", correct: true, feedback: "🥇 Excellent ! Formes exactes du passé composé avec l'auxiliaire avoir." },
+                            { text: "J'ai mangé une spécialité et j'ai prise des photos du port.", correct: false, feedback: "⚠️ Le participe passé 'pris' ne s'accorde pas ici avec 'photos' car le complément est placé après le verbe." },
+                            { text: "Je suis mangé une spécialité et je suis pris des photos du port.", correct: false, feedback: "⚠️ Manger et prendre se conjuguent avec l'auxiliaire avoir au passé composé, pas être." },
+                            { text: "J'ai manger une spécialité et j'ai prendre des photos du port.", correct: false, feedback: "⚠️ Après l'auxiliaire, il faut utiliser le participe passé (mangé / pris), pas l'infinitif." }
                         ]
                     },
                     {
-                        interlocutor: "Tu as dormi à l'hôtel ?",
+                        interlocutor: "Tu as logé à l'hôtel ?",
                         options: [
-                            { text: "Non, je n'ai pas pris d'hôtel, j'ai dormi chez une amie.", correct: true, feedback: "🥇 Excellent ! Négation correcte (n'ai pas pris) et bon usage du partitif 'd'hôtel'." },
-                            { text: "Non, je n'ai pas prends d'hôtel, j'ai dormi chez une amie.", correct: false, feedback: "⚠️ Après l'auxiliaire 'avoir' dans la négation, il faut utiliser le participe passé 'pris' (et pas le présent 'prends')." },
-                            { text: "Non, je ne ai pas pris un hôtel, je suis dormi chez une amie.", correct: false, feedback: "⚠️ N'oublie pas l'élision (je n'ai pas) et le verbe 'dormir' prend l'auxiliaire 'avoir' (j'ai dormi)." },
-                            { text: "Non, je n'ai pas pris de l'hôtel, j'ai dormi chez une amie.", correct: false, feedback: "⚠️ Dans une phrase négative, l'article indéfini devient 'de' ou 'd'' devant une voyelle (pas d'hôtel)." }
+                            { text: "Non, je n'ai pas pris d'hôtel, j'ai dormi chez une amie.", correct: true, feedback: "🥇 Bravo ! Négation correcte ('d'hôtel') et bonne utilisation du verbe avoir ('j'ai dormi')." },
+                            { text: "Non, je n'ai pas pris un hôtel, je suis dormie chez une amie.", correct: false, feedback: "⚠️ Le verbe dormir prend l'auxiliaire avoir (j'ai dormi). On ne dit pas 'je suis dormie'." },
+                            { text: "Non, je n'ai pas pris de l'hôtel, j'ai dormi chez une amie.", correct: false, feedback: "⚠️ À la forme négative, l'article devant le nom se transforme en 'de' ou 'd'' (pas d'hôtel)." },
+                            { text: "Non, je n'ai pas prise d'hôtel, j'ai dormie chez une amie.", correct: false, feedback: "⚠️ Avec l'auxiliaire avoir, les participes passés 'pris' et 'dormi' ne s'accordent pas avec le sujet." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Avant de rentrer, tu as acheté des souvenirs pour tes amis ?",
+                        options: [
+                            { text: "Oui, j'ai acheté des petits cadeaux dans une boutique du port.", correct: true, feedback: "🥇 Parfait ! Utilisation correcte du passé composé et de l'article indéfini pluriel 'des'." },
+                            { text: "Oui, je suis acheté des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Le verbe 'acheter' se conjugue avec l'auxiliaire 'avoir' (j'ai acheté), pas 'être'." },
+                            { text: "Oui, j'ai achetée des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Avec l'auxiliaire 'avoir', le participe passé ne s'accorde pas avec le sujet féminin quand le COD est après." },
+                            { text: "Oui, j'ai achetez des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Après l'auxiliaire, le participe passé des verbes en -er prend un accent aigu (-é), pas -ez." }
                         ]
                     }
                 ]
             },
             antoine: {
-                unit: "Unité 2 — Projets & Déménagement",
+                unit: "Unité 2 — Futur proche & Projets",
                 title: "Antoine Mercier",
                 profile: `
-                    <p><b>Âge :</b> 30 ans</p>
                     <p><b>Ville actuelle :</b> Paris</p>
-                    <p><b>Projets :</b> Déménager à Lyon le mois prochain, louer un appartement, acheter un vélo.</p>
+                    <p><b>Projets :</b> Déménagement à Lyon le mois prochain, recherche d'appartement, camion de location</p>
                 `,
                 steps: [
                     {
-                        interlocutor: "Salut Antoine ! Tu vas bientôt changer de ville ?",
+                        interlocutor: "Salut Antoine ! Tu vas changer de ville bientôt ?",
                         options: [
-                            { text: "Oui, le mois prochain, je vais déménager à Lyon.", correct: true, feedback: "🥇 Parfait ! Structure exacte du futur proche (aller + infinitif) et bonne préposition de ville ('à Lyon')." },
-                            { text: "Oui, le mois prochain, je vais déménagé à Lyon.", correct: false, feedback: "⚠️ Au futur proche, le deuxième verbe reste à l'infinitif (déménager, -er)." },
-                            { text: "Oui, le mois prochain, je vais déménager en Lyon.", correct: false, feedback: "⚠️ On utilise la préposition 'à' devant les noms de villes (à Lyon, à Paris), pas 'en'." },
-                            { text: "Oui, le mois prochain, je suis allé déménager à Lyon.", correct: false, feedback: "⚠️ 'Le mois prochain' indique une action future. Il faut utiliser le futur proche (je vais déménager), pas le passé." }
+                            { text: "Oui, le mois prochain, je vais déménager à Lyon.", correct: true, feedback: "🥇 Parfait ! Structure exacte du futur proche (aller au présent + infinitif)." },
+                            { text: "Oui, le mois prochain, j'ai déménager à Lyon.", correct: false, feedback: "⚠️ Pour un projet futur, on emploie le futur proche (je vais déménager) ou le présent, pas 'j'ai'." },
+                            { text: "Oui, le mois prochain, j'ai déménagé à Lyon.", correct: false, feedback: "⚠️ 'J'ai déménagé' est au passé composé. Cela contredit l'expression 'le mois prochain'." },
+                            { text: "Oui, le mois prochain, je vais déménagé à Lyon.", correct: false, feedback: "⚠️ Après l'auxiliaire aller au futur proche, le verbe principal s'écrit à l'infinitif (-er), pas en -é." }
                         ]
                     },
                     {
-                        interlocutor: "Comment tu te prépares pour trouver ton appartement ?",
+                        interlocutor: "Tu as déjà trouvé ton nouveau logement ?",
                         options: [
-                            { text: "Je vais contacter deux agences pour visiter des logements la semaine prochaine.", correct: true, feedback: "🥇 Bravo ! Les deux infinitifs ('contacter', 'visiter') sont bien construits." },
-                            { text: "Je vais contacter deux agences pour visite des logements la semaine prochaine.", correct: false, feedback: "⚠️ Après la préposition 'pour', le verbe doit être à l'infinitif (pour visiter)." },
-                            { text: "Je vais contacte deux agences pour visiter des logements la semaine prochaine.", correct: false, feedback: "⚠️ Dans la structure du futur proche, le verbe principal s'écrit à l'infinitif (je vais contacter)." },
-                            { text: "J'ai contacté deux agences pour visiter des logements la semaine prochaine.", correct: false, feedback: "⚠️ Incohérence temporelle : 'la semaine prochaine' demande un temps du futur (je vais contacter)." }
+                            { text: "Je vais contacter deux agences pour visiter des logements la semaine prochaine.", correct: true, feedback: "🥇 Excellent ! Bonne formulation du futur proche." },
+                            { text: "J'irai contacter deux agences pour visiter des logements la semaine prochaine.", correct: false, feedback: "⚠️ On n'associe pas le futur simple du verbe aller avec un autre infinitif. On dit 'Je contacterai' ou 'Je vais contacter'." },
+                            { text: "Je vais contacté deux agences pour visiter des logements la semaine prochaine.", correct: false, feedback: "⚠️ Le verbe principal après 'aller' doit rester à l'infinitif (contacter)." },
+                            { text: "J'ai contacter deux agences pour visiter des logements la semaine prochaine.", correct: false, feedback: "⚠️ Forme incorrecte : il faut soit le passé composé ('J'ai contacté'), soit le futur proche ('Je vais contacter')." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Est-ce que tu penses louer un camion pour transporter tes meubles toi-même ?",
+                        options: [
+                            { text: "Non, je vais louer un camion et je vais demander à des amis de m'aider.", correct: true, feedback: "🥇 Excellent ! Coordination parfaite de deux verbes au futur proche." },
+                            { text: "Non, je vais louer un camion et je vais demandant à des amis de m'aider.", correct: false, feedback: "⚠️ Après 'aller', le verbe se met à l'infinitif (demander), pas au participe présent (-ant)." },
+                            { text: "Non, je vas louer un camion et je vais demander à des amis de m'aider.", correct: false, feedback: "⚠️ Conjugaison d'aller avec 'je' : on écrit 'je vais' (et non 'je vas')." },
+                            { text: "Non, je vais loué un camion et je vais demander à des amis de m me aider.", correct: false, feedback: "⚠️ Le premier verbe doit être à l'infinitif (louer) et attention à l'élision (de m'aider)." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Tu as peur de ce grand changement de vie ?",
+                        options: [
+                            { text: "Non, je ne stresse pas, j'ai hâte de commencer cette nouvelle aventure !", correct: true, feedback: "🥇 Bravo ! Structure de négation simple correcte et bonne locution 'avoir hâte de'." },
+                            { text: "Non, je ne stresse pas, j'ai hâte pour commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ L'expression correcte est 'avoir hâte de' suivie d'un infinitif." },
+                            { text: "Non, je ne pas stresse, j'ai hâte de commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ Le mot 'pas' se place obligatoirement après le verbe conjugué (je ne stresse pas)." },
+                            { text: "Non, je stresse pas de ne, j'ai hâte de commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ La structure de la négation est désordonnée. N'oublie pas 'ne' avant le verbe." }
                         ]
                     }
                 ]
             },
             sarah: {
-                unit: "Unité 3 — Santé & Rendez-vous médical",
-                title: "Sarah Benali",
+                unit: "Unité 3 — Négations complexes",
+                title: "Sarah Bennani",
                 profile: `
-                    <p><b>Symptômes :</b> Mal à la tête, fièvre depuis hier, fatigue.</p>
-                    <p><b>Besoin :</b> Un médicament et un arrêt de travail d'un jour.</p>
+                    <p><b>Consultation :</b> Chez le médecin</p>
+                    <p><b>Symptômes :</b> Fièvre, fatigue</p>
+                    <p><b>Précisions :</b> Aucune prise de médicament, aucun contact avec des malades</p>
                 `,
                 steps: [
                     {
-                        interlocutor: "Bonjour Madame. Dites-moi, qu'est-ce qui ne va pas aujourd'hui ?",
+                        interlocutor: "Bonjour Sarah, est-ce que tu es souvent malade ?",
                         options: [
-                            { text: "Bonjour Docteur, j'ai mal à la tête et j'ai de la fièvre depuis hier.", correct: true, feedback: "🥇 Excellent ! Expression exacte de la douleur (mal à la tête) et de l'article partitif (de la fièvre)." },
-                            { text: "Bonjour Docteur, j'ai mal au tête et j'ai de la fièvre depuis hier.", correct: false, feedback: "⚠️ 'Tête' est un nom féminin. On dit 'mal à la tête' (et non 'au tête', réservé au masculin comme 'au ventre')." },
-                            { text: "Bonjour Docteur, je suis mal à la tête et j'ai du fièvre depuis hier.", correct: false, feedback: "⚠️ On utilise le verbe 'avoir' pour la douleur (j'ai mal) et 'fièvre' est féminin (de la fièvre)." },
-                            { text: "Bonjour Docteur, j'ai mal de la tête et j'ai de fièvre depuis hier.", correct: false, feedback: "⚠️ La structure de la douleur est 'avoir mal à + article' (à la tête), et il faut l'article partitif 'de la' devant fièvre." }
+                            { text: "Non, je ne suis jamais malade d'habitude.", correct: true, feedback: "🥇 Parfait ! Utilisation correcte de 'ne... jamais' pour exprimer l'absence de fréquence." },
+                            { text: "Non, je ne suis rien malade d'habitude.", correct: false, feedback: "⚠️ 'Rien' s'utilise pour les objets ou actions. Pour la fréquence, on emploie 'jamais'." },
+                            { text: "Non, je ne suis personne malade d'habitude.", correct: false, feedback: "⚠️ 'Personne' s'utilise pour les êtres humains, pas pour la fréquence." },
+                            { text: "Non, je suis ne jamais malade d'habitude.", correct: false, feedback: "⚠️ 'Ne' se place toujours avant le verbe conjugué (je ne suis jamais)." }
                         ]
                     },
                     {
-                        interlocutor: "D'accord. Vous prenez des médicaments actuellement ?",
+                        interlocutor: "Tu as mangé quelque chose ce matin avant la consultation ?",
                         options: [
-                            { text: "Non, je n'ai rien pris parce que je voulais votre avis.", correct: true, feedback: "🥇 Très bien ! Emploi judicieux de la négation 'ne... rien' et de l'imparfait de justification ('je voulais')." },
-                            { text: "Non, je n'ai pas pris rien parce que je voulais votre avis.", correct: false, feedback: "⚠️ On ne double pas la négation : on dit 'je n'ai rien pris' (et pas 'ne... pas rien')." },
-                            { text: "Non, je n'ai rien prendre parce que je veux votre avis.", correct: false, feedback: "⚠️ Au passé composé avec la négation 'rien', le verbe doit être au participe passé ('rien pris')." },
-                            { text: "Non, je ne rien ai pris parce que je voulais votre avis.", correct: false, feedback: "⚠️ Ordre des mots incorrect : 'rien' se place entre l'auxiliaire et le participe passé (n'ai rien pris)." }
+                            { text: "Non, je n'ai rien mangé ce matin.", correct: true, feedback: "🥇 Excellent ! Au passé composé, 'rien' se place entre l'auxiliaire et le participe passé." },
+                            { text: "Non, je n'ai mangé rien ce matin.", correct: false, feedback: "⚠️ En français, 'rien' se place avant le participe passé (je n'ai rien mangé)." },
+                            { text: "Non, je n'ai personne mangé ce matin.", correct: false, feedback: "⚠️ Erreur de sens : 'personne' s'applique aux gens. Pour la nourriture/choses, on utilise 'rien'." },
+                            { text: "Non, je ne rien ai mangé ce matin.", correct: false, feedback: "⚠️ L'ordre correct au passé composé est : ne + auxiliaire + rien + participe passé." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Est-ce que tu as pris des antalgiques ou un autre traitement hier soir ?",
+                        options: [
+                            { text: "Non, je n'ai pris aucun médicament hier soir.", correct: true, feedback: "🥇 Parfait ! Utilisation correcte de 'ne... aucun' pour exprimer une quantité nulle." },
+                            { text: "Non, je ne ai pris aucun médicament hier soir.", correct: false, feedback: "⚠️ N'oublie pas l'élision : devant une voyelle, 'ne' devient 'n'' (je n'ai)." },
+                            { text: "Non, je n'ai pris pas aucun médicament hier soir.", correct: false, feedback: "⚠️ Ne cumule pas 'pas' et 'aucun'. 'Aucun' remplace 'pas'." },
+                            { text: "Non, je n'ai aucun pris médicament hier soir.", correct: false, feedback: "⚠️ Le mot 'aucun' se place devant le nom (aucun médicament) après le participe passé." }
+                        ]
+                    },
+                    {
+                        interlocutor: "Et ce matin, tu as parlé à quelqu'un avant de venir ?",
+                        options: [
+                            { text: "Non, je n'ai parlé à personne ce matin.", correct: true, feedback: "🥇 Bravo ! Utilisation exacte de 'ne... personne' avec la préposition 'à'." },
+                            { text: "Non, je n'ai parlé personne ce matin.", correct: false, feedback: "⚠️ Le verbe 'parler à' exige de conserver la préposition 'à' (parler à personne)." },
+                            { text: "Non, je n'ai parlé à rien ce matin.", correct: false, feedback: "⚠️ Pour parler d'êtres humains, on utilise 'personne' et non 'rien'." },
+                            { text: "Non, je ne personne ai parlé ce matin.", correct: false, feedback: "⚠️ Au passé composé, 'personne' se place après le participe passé (n'ai parlé à personne)." }
                         ]
                     }
                 ]
