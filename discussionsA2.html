@@ -158,7 +158,7 @@
                         options: [
                             { text: "Non, je n'ai pas pris d'hôtel, j'ai dormi chez une amie.", correct: true, feedback: "🥇 Bravo ! Négation correcte ('d'hôtel') et bonne utilisation du verbe avoir ('j'ai dormi')." },
                             { text: "Non, je n'ai pas pris un hôtel, je suis dormie chez une amie.", correct: false, feedback: "⚠️ Le verbe dormir prend l'auxiliaire avoir (j'ai dormi). On ne dit pas 'je suis dormie'." },
-                            { text: "Non, je n'ai pas pris de l'hôtel, j'ai dormi chez une amie.", correct: false, feedback: "⚠️ À la forme négative, l'article devant le nom se transforme en 'de' ou 'd'' (pas d'hôtel)." },
+                            { text: "Non, je n'ai pas pris un hôtel, j'ai dormi chez une amie.", correct: false, feedback: "⚠️ À la forme négative, l'article devant le nom se transforme en 'de' ou 'd'' (pas d'hôtel)." },
                             { text: "Non, je n'ai pas prise d'hôtel, j'ai dormie chez une amie.", correct: false, feedback: "⚠️ Avec l'auxiliaire avoir, les participes passés 'pris' et 'dormi' ne s'accordent pas avec le sujet." }
                         ]
                     },
@@ -166,9 +166,9 @@
                         interlocutor: "Avant de rentrer, tu as acheté des souvenirs pour tes amis ?",
                         options: [
                             { text: "Oui, j'ai acheté des petits cadeaux dans une boutique du port.", correct: true, feedback: "🥇 Parfait ! Utilisation correcte du passé composé et de l'article indéfini pluriel 'des'." },
-                            { text: "Oui, je suis acheté des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Le verbe 'acheter' se conjugue avec l'auxiliaire 'avoir' (j'ai acheté), pas 'être'." },
+                            { text: "Oui, je suis achetée des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Le verbe 'acheter' se conjugue avec l'auxiliaire 'avoir' (j'ai acheté), pas 'être'." },
                             { text: "Oui, j'ai achetée des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Avec l'auxiliaire 'avoir', le participe passé ne s'accorde pas avec le sujet féminin quand le COD est après." },
-                            { text: "Oui, j'ai achetez des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Après l'auxiliaire, le participe passé des verbes en -er prend un accent aigu (-é), pas -ez." }
+                            { text: "Oui, j'ai acheter des petits cadeaux dans une boutique du port.", correct: false, feedback: "⚠️ Après l'auxiliaire, le participe passé des verbes en -er prend un accent aigu (-é), pas -ez." }
                         ]
                     }
                 ]
@@ -203,18 +203,18 @@
                         interlocutor: "Est-ce que tu penses louer un camion pour transporter tes meubles toi-même ?",
                         options: [
                             { text: "Non, je vais louer un camion et je vais demander à des amis de m'aider.", correct: true, feedback: "🥇 Excellent ! Coordination parfaite de deux verbes au futur proche." },
-                            { text: "Non, je vais louer un camion et je vais demandant à des amis de m'aider.", correct: false, feedback: "⚠️ Après 'aller', le verbe se met à l'infinitif (demander), pas au participe présent (-ant)." },
-                            { text: "Non, je vas louer un camion et je vais demander à des amis de m'aider.", correct: false, feedback: "⚠️ Conjugaison d'aller avec 'je' : on écrit 'je vais' (et non 'je vas')." },
-                            { text: "Non, je vais loué un camion et je vais demander à des amis de m me aider.", correct: false, feedback: "⚠️ Le premier verbe doit être à l'infinitif (louer) et attention à l'élision (de m'aider)." }
+                            { text: "Non, j'ai loué un camion et je vais demandé à des amis de m'aider.", correct: false, feedback: "⚠️ Après 'aller', le verbe se met à l'infinitif (demander)." },
+                            { text: "Non, je loueré un camion et je demanderé à des amis de m'aider.", correct: false, feedback: "⚠️ Conjugaison au futur avec 'je' : on écrit la terminaison en 'ai' (et non 'é')." },
+                            { text: "Non, je vais loué un camion et je vais demander à des amis de m'aider.", correct: false, feedback: "⚠️ Le premier verbe doit être à l'infinitif (louer)." }
                         ]
                     },
                     {
                         interlocutor: "Tu as peur de ce grand changement de vie ?",
                         options: [
                             { text: "Non, je ne stresse pas, j'ai hâte de commencer cette nouvelle aventure !", correct: true, feedback: "🥇 Bravo ! Structure de négation simple correcte et bonne locution 'avoir hâte de'." },
-                            { text: "Non, je ne stresse pas, j'ai hâte pour commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ L'expression correcte est 'avoir hâte de' suivie d'un infinitif." },
-                            { text: "Non, je ne pas stresse, j'ai hâte de commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ Le mot 'pas' se place obligatoirement après le verbe conjugué (je ne stresse pas)." },
-                            { text: "Non, je stresse pas de ne, j'ai hâte de commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ La structure de la négation est désordonnée. N'oublie pas 'ne' avant le verbe." }
+                            { text: "Non, pas de stress, j'ai hâte de commençait cette nouvelle aventure.", correct: false, feedback: "⚠️ L'expression correcte est 'avoir hâte de' suivie d'un infinitif." },
+                            { text: "Non, je n'ai pas stress, j'ai hâte pour commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ stress est inquantifiable 'je n'ai pas DE stress'; on dit 'avoir hâte de + verbe'." },
+                            { text: "Non, je stresse pas, j'ai hâte de commencer cette nouvelle aventure.", correct: false, feedback: "⚠️ N'oublie pas 'ne' avant le verbe à l'écrit." }
                         ]
                     }
                 ]
