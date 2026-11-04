@@ -10,7 +10,6 @@
     body { font-family: 'Open Sans', sans-serif; }
     h1, h2, h3, .font-heading { font-family: 'Chau Philomene One', cursive; }
     
-    /* Animations météo CSS */
     .rain-drop {
       position: absolute;
       background: rgba(255, 255, 255, 0.85);
@@ -92,4 +91,604 @@
         <h1 class="text-2xl md:text-3xl tracking-wide">Météo FLE : Reporters du Jour</h1>
       </div>
       <div class="flex items-center gap-3">
-        <a href="https://tainacluzeau-del.github.io/Exercices/" class="bg-teal-800 hover:bg-teal-900 text-white px-3 py-1.5 rounded-lg
+        <a href="https://tainacluzeau-del.github.io/Exercices/" class="bg-teal-800 hover:bg-teal-900 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all">
+          ← Menu Exercices
+        </a>
+        <button onclick="resetApp()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow transition-all">
+          Recommencer 🔄
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4">
+    <!-- Navigation par étapes -->
+    <nav class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8" id="steps-nav">
+      <button id="btn-step-1" class="py-3 px-4 rounded-xl font-heading text-lg bg-teal-600 text-white shadow-md">
+        1. La Fenêtre 🪟
+      </button>
+      <button id="btn-step-2" disabled class="py-3 px-4 rounded-xl font-heading text-lg bg-gray-300 text-gray-500 cursor-not-allowed opacity-75">
+        🔒 2. Le Reporter 🏙️
+      </button>
+      <button id="btn-step-3" disabled class="py-3 px-4 rounded-xl font-heading text-lg bg-gray-300 text-gray-500 cursor-not-allowed opacity-75">
+        🔒 3. Décisions 🧣
+      </button>
+      <button id="btn-step-4" disabled class="py-3 px-4 rounded-xl font-heading text-lg bg-gray-300 text-gray-500 cursor-not-allowed opacity-75">
+        🔒 4. L'Intrus 🎯
+      </button>
+    </nav>
+
+    <!-- Feedback -->
+    <div id="feedback-banner" class="hidden mb-6 p-4 rounded-xl text-center font-bold text-lg shadow-sm"></div>
+
+    <!-- ÉTAPE 1 -->
+    <section id="step-1" class="bg-white rounded-2xl p-6 shadow-xl border border-slate-200">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-2xl font-heading text-teal-700">Étape 1 : Regarde par la fenêtre</h2>
+        <button onclick="skipE1()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-3 py-1 rounded-lg text-sm transition-all">Passer ➔</button>
+      </div>
+      <p class="text-gray-600 mb-6">Observe l'animation sur la photo et choisis la réponse exacte.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div class="relative w-full h-64 rounded-2xl border-8 border-amber-800 shadow-inner overflow-hidden flex items-center justify-center bg-slate-900">
+          <img id="e1-bg-img" src="" alt="Décor météo" class="absolute inset-0 w-full h-full object-cover">
+          <div id="weather-animation-container-1" class="absolute inset-0 z-10 pointer-events-none"></div>
+          <div class="absolute inset-0 border-4 border-white/40 grid grid-cols-2 grid-rows-2 pointer-events-none z-20"></div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-500 font-semibold" id="e1-progress">Question 1 / 6</span>
+            <button onclick="speakText(currentE1Sentence)" class="text-teal-600 hover:text-teal-800 text-xl" title="Écouter">🔊</button>
+          </div>
+          <div id="e1-options" class="flex flex-col gap-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÉTAPE 2 -->
+    <section id="step-2" class="hidden bg-white rounded-2xl p-6 shadow-xl border border-slate-200">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-2xl font-heading text-teal-700">Étape 2 : Le Reporter Détective</h2>
+        <button onclick="skipE2()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-3 py-1 rounded-lg text-sm transition-all">Passer ➔</button>
+      </div>
+      <p class="text-gray-600 mb-6">Identifie le lieu et décris la météo en écrivant la phrase complète.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div class="relative w-full h-64 rounded-2xl overflow-hidden shadow-md border-4 border-slate-100 bg-slate-900">
+          <img id="e2-image" src="" alt="Lieu météo" class="w-full h-full object-cover">
+          <div id="weather-animation-container-2" class="absolute inset-0 z-10 pointer-events-none"></div>
+          <div id="e2-city-tag" class="absolute bottom-3 left-3 bg-slate-900/80 text-white font-heading px-3 py-1 rounded-lg text-lg z-20"></div>
+          <div id="e2-temp-tag" class="hidden absolute top-3 right-3 bg-amber-500 text-white font-heading px-3 py-1 rounded-lg text-lg z-20 shadow-md"></div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <label for="e2-input" class="font-semibold text-slate-700">Écris la phrase météo :</label>
+          <input type="text" id="e2-input" placeholder="Tape ta réponse ici..." class="w-full p-3 border-2 border-slate-300 rounded-xl focus:border-teal-500 focus:outline-none text-lg">
+
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs text-gray-400 self-center font-semibold mr-1">Accents :</span>
+            <button type="button" onclick="insertAccent('é')" class="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded font-semibold text-slate-700">é</button>
+            <button type="button" onclick="insertAccent('è')" class="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded font-semibold text-slate-700">è</button>
+            <button type="button" onclick="insertAccent('à')" class="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded font-semibold text-slate-700">à</button>
+            <button type="button" onclick="insertAccent('ç')" class="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded font-semibold text-slate-700">ç</button>
+            <button type="button" onclick="insertAccent('ù')" class="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded font-semibold text-slate-700">ù</button>
+            <button type="button" onclick="insertAccent('ê')" class="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded font-semibold text-slate-700">ê</button>
+            <button type="button" onclick="insertAccent('î')" class="px-3 py-1 bg-slate-200 hover:bg-slate-300 rounded font-semibold text-slate-700">î</button>
+          </div>
+
+          <button id="e2-submit-btn" type="button" onclick="checkStep2()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-heading py-3 rounded-xl text-lg shadow-md transition-all">
+            Valider la réponse ➔
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÉTAPE 3 -->
+    <section id="step-3" class="hidden bg-white rounded-2xl p-6 shadow-xl border border-slate-200">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-2xl font-heading text-teal-700">Étape 3 : La Bonne Décision</h2>
+        <button onclick="skipE3()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-3 py-1 rounded-lg text-sm transition-all">Passer ➔</button>
+      </div>
+      <p class="text-gray-600 mb-6">Choisis la réaction logique en utilisant « Alors » ou « Donc ».</p>
+
+      <div class="max-w-xl mx-auto flex flex-col gap-6">
+        <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-2xl text-center">
+          <span id="e3-icon" class="text-5xl block mb-2">🌡️</span>
+          <h3 id="e3-situation" class="text-2xl font-heading text-amber-900"></h3>
+        </div>
+
+        <div id="e3-options" class="grid grid-cols-1 gap-3"></div>
+      </div>
+    </section>
+
+    <!-- ÉTAPE 4 -->
+    <section id="step-4" class="hidden bg-white rounded-2xl p-6 shadow-xl border border-slate-200">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-2xl font-heading text-teal-700">Étape 4 : Chasse à l'Intrus</h2>
+        <button onclick="skipE4()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-3 py-1 rounded-lg text-sm transition-all">Passer ➔</button>
+      </div>
+      <p class="text-gray-600 mb-6">Trouve et clique sur l'élément (mot ou emoji) qui N'EST PAS à sa place.</p>
+
+      <div class="max-w-xl mx-auto flex flex-col gap-6">
+        <div class="text-center font-heading text-xl text-slate-700" id="e4-theme"></div>
+        <div id="e4-cards" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- ÉCRAN DE FÉLICITATIONS (FIN D'EXERCICE) -->
+    <section id="step-thanks" class="hidden bg-white rounded-2xl p-8 shadow-xl border border-slate-200 text-center">
+      <div class="text-6xl mb-4">🏆</div>
+      <h2 class="text-3xl font-heading text-teal-700 mb-3">Félicitations, Bravo Reporter !</h2>
+      <p class="text-lg text-slate-600 mb-8 max-w-lg mx-auto">
+        Tu as réussi toutes les étapes et validé avec succès ton bulletin météo !
+      </p>
+
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <button onclick="resetApp()" class="bg-amber-500 hover:bg-amber-600 text-white font-heading text-lg px-6 py-3 rounded-xl shadow-md transition-all">
+          Recommencer l'exercice 🔄
+        </button>
+        <a href="https://tainacluzeau-del.github.io/Exercices/" class="bg-teal-600 hover:bg-teal-700 text-white font-heading text-lg px-6 py-3 rounded-xl shadow-md transition-all inline-block">
+          Retour au menu des exercices ➔
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let unlockedStep = 1;
+
+    const step1Data = [
+      { type: 'pluie', bg: 'https://images.unsplash.com/photo-1519692933481-e162a57d6721?auto=format&fit=crop&w=800&q=80', options: ['Il pleut.', 'Il fait du soleil.', 'Il neige.'], correct: 0 },
+      { type: 'soleil', bg: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80', options: ['Il y a du vent.', 'Il fait beau.', 'Il pleut.'], correct: 1 },
+      { type: 'neige', bg: 'https://images.unsplash.com/photo-1491002052546-bf38f186af56?auto=format&fit=crop&w=800&q=80', options: ['Il fait très chaud.', 'Il neige.', 'Il y a un orage.'], correct: 1 },
+      { type: 'vent', bg: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80', options: ['Il y a du vent.', 'Il fait beau.', 'Il neige.'], correct: 0 },
+      { type: 'nuages', bg: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=800&q=80', options: ['Le ciel est couvert.', 'Il fait très chaud.', 'Il neige.'], correct: 0 },
+      { type: 'orage', bg: 'https://images.unsplash.com/photo-1511289081-d06dda19034d?auto=format&fit=crop&w=800&q=80', options: ['Le soleil brille.', "Il y a de l'orage.", 'Il y a du vent.'], correct: 1 }
+    ];
+    let e1Index = 0;
+    let currentE1Sentence = "";
+
+    const step2Data = [
+      { 
+        city: "Le Caire", type: "soleil", 
+        img: "https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=800&q=80", 
+        targets: ["au caire il fait beau", "au caire il fait du soleil", "au caire il y a du soleil"] 
+      },
+      { 
+        city: "Paris", type: "pluie", 
+        img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80", 
+        targets: ["a paris il pleut", "a paris il y a de la pluie", "a paris il ne fait pas beau"] 
+      },
+      { 
+        city: "Québec", type: "neige", 
+        img: "https://images.unsplash.com/photo-1546412414-8035e1776c9a?auto=format&fit=crop&w=800&q=80", 
+        targets: ["au quebec il neige", "au quebec il y a de la neige", "a quebec il neige", "a quebec il y a de la neige"] 
+      },
+      { 
+        city: "La Forêt", type: "vent", 
+        img: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80", 
+        targets: ["dans la foret il y a du vent", "dans la foret il fait du vent", "dans la foret il vente"] 
+      },
+      { 
+        city: "La Plage", type: "none", temp: "42 °C",
+        img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80", 
+        targets: ["a la plage il fait chaud", "a la plage il fait 42 degres"] 
+      },
+      { 
+        city: "La Montagne", type: "none", temp: "-5 °C",
+        img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80", 
+        targets: ["a la montagne il fait froid", "a la montagne il fait -5 degres"] 
+      },
+      { 
+        city: "New-York", type: "orage", 
+        img: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80", 
+        targets: ["a new york il y a de l orage", "a new-york il y a de l orage", "a new york il y a une tempete", "a new york il fait de l orage"] 
+      },
+      { 
+        city: "En Italie", type: "nuages", 
+        img: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80", 
+        targets: ["en italie il y a des nuages", "en italie il fait couvert", "en italie il fait nuageux", "en italie c est nuageux"] 
+      }
+    ];
+    let e2Index = 0;
+
+    const step3Data = [
+      { 
+        situation: "Il fait 34 °C au soleil.", icon: "☀️", 
+        options: [
+          { text: "Alors, je mets un t-shirt et des lunettes de soleil.", correct: true },
+          { text: "Donc, je mets un manteau chaud et une écharpe.", correct: false },
+          { text: "Alors, je prends un grand parapluie.", correct: false }
+        ] 
+      },
+      { 
+        situation: "Il pleut très fort dehors.", icon: "🌧️", 
+        options: [
+          { text: "Alors, je mets un maillot de bain.", correct: false },
+          { text: "Donc, je prends mon parapluie.", correct: true },
+          { text: "Donc, je mets des lunettes de soleil.", correct: false }
+        ] 
+      },
+      { 
+        situation: "Il fait -5 °C et il neige.", icon: "❄️", 
+        options: [
+          { text: "Alors, je mets des sandales d'été.", correct: false },
+          { text: "Donc, je prends un petit ventilateur.", correct: false },
+          { text: "Alors, je mets un manteau chaud et un bonnet.", correct: true }
+        ] 
+      }
+    ];
+    let e3Index = 0;
+
+    const step4Data = [
+      { 
+        theme: "☀️ Thème : La Plage et le Soleil", 
+        items: [
+          { text: "Soleil", icon: "" },
+          { text: "", icon: "🔥" },
+          { text: "Maillot de bain", icon: "" },
+          { text: "", icon: "❄️", intrus: true },
+          { text: "Lunettes", icon: "" }
+        ] 
+      },
+      { 
+        theme: "🌧️ Thème : La Pluie et le Mauvais Temps", 
+        items: [
+          { text: "Parapluie", icon: "" },
+          { text: "", icon: "🧥" },
+          { text: "Bottes", icon: "" },
+          { text: "Ventilateur", icon: "", intrus: true },
+          { text: "", icon: "☁️" }
+        ] 
+      },
+      { 
+        theme: "❄️ Thème : Le Grand Froid et la Neige", 
+        items: [
+          { text: "Glace", icon: "" },
+          { text: "", icon: "⛷️" },
+          { text: "Bonnet", icon: "" },
+          { text: "", icon: "🔥", intrus: true },
+          { text: "Froid", icon: "" }
+        ] 
+      },
+      { 
+        theme: "🌬️ Thème : Le Vent et la Tempête", 
+        items: [
+          { text: "Feuilles", icon: "" },
+          { text: "", icon: "💨" },
+          { text: "Maillot de bain", icon: "", intrus: true },
+          { text: "Arbre", icon: "" },
+          { text: "", icon: "🌪️" }
+        ] 
+      }
+    ];
+    let e4Index = 0;
+
+    window.onload = () => { loadE1Question(); };
+
+    function shuffleArray(array) {
+      return [...array].sort(() => Math.random() - 0.5);
+    }
+
+    function renderWeatherAnimationInto(type, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      if (type === 'pluie') {
+        for (let i = 0; i < 35; i++) {
+          const drop = document.createElement('div');
+          drop.className = 'rain-drop';
+          drop.style.left = Math.random() * 100 + '%';
+          drop.style.animationDuration = (0.4 + Math.random() * 0.4) + 's';
+          drop.style.animationDelay = Math.random() * 0.5 + 's';
+          container.appendChild(drop);
+        }
+      } else if (type === 'soleil') {
+        const sun = document.createElement('div');
+        sun.className = 'sun-corner';
+        container.appendChild(sun);
+      } else if (type === 'neige') {
+        for (let i = 0; i < 30; i++) {
+          const flake = document.createElement('div');
+          flake.className = 'snowflake';
+          flake.innerText = '❄';
+          flake.style.left = Math.random() * 100 + '%';
+          flake.style.animationDuration = (2 + Math.random() * 2) + 's';
+          flake.style.animationDelay = Math.random() * 1 + 's';
+          container.appendChild(flake);
+        }
+      } else if (type === 'vent') {
+        container.innerHTML = `
+          <div class="flex items-end justify-around w-full h-full pb-4">
+            <span class="wind-tree text-5xl">🌲</span>
+            <span class="wind-tree text-6xl" style="animation-delay: 0.2s;">🌳</span>
+            <span class="wind-tree text-5xl" style="animation-delay: 0.4s;">🌴</span>
+          </div>
+        `;
+      } else if (type === 'orage') {
+        const flash = document.createElement('div');
+        flash.className = 'lightning-flash';
+        container.appendChild(flash);
+        for (let i = 0; i < 20; i++) {
+          const drop = document.createElement('div');
+          drop.className = 'rain-drop';
+          drop.style.left = Math.random() * 100 + '%';
+          drop.style.animationDuration = (0.3 + Math.random() * 0.3) + 's';
+          container.appendChild(drop);
+        }
+      } else if (type === 'nuages') {
+        for (let i = 0; i < 3; i++) {
+          const cloud = document.createElement('div');
+          cloud.className = 'cloud-drift';
+          cloud.innerText = '☁️';
+          cloud.style.top = (10 + i * 50) + 'px';
+          cloud.style.animationDelay = (i * 3) + 's';
+          container.appendChild(cloud);
+        }
+      }
+    }
+
+    function loadE1Question() {
+      const q = step1Data[e1Index];
+      document.getElementById('e1-bg-img').src = q.bg;
+      renderWeatherAnimationInto(q.type, 'weather-animation-container-1');
+      document.getElementById('e1-progress').innerText = `Question ${e1Index + 1} / ${step1Data.length}`;
+      currentE1Sentence = q.options[q.correct];
+
+      const optionsContainer = document.getElementById('e1-options');
+      optionsContainer.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-3 border-2 border-slate-200 rounded-xl hover:border-teal-500 hover:bg-teal-50 font-semibold text-slate-700 transition-all";
+        btn.innerText = opt;
+        btn.onclick = () => checkE1(idx);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function checkE1(selectedIdx) {
+      const q = step1Data[e1Index];
+      if (selectedIdx === q.correct) {
+        showFeedback("Bravo ! Bonne réponse. 🎉", true);
+        e1Index++;
+        if (e1Index < step1Data.length) {
+          setTimeout(loadE1Question, 900);
+        } else {
+          showFeedback("Étape 1 terminée ! Passage à l'étape 2... 🔓", true);
+          setTimeout(() => unlockStep(2), 1200);
+        }
+      } else {
+        showFeedback("Oups ! Regarde bien l'animation. 😅", false);
+      }
+    }
+
+    function skipE1() {
+      e1Index++;
+      if (e1Index < step1Data.length) {
+        loadE1Question();
+      } else {
+        unlockStep(2);
+      }
+    }
+
+    function loadE2Question() {
+      const q = step2Data[e2Index];
+      document.getElementById('e2-image').src = q.img;
+      document.getElementById('e2-city-tag').innerText = q.city;
+      
+      const tempTag = document.getElementById('e2-temp-tag');
+      if (q.temp) {
+        tempTag.innerText = q.temp;
+        tempTag.classList.remove('hidden');
+      } else {
+        tempTag.classList.add('hidden');
+      }
+
+      document.getElementById('e2-input').value = '';
+      renderWeatherAnimationInto(q.type, 'weather-animation-container-2');
+    }
+
+    function normalizeText(text) {
+      return text.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function checkStep2() {
+      const rawInput = document.getElementById('e2-input').value;
+      const cleanInput = normalizeText(rawInput);
+      const q = step2Data[e2Index];
+
+      const isCorrect = q.targets.some(target => {
+        const cleanTarget = normalizeText(target);
+        return cleanInput === cleanTarget || cleanInput.includes(cleanTarget);
+      });
+
+      if (isCorrect) {
+        showFeedback("Excellente réponse ! 👏", true);
+        e2Index++;
+        if (e2Index < step2Data.length) {
+          setTimeout(loadE2Question, 900);
+        } else {
+          showFeedback("Étape 2 terminée ! Passage à l'étape 3... 🔓", true);
+          setTimeout(() => unlockStep(3), 1200);
+        }
+      } else {
+        showFeedback(`Attention ! Modèle d'exemple : "${q.targets[0].charAt(0).toUpperCase() + q.targets[0].slice(1)}."`, false);
+      }
+    }
+
+    function skipE2() {
+      e2Index++;
+      if (e2Index < step2Data.length) {
+        loadE2Question();
+      } else {
+        unlockStep(3);
+      }
+    }
+
+    function insertAccent(char) {
+      const input = document.getElementById('e2-input');
+      input.value += char;
+      input.focus();
+    }
+
+    function loadE3Question() {
+      const q = step3Data[e3Index];
+      document.getElementById('e3-icon').innerText = q.icon;
+      document.getElementById('e3-situation').innerText = q.situation;
+
+      const optsContainer = document.getElementById('e3-options');
+      optsContainer.innerHTML = '';
+      
+      const shuffledOptions = shuffleArray(q.options);
+      shuffledOptions.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:border-teal-500 hover:bg-teal-50 font-semibold text-slate-700 transition-all";
+        btn.innerText = opt.text;
+        btn.onclick = () => checkE3(opt.correct);
+        optsContainer.appendChild(btn);
+      });
+    }
+
+    function checkE3(isCorrect) {
+      if (isCorrect) {
+        showFeedback("Très bonne décision ! 👍", true);
+        e3Index++;
+        if (e3Index < step3Data.length) {
+          setTimeout(loadE3Question, 900);
+        } else {
+          showFeedback("Étape 3 terminée ! Passage à la dernière étape... 🔓", true);
+          setTimeout(() => unlockStep(4), 1200);
+        }
+      } else {
+        showFeedback("Ce n'est pas très logique pour cette météo ! 😉", false);
+      }
+    }
+
+    function skipE3() {
+      e3Index++;
+      if (e3Index < step3Data.length) {
+        loadE3Question();
+      } else {
+        unlockStep(4);
+      }
+    }
+
+    function loadE4Question() {
+      const q = step4Data[e4Index];
+      document.getElementById('e4-theme').innerText = q.theme;
+
+      const cardsContainer = document.getElementById('e4-cards');
+      cardsContainer.innerHTML = '';
+      
+      const shuffledItems = shuffleArray(q.items);
+      shuffledItems.forEach((item) => {
+        const btn = document.createElement('button');
+        btn.className = "flex flex-col items-center justify-center p-5 border-2 border-slate-200 rounded-2xl hover:border-amber-400 hover:bg-amber-50 transition-all shadow-sm min-h-[100px]";
+        
+        if (item.icon) {
+          btn.innerHTML = `<span class="text-4xl">${item.icon}</span>`;
+        } else {
+          btn.innerHTML = `<span class="font-bold text-slate-700 text-lg">${item.text}</span>`;
+        }
+
+        btn.onclick = () => checkE4(item);
+        cardsContainer.appendChild(btn);
+      });
+    }
+
+    function checkE4(item) {
+      if (item.intrus) {
+        showFeedback("Bien joué ! Tu as trouvé l'intrus ! 🎯", true);
+        e4Index++;
+        if (e4Index < step4Data.length) {
+          setTimeout(loadE4Question, 900);
+        } else {
+          showFeedback("Bravo ! Exercice terminé avec succès !", true);
+          setTimeout(showThanksScreen, 1200);
+        }
+      } else {
+        showFeedback("Non, cet élément va très bien avec la météo !", false);
+      }
+    }
+
+    function skipE4() {
+      e4Index++;
+      if (e4Index < step4Data.length) {
+        loadE4Question();
+      } else {
+        showThanksScreen();
+      }
+    }
+
+    function unlockStep(stepNum) {
+      unlockedStep = Math.max(unlockedStep, stepNum);
+      const btn = document.getElementById(`btn-step-${stepNum}`);
+      btn.className = "py-3 px-4 rounded-xl font-heading text-lg bg-teal-600 text-white shadow-md";
+      btn.innerText = btn.innerText.replace('🔒 ', '');
+      
+      if (stepNum === 2) loadE2Question();
+      if (stepNum === 3) loadE3Question();
+      if (stepNum === 4) loadE4Question();
+      
+      switchStep(stepNum);
+    }
+
+    function switchStep(stepNum) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`step-${i}`).classList.add('hidden');
+      }
+      document.getElementById('step-thanks').classList.add('hidden');
+      document.getElementById(`step-${stepNum}`).classList.remove('hidden');
+    }
+
+    function showThanksScreen() {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`step-${i}`).classList.add('hidden');
+      }
+      document.getElementById('step-thanks').classList.remove('hidden');
+    }
+
+    function showFeedback(text, isSuccess) {
+      const banner = document.getElementById('feedback-banner');
+      banner.innerText = text;
+      banner.className = `mb-6 p-4 rounded-xl text-center font-bold text-lg shadow-sm ${isSuccess ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}`;
+      banner.classList.remove('hidden');
+      setTimeout(() => banner.classList.add('hidden'), 3000);
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window && text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'fr-FR';
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function resetApp() {
+      unlockedStep = 1;
+      e1Index = 0;
+      e2Index = 0;
+      e3Index = 0;
+      e4Index = 0;
+
+      for (let i = 2; i <= 4; i++) {
+        const btn = document.getElementById(`btn-step-${i}`);
+        btn.disabled = true;
+        btn.className = "py-3 px-4 rounded-xl font-heading text-lg bg-gray-300 text-gray-500 cursor-not-allowed opacity-75";
+        if (!btn.innerText.includes('🔒')) {
+          btn.innerText = '🔒 ' + btn.innerText;
+        }
+      }
+
+      loadE1Question();
+      switchStep(1);
+      showFeedback("Réinitialisation effectuée ! Bon exercice. 😊", true);
+    }
+  </script>
+</body>
+</html>
