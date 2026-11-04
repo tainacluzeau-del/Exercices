@@ -77,4 +77,19 @@
       animation: drift 12s linear infinite;
     }
     @keyframes drift {
-      0% { transform: translateX(-60px
+      0% { transform: translateX(-60px); }
+      100% { transform: translateX(400px); }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 pb-12">
+
+  <!-- Header -->
+  <header class="bg-teal-600 text-white shadow-md p-4 mb-6">
+    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+      <div class="flex items-center space-x-3">
+        <span class="text-3xl">🌤️</span>
+        <h1 class="text-2xl md:text-3xl tracking-wide">Météo FLE : Reporters du Jour</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="https://tainacluzeau-del.github.io/Exercices/" class="bg-teal-800 hover:bg-teal-900 text-white px-3 py-1.5 rounded-lg
